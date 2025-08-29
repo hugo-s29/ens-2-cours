@@ -4,7 +4,7 @@ Dans ce dépôt, vous trouverez les notes de cours, les TDs, les TPs, et les DMs
 La quantité de documents mis en ligne dépend des cours (certains cours n'ont pas de notes de cours, d'autres pas de TDs, _etc_).
 Bonne lecture !
 
-▶ Site internet : [http://167.99.84.84/ens1](http://167.99.84.84/ens2)
+▶ Site internet : [http://167.99.84.84/ens2](http://167.99.84.84/ens2)
 
 ## Semestre 1.
 
