@@ -18,4 +18,6 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   # SEMESTRE 1
   # ==========
 
+  echo "It's compile time!"
+
 fi

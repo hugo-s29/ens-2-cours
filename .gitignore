@@ -1,0 +1,7 @@
+typst-finite
+.DS_Store
+docs
+**/_hidden
+*.bak
+.compile_hashes.json
+.compressed_hashes.json
