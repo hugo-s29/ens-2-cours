@@ -24,7 +24,7 @@
 \RequirePackage{mathtools}
 \RequirePackage{tikz}
 \RequirePackage{tikz-network}
-\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations.pathmorphing, graphdrawing, graphs}
+\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations.pathmorphing, graphdrawing, graphs, chains}
 \usegdlibrary{force}
 \RequirePackage{svg}
 \RequirePackage{multirow}

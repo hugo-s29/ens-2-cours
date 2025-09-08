@@ -1,0 +1,66 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Introduction.}
+
+  Let us give precisions on the terms in the name of the course, and in the broader space of semantics and verifications.
+  \begin{description}
+    \item[Verification.] Formal techniques to ensure the correctness software or hardware of systems.
+    \item[Model Checking.]
+      "Automatic" checking of the correctness by means of exhaustive exploration.
+  \end{description}
+
+  \begin{exm}
+    Consider a program that is 10 lines long, contains 3 booleans variables and 5 integers variables in the range $\{0, \ldots, 9\}$.
+    The number of states for this program is:
+    \[
+    10 \times 2^3 \times 10^5 = 8\,000\,000
+    .\]
+    The real issue with the state exploration problem is the factor $10^5$, coming from the use of $5$ integers.
+  \end{exm}
+
+  \begin{exm}
+    Consider a server and $n$ clients. Clients can make requests to the server and the server can answer a client.
+    The specification of this server should include the following:
+    \begin{itemize}
+      \item Each client which makes a request is eventually answered.
+      \item We \textit{abstract} away from precise quantitative constraints.
+    \end{itemize}
+  \end{exm}
+
+  We will sometimes reason about an infinite amount of executions.
+  For example, if some client makes infinitely-many requests (then it'll have infinitely-many answers).
+  Infinite sequences are represented by \textit{$\omega$-words}, \textit{i.e.}\ infinite words indexed by $\mathds{N}$.
+  Thus, $\omega$-words on some alphabet $\Sigma$ are functions $\mathds{N} \to \Sigma$. We will denote $\Sigma^\omega$ the set of those infinite words on the alphabet $\Sigma$.
+
+  If $|\Sigma| \ge 2$, then the set $\Sigma^\omega$ is uncountable.
+
+  This course will cover the following:
+  \begin{itemize}
+    \item Transition systems;
+    \item Linear-time properties;
+    \item Topology;
+    \item Orders and Lattices;
+    \item Linear Temporal Logic (LTL);
+    \item Büchi automata;
+    \item \textbf{Stone duality} (mostly in homework);
+    \item Bisimilarity/bisimulation;
+    \item Modal Logic.
+  \end{itemize}
+
+  Ressources from this course include:
+  \begin{itemize}
+    \item the \href{https://perso.ens-lyon.fr/colin.riba/teaching/sv/notes.pdf}{course notes} (available online, non-exhaustive);
+    \item Baier, C. and Katoen, J.-P., Principles of Model Checking, MIT Press, 2008.
+  \end{itemize}
+
+  Prerequisites for this course include:
+  \begin{itemize}
+    \item First-order logic (\textit{see} my \href{https://hugos29.dev/data/ens1/logique.pdf}{course notes} for the "Logique" L3 course, in french);
+    \item Finite automata ("FDI" L3 course).
+  \end{itemize}
+
+  Evaluation for this course will be in two parts: the final exam (50\:\%) and the homework, in two parts (25\:\% each).
+  
+  The tutorials will be done by Lison Blondeau-Patissier.
+\end{document}

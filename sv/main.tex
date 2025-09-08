@@ -1,0 +1,38 @@
+\documentclass{../notes-en}
+
+\title{Semantics and Verifications}
+\author{Based on the lectures of Colin \textsc{Riba} \\ Notes written by Hugo \textsc{Salou}}
+
+\usepackage{subfiles}
+
+\ifSubfilesClassLoaded{%
+  \renewcommand\thesection{\arabic{section}}
+  \renewcommand\thepart{\Roman{part}}
+  \renewcommand\thechapter{\phantom}
+  \renewcommand\theequation{\arabic{section}.\arabic{equation}}
+}{}
+
+\newcommand\tr[1]{\ensuremath{\mathrel{\xrightarrow{#1}}}}
+\newcommand\trh[1]{\ensuremath{\mathrel{\xhookrightarrow{#1}}}}
+
+\tikzset{
+  initial text={},
+  node distance=2cm,
+  auto,
+  every state/.style={draw=deepblue,thick,rounded rectangle},
+  straight-right/.style={ to path={|- (\tikztotarget)  \tikztonodes}},
+  straight-left/.style={ to path={-| (\tikztotarget)  \tikztonodes}}
+}
+
+\begin{document}
+  \maketitle
+
+  \dominitoc
+  \tableofcontents
+
+  \pagebreak
+
+  \subfile{chap00.tex}
+  \subfile{chap01.tex}
+\end{document}
+
