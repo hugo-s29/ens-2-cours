@@ -1,0 +1,62 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Introduction.}
+
+  \vspace{-1em}
+  A \textit{compiler} is a program that'll given some code, return either an error or some other code in another language.
+  However, compilation is not \textit{only} about code generation: a large number of compilation techniques are not linked to assembly production.
+  Moreover, languages can be:
+  \begin{itemize}
+    \item interpreted (\textit{e.g.}\ Python sometimes);
+    \item compiled into an intermediate language that will be interpreted (\textit{e.g.}\ Java);
+    \item compiled into another high level language (\textit{e.g.}\ OCaml can be compiled into JavaScript);
+    \item compiled "on the fly" (\textit{e.g.} Julia or Python sometimes);
+    \item several of the above.
+  \end{itemize}
+
+  A \textit{compiler} will translate a program $P$ into a program $Q$ such that, for all entry, the output of $Q$ is the same as the output of $P$.
+  An \textit{interpreter} is a program that, given a program $P$ and an entry $x$, computes the output of $P$ on $x$.
+  This can be seen, in a way, we swap two quantifiers:
+  \[
+    \underbrace{\forall P, \exists Q, \forall x, \ldots}_{\text{compiler}}
+    \quad\quad \text{and}\quad\quad
+    \underbrace{\forall P, \forall x, \exists s, \ldots}_{\text{interpreter}}
+  .\]
+
+  The quality of a compiler can be measured on multiple factors: its correctness, the efficiency of the generated code, its own efficiency.
+  We will also touch on program analysis.
+
+  The goal of the labs will be to write a compiler for the RISCV architecture.
+  This part will be done in Python.
+
+  \section{The RISCV architecture.}
+
+  RISCV is an open-source architecture that is extensible.
+  One of the basic components of RISCV are \textit{registers}.
+  We can manipulate registers with operations such as
+  \texttt{add}\footnote{Adds the data from two registers into another register.} or
+  \texttt{addi}.\footnote{Adds the data from one register with a constant, into another register}
+  \showfootnote
+
+  We can also do \textit{branching} in RISCV in two kinds:
+  \begin{itemize}
+    \item \textit{unconditional branching} ($\leadsto$ jump and link) is done with \texttt{jal};
+    \item \textit{test and branch} ($\leadsto$ branch if lower than) is one with \texttt{blt}.
+  \end{itemize}
+  The first one is used to implement functions, and the other one (and variants) is used to implement an \texttt{if}.
+
+  All the details of the RISCV operations can be found at:
+  \begin{center}
+    \footnotesize\url{https://github.com/Drup/cap-lab25/blob/main/course/riscv_isa.pdf}.
+  \end{center}
+
+  We have an assembly language. This will be the last part of our compiler.
+
+  \section{Lexical Analysis.}
+  
+  Lexical Analysis breaks down the code in tokens, known as \textit{lexems}.
+  Here, we use \textit{regular expressions}.
+  In our case, the tool we will use for our compiler is ANTLR.
+
+\end{document}

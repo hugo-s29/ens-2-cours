@@ -9,7 +9,7 @@
 \RequirePackage[OT2,OT1,T1]{fontenc}
 \RequirePackage{textcomp}
 \RequirePackage[hyperindex]{hyperref}
-\RequirePackage[french]{babel}
+\RequirePackage{babel}
 \RequirePackage[framemethod=TikZ]{mdframed}
 \RequirePackage{amsfonts,amsmath,amsthm,amssymb}
 \RequirePackage{enumerate}
@@ -129,7 +129,7 @@
 \colorlet{nicered}{BrickRed!70!white}
 
 
-\RequirePackage[autostyle, style=french]{csquotes}
+\RequirePackage[autostyle, style=english]{csquotes}
 \MakeOuterQuote{"}
 
 \newcommand\separatorBlock{
@@ -239,14 +239,14 @@
 \renewcommand{\labelitemii}{\color{deepblue}–}
 \renewcommand{\labelitemiii}{\color{deepblue}•}
 
-\declaretheorem[style=thmgreenbox, name=Définition]{defn} \defineMarkerColor{defn}{deepgreen} \removefootnoteinside{defn}
-\declaretheorem[style=thmbluebox, name=Exemple]{exm}      \defineMarkerColor{exm}{deepblue}   \removefootnoteinside{exm}
-\declaretheorem[style=thmbluebox, name=Exercice]{exo}     \defineMarkerColor{exo}{deepblue}   \removefootnoteinside{exo}
+\declaretheorem[style=thmgreenbox, name=Definition]{defn} \defineMarkerColor{defn}{deepgreen} \removefootnoteinside{defn}
+\declaretheorem[style=thmbluebox, name=Example]{exm}      \defineMarkerColor{exm}{deepblue}   \removefootnoteinside{exm}
+\declaretheorem[style=thmbluebox, name=Exercise]{exo}     \defineMarkerColor{exo}{deepblue}   \removefootnoteinside{exo}
 \declaretheorem[style=thmredbox, name=Proposition]{prop}  \defineMarkerColor{prop}{deepred}   \removefootnoteinside{prop}
-\declaretheorem[style=thmredbox, name=Théorème]{thm}      \defineMarkerColor{thm}{deepred}    \removefootnoteinside{thm}
-\declaretheorem[style=thmredbox, name=Lemme]{lem}         \defineMarkerColor{lem}{deepred}    \removefootnoteinside{lem}
-\declaretheorem[style=thmredbox, name=Corollaire]{crlr}   \defineMarkerColor{crlr}{deepred}   \removefootnoteinside{crlr}
-\declaretheorem[style=thmblueline, name=Remarque]{rmk}    \defineMarkerColor{rmk}{deepblue}   \removefootnoteinside{rmk}
+\declaretheorem[style=thmredbox, name=Theorem]{thm}      \defineMarkerColor{thm}{deepred}    \removefootnoteinside{thm}
+\declaretheorem[style=thmredbox, name=Lemma]{lem}         \defineMarkerColor{lem}{deepred}    \removefootnoteinside{lem}
+\declaretheorem[style=thmredbox, name=Corollary]{crlr}   \defineMarkerColor{crlr}{deepred}   \removefootnoteinside{crlr}
+\declaretheorem[style=thmblueline, name=Remark]{rmk}    \defineMarkerColor{rmk}{deepblue}   \removefootnoteinside{rmk}
 \declaretheorem[style=thmblueline, name=Note]{note}       \defineMarkerColor{note}{deepblue}  \removefootnoteinside{note}
 \declaretheorem[style=thmblueline, name=Observation, numbered=no]{obs} \defineMarkerColor{obs}{deepblue}   \removefootnoteinside{obs}
 \newmdenv[
@@ -255,9 +255,9 @@
   linecolor=DarkOrchid, backgroundcolor=DarkOrchid!5,
 ]{coq-data}       \defineMarkerColor{coq-data}{deeppurple}  \removefootnoteinside{coq-data}
 
-\declaretheorem[style=thmredbox, name=``Lemme'']{not-lem}         \defineMarkerColor{not-lem}{deepred}    \removefootnoteinside{not-lem}
+\declaretheorem[style=thmredbox, name=``Lemma'']{not-lem}         \defineMarkerColor{not-lem}{deepred}    \removefootnoteinside{not-lem}
 
-\declaretheorem[style=thmproofbox, name=Preuve]{replacementproof}
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
 \newenvironment{prv}[1][\proofname]{\vspace{-12pt}\begin{replacementproof}}{\end{replacementproof}} \removefootnoteinside{prv} \defineMarkerColor{prv}{deepred}
 
 \declaretheorem[style=thmexplanationbox, name=Solution]{replacementsolution}

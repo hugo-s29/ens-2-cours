@@ -1,0 +1,136 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Introduction: What is crypto?}
+
+  Crypto can be understanding as \textit{cryptography} or \textit{cryptology}; the two are distinct notions, but this won't matter to us in this course.
+
+  \begin{center}
+  \begin{minipage}{0.7\textwidth}
+  \begin{center}
+    \textbf{\textit{Crypto is the science of securing data against adversaries.}}
+  \end{center}
+  \end{minipage}
+  \end{center}
+
+  This is not just encryption, not just data transit (\textit{e.g.}\ managing data), not all information security.
+  Security is a lot broader than crypto: it contains crypto but also social engineering, finding implementation bugs, risk management, system security.
+
+  This first chapter will be more informal, to give a high-level overview of crypto.
+
+  \section{Some basic examples.}
+
+  \subsection{How to check that two distant files are the same?}
+
+  Instead of comparing the two files byte by byte, we can compare \textit{cryptographic hashes}. They are a lot smaller in size compared to the original data.
+  Some famous examples of cryptographic hash functions are \textsf{SHA-256}, \textsf{SHA-2}, \textsf{SHA-3} or \textsf{MD-5} (this last one is outdated).
+
+  \subsection{Secure communication over the Internet.}
+
+  HTTPS is a secure protocol for browsing the Internet. The "S" in HTTPS means \textit{secure}.
+  The underlying protocol is called TLS/SSL.
+  When browsing, for example, Google, we want that our communication is secured against \textit{eavesdropper}; usually this means encrypting the communications.
+  This communication goes in multiple parts.
+
+  \begin{enumerate}
+    \item \textbf{Authentification.}
+      Alice asks Bob some kind of identification, and Bob will send Alice a certificate of authentification.
+    \item \textbf{Handshake protocol.}
+      Alice and Bob then create a shared secret key.
+    \item \textbf{Encrypted communication.}
+      Finally, Alice and Bob can communicate without risking being eavesdropped.
+      This is done with  symmetric encryption.
+  \end{enumerate}
+
+  All of these steps can be done while being eavesdropped, and this does not compromise the communication between Alice and Bob.
+  This course will cover all the ingredients for this protocol:
+  \begin{enumerate}
+    \item Digital signature (for step 1)
+    \item Publick-key encryption (for step 2)
+    \item Symmetric encryption (for step 3).
+  \end{enumerate}
+  We will see all of this in the reverse order.
+
+  \section{Summary.}
+
+  The \textit{core} of crypto is the three following ideas.
+  \begin{description}
+    \item[Authenticity.]
+      Am I certain to whom I am talking?
+    \item[Integrity.] Am I certain what I am saying is what the other person hears?
+    \item[Confidentiality.] Am I certain that our communication is private?
+  \end{description}
+
+  Encryption, what most people have in mind when talking about crypto, sits in the third step "Confidentiality."
+  However, without the other two, there is no point to encryption for secure communication.
+
+
+  As we can see from SSL/TSL, defining a secure protocol is complicated.
+  We should define: functionality, security properties, who is the adversary, what the adversary is capable of.
+  This last question can be divided in two subquestions:
+  \begin{itemize}
+    \item What is its computational ressources?
+
+      Crypto experts try to define protocols that require at least $2^{128}$ operations for the adversary to access your secured communication.
+      Even with a limited computational power on the user side, the adversary would require exponentially more computational power.
+
+    \item What kind of access does it have to your data?
+
+      Having access to someone's phone or not having access to it makes a lot of difference in terms of security.
+  \end{itemize}
+
+  \subsection{TL;DR.}
+
+  Protocols are complex: we break them into simpler pieces called "cryptographic primitives" (\textit{e.g.}\ digital signatures, hash functions, symmetric encryption, \textit{etc}).
+  The security of a complex system can be reduced to the security of its building blocks.
+  One of the goal of this course is to define all these primitives and prove that they are secure.
+
+  \section{Some more applications of crypto.}
+
+  VPNs or the TOR network are more common examples of applications of crypto.
+  One important part is to \textit{define} what you are trying to hide.
+  For example, your internet provider can still see, even while using a VPN, that you are watching videos as a lot of data is flowing (the ISP does not know the exact videos, but still know you are watching something).
+
+  Another very common example is cryptocurrencies, for example the famous BitCoin.
+  Hashes and digital signatures are used a lot with these cryptocurrencies.
+  E-cash is a little different, but with the same idea.
+  How can you check that someone did not spend some amount of money twice?
+  Guaranteeing that you cannot duplicate money.
+
+  Then, crypto is also used by E-voting.
+  An E-voting system needs to make sure of a few properties:
+  assure that there is no ballot stuffing,
+  verifiability at the end of the protocol,
+  anonymity of the vote,
+  authentification.
+
+  Also, the French app \textit{TousAntiCovid} from the Covid pandemic used crypto.
+  Here, functionality is important: in itself the protocol is not sure, and can be easily manipulated to leak its data, no matter how perfectly encrypted the data is.
+
+  Disk encryption is also using crypto. Is there a way to compute over encrypted data?
+  This can be used as, for examples, LLMs such as ChatGPT are manipulating lots of data, and some of it can be confidential.
+
+  \section{Conclusion.}
+
+  Cryptography is a science that can be split in five steps:
+  \begin{enumerate}
+    \item Define functionality;
+    \item Define the goal of the attacker;
+    \item Define its capabilities;
+    \item Propose a realisation;
+    \item Prove the security of the realisation.
+  \end{enumerate}
+
+  This last step is usually done by proving that, if an attack succeeds in breaking the protocol, then some irrealistic (computational) conditions are true.
+  This is done via reduction, \textit{e.g.}\ prove that attacking implies being able to solve famous intractable problem, for example the \textsc{factoring} problem.
+  $\mathbf{NP}$-complete problems, like \textsc{sat}, are not always the answer as it is difficult to get a \textsc{sat} instance that is hard to solve; to get a hard-to-solve instance for \textsc{factoring}, you only need to pick two large prime numbers which is a lot easier to do.
+
+  Crypto is related to complexity theory and the intractable problems we rely on are usually algebraic problems.
+  Beautiful math is involved.
+
+  Crypto is not an art!
+  Non-public protocols must be considered insecure.
+  Protocols should be public and sources of security should be clearly identified and concentrated.
+  If the protocol is not open-source, then it usually means that something sketchy is going on.
+  The implementation can be private as a lot of hard work can be done in how to implement this protocol effectively, but the protocol should be public.
+\end{document}

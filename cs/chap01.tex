@@ -1,0 +1,95 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{A perfectly secure symmetric encryption scheme: ONE-TIME PAD}
+
+  This encryption scheme achieves information-theoric security.
+
+  \begin{defn}[Symmetric encryption]
+    Let $\mathcal{K}$ be a key space, $\mathcal{P}$ be a plain-text space and let $\mathcal{C}$ be a ciphertext space
+    These three spaces are finite spaces.
+
+    A \textit{symmetric encryption} scheme over $(\mathcal{K}, \mathcal{P}, \mathcal{C})$ is a tuple of three algorithms $(\mathrm{KeyGen}, \mathrm{Enc}, \mathrm{Dec})$ :
+    \begin{itemize}
+      \item $\mathrm{KeyGen}$ provides a sample $k$ of $\mathcal{K}$;
+      \item $\mathrm{Enc} : \mathcal{K} \times \mathcal{P} \to \mathcal{C}$;
+      \item $\mathrm{Dec} : \mathcal{K} \times \mathcal{C} \to \mathcal{P}$.
+    \end{itemize}
+    Without loss of generality, we will assume that $\operatorname{im} \mathrm{Enc} = \mathcal{C}$.
+    We want to ensure \textbf{Correctness}: for any key $k \in \mathcal{K}$ and message $m \in \mathcal{P}$, we have that:
+  \[
+    \mathrm{Dec}(k, \mathrm{Enc}(k, m)) = m
+    .\]
+
+    The elements $m$ and $k$ are independent random variables and all the elements in $\mathcal{K}$ and $\mathcal{P}$ have non-zero probability.
+  \end{defn}
+
+  \begin{rmk}
+    The algorithm $\mathrm{Enc}$ could (and should\footnote{If the algorithm is deterministic, if we see two identical ciphers we know that the messages are identical, and this can be seen as a vulnerability of this protocol.}) be probabilistic.
+    However, the algorithm $\mathrm{Dec}$ is deterministic.
+    
+    So far, we did not talk about efficiency of these algorithms.
+  \end{rmk}
+
+  \begin{defn}[Shannon, 1949]
+    A symmetric encryption scheme is said to have \textit{perfect security} whenever, for any $\bar{m}$ and any $\bar{c}$, 
+    \[
+      \Pr_{k,m}[m = \bar{m}  \mid \mathrm{Enc}_k(m) = \bar{c}] = \Pr_{m}[m = \bar{m}]
+    .\] 
+  \end{defn}
+
+  The intuition is that knowing the encrypted message tells me \textit{nothing} about the message.
+
+  \begin{lem}[Shannon]
+    Given a symmetric encryption scheme $(\mathrm{KeyGen}, \mathrm{Enc}, \mathrm{Dec})$ has perfect security then $|\mathcal{K}| \ge |\mathcal{P}|$.
+  \end{lem}
+  \begin{prv}
+    Let $\bar{c} \in \mathcal{C}$ and define \[
+    \mathcal{S} := \{\bar{m} \in \mathcal{P}  \mid \exists \bar{k} \in \mathcal{K}, \bar{m} = \mathrm{Dec}(\bar{k}, \bar{c})\}
+    .\]
+    Let $N := |\mathcal{S}|$.
+    We have that $N \le |\mathcal{K}|$ as $\mathrm{Dec}$ is deterministic.
+    We also have that $N \le |\mathcal{P}|$ as $\mathcal{S} \subseteq \mathcal{P}$.
+    Finally, assume $N < |\mathcal{P}|$.
+    This means, there exists $\bar{m} \in \mathcal{P}$ such that $\bar{m} \not\in \mathcal{S}$.
+    Then, 
+    \[
+      \Pr[m = \bar{m}  \mid \mathrm{Enc}_k(m) = \bar{c}] = 0
+    ,\] 
+    but by assumption, $\Pr[m = \bar{m}] \neq 0$.
+    So this is not a perfectly secure scheme.
+    We can conclude that \[
+    N = |\mathcal{P}| \le |\mathcal{K}|
+    .\] 
+  \end{prv}
+
+  \begin{exm}[One-Time PAD]
+    Let $\mathcal{K} = \mathcal{C} = \mathcal{P} = \{0, 1\}^{\ell}$.
+    Here are the algorithms used:
+    \begin{itemize}
+      \item $\mathrm{KeyGen}$ samples from $\mathcal{U}(\{0,1\}^\ell)$.
+      \item $\mathrm{Enc}(k, m)$ we compute the XOR $c = m \oplus k$.
+      \item  $\mathrm{Dec}(k,m)$ we compute the XOR $m = c \oplus k$.
+    \end{itemize}
+  \end{exm}
+
+  \begin{thm}
+    The One-Time PAD is a perfectly-secure symmetric encryption.
+  \end{thm}
+  \begin{prv}
+    \begin{description}
+      \item[Correctness.]
+        We have that
+        \[
+        \mathrm{Dec}(k, \mathrm{Enc}(k, m)) = k \oplus k \oplus m = m
+        .\]
+      \item[Security.]
+        We have, by independence of $m$ and $k$ we have that
+        \begin{align*}
+          \Pr[m = \bar{m}  \mid \mathrm{Enc}(k, m) = \bar{c}]
+          &= \Pr[m = \bar{m}  \mid k \oplus m = \bar{c} ]\\
+          &= \Pr[m = \bar{m}]
+        .\end{align*}
+    \end{description}
+  \end{prv}
+\end{document}
