@@ -1,0 +1,41 @@
+\documentclass{../notes-en}
+
+\title{Parallel and Distributed Algorithms and Programs}
+\author{Based on the lectures of Anne \textsc{Benoit} \\ Notes written by Hugo \textsc{Salou}}
+
+\usepackage{subfiles}
+
+\ifSubfilesClassLoaded{%
+  \renewcommand\thesection{\arabic{section}}
+  \renewcommand\thepart{\Roman{part}}
+  \renewcommand\thechapter{\phantom}
+  \renewcommand\theequation{\arabic{section}.\arabic{equation}}
+}{}
+
+
+\fancyhead[R]{PDAP}
+
+\begin{document}
+  \maketitle
+
+  \dominitoc
+  \tableofcontents
+
+  \pagebreak
+
+  This course will mostly be on parallel algorithms, but another course, next semester, named \textit{Distributed Systems} will give more knowledge on distribute algorithms/systems.
+  The class is on Tuesday at 1:30PM--3:30PM in Amphi B.
+  
+  Tutorials will be on Wednesday at 10:15AM--12:15AM in rooms 103 and 105.
+  Some tutorials will require a laptop.
+  Tutorials will be done
+
+  There will be a midterm exam on November 4th, a (solo) programming project due December 5th and a final exam on the week of December 15th.
+
+  \subfile{chap00.tex}
+  \subfile{chap01.tex}
+  %\subfile{chap02.tex}
+  %\subfile{chap03.tex}
+  %\subfile{chap04.tex}
+\end{document}
+
