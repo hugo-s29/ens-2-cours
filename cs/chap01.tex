@@ -92,4 +92,13 @@
         .\end{align*}
     \end{description}
   \end{prv}
+
+  \begin{rmk}
+    This example is not practical:
+    \begin{itemize}
+      \item keys need to be larger than the message;
+      \item you cannot encrypt twice: for example, $c_1 = m_1 \oplus k$ and $c_2 = m_2 \oplus k$, then we have $c_1 \oplus c_2 = m_1 \oplus m_2$.
+    \end{itemize}
+    This last part is why that protocol is called a \textit{One-Time secure encryption}.
+  \end{rmk}
 \end{document}
