@@ -1,0 +1,230 @@
+         ________  ________  ________                           ___       ________  ________           _____
+        |\   ____\|\   __  \|\   __  \                         |\  \     |\   __  \|\   __  \         / __  \
+        \ \  \___|\ \  \|\  \ \  \|\  \      ____________      \ \  \    \ \  \|\  \ \  \|\ /_       |\/_|\  \
+         \ \  \    \ \   __  \ \   ____\    |\____________\     \ \  \    \ \   __  \ \   __  \      \|/ \ \  \
+          \ \  \____\ \  \ \  \ \  \___|    \|____________|      \ \  \____\ \  \ \  \ \  \|\  \          \ \  \
+           \ \_______\ \__\ \__\ \__\                             \ \_______\ \__\ \__\ \_______\          \ \__\
+            \|_______|\|__|\|__|\|__|                              \|_______|\|__|\|__|\|_______|           \|__|
+
+
+
+
+-------------
+EXERCICE  #4:
+-------------
+
+li t0, 1
+li t1, 8
+
+loop:
+  addi t0, t0, 1
+  ble t0, t1, loop
+
+
+-------------
+EXERCICE  #5:
+-------------
+
+li t0, 0
+li t1, 9
+
+loop:
+  add t0, t0, t1
+  addi t1, t1, -1
+  bnez t1, loop
+
+
+-------------
+EXERCICE  #6:
+-------------
+
+00000000000101010000010100010011     0x00150513            | addi a0, a0,  1
+11111110101001010001111011100011     0xFEA51EE3            | bne  a0, a0, -4
+00000000000000001000000001100111     0x00008067            | jalr x0, x1,  0
+
+
+-------------
+EXERCICE  #7:
+-------------
+
+00000000000100101000001100010011     0x00128313            | addi t1, t0, 1
+11111111110111111111000001101111     0xffdff06f            | j -4                 (jal x0, -4)
+00000000000000001000000001100111     0x00008067            | ret                  (jalr x0, x1, 0)
+
+-------------
+EXERCICE  #9:
+-------------
+
+	.text
+	.globl main
+main:
+	addi	sp,sp,-16
+	sd	ra,8(sp)
+## TODO Your assembly code there
+  la t0, mydata
+  ld t1, 0(t0)
+  ld t0, 8(t0)
+  slt t2, t0, t1
+  mul t0, t0, t2
+  xori t2, t2, 1
+  mul t1, t1, t2
+  add t0, t0, t1
+  la t1, min
+  sd t0, 0(t1)
+## END TODO End of user assembly code
+  ld a0, min
+  call print_int
+  call newline
+
+	ld	ra,8(sp)
+	addi	sp,sp,16
+
+	ret
+
+# Data comes here
+	.section	.data
+mydata:
+	.dword 42
+	.dword 42
+min:
+	.dword 0
+
+-------------
+EXERCICE #10:
+-------------
+
+                    +-----------+
+- - - - - - - - - - | BIT COUNT | - - - - - - - - - - - - -
+                    +-----------+
+
+	.globl main
+main:
+	addi	sp,sp,-16
+	sd	ra,8(sp)
+## TODO Your assembly code there
+  la t0, mydata
+  ld t1, 0(t0)
+  li a0, 0
+  li a1, 2
+  j loop
+
+loop:
+  andi t0, t1, 1
+  add a0, a0, t0
+  div t1, t1, a1 # a bit shift would be even better
+  bnez t1, loop
+  j end
+
+end:
+	call	print_int
+	call	newline
+## END TODO End of user assembly code
+	ld	ra,8(sp)
+	addi	sp,sp,16
+	ret
+
+
+# Data comes here
+	.section	.data
+mydata:
+	.dword 1913
+
+
+
+                    +-----------+
+- - - - - - - - - - |  CARRES   | - - - - - - - - - - - - -
+                    +-----------+
+
+	.text
+	.globl main
+main:
+	addi	sp,sp,-16
+	sd	ra,8(sp)
+## TODO Your assembly code there
+  la t0, mydata
+  ld t1, 0(t0)
+  li s1, 0
+  j line
+
+end:
+## END TODO End of user assembly code
+	ld	ra,8(sp)
+	addi	sp,sp,16
+	ret
+
+line:
+  li s2, 0
+  j line_loop
+
+line_loop:
+  addi s2, s2, 1
+  li a0, 42
+  call print_char
+  li a0, 32
+  call print_char
+  ble s2, t1, line_loop
+  j line_end
+
+line_end:
+  addi s1, s1, 1
+  call newline
+  ble s1, t1, line
+  j end
+
+# Data comes here
+	.section	.data
+mydata:
+	.dword 7
+
+                    +-----------+
+- - - - - - - - - - | TRIANGLES | - - - - - - - - - - - - -
+                    +-----------+
+	.text
+	.globl main
+main:
+	addi	sp,sp,-16
+	sd	ra,8(sp)
+## TODO Your assembly code there
+  la t0, mydata
+  ld t1, 0(t0)
+  li s1, 0
+  j line
+
+end:
+## END TODO End of user assembly code
+	ld	ra,8(sp)
+	addi	sp,sp,16
+	ret
+
+line:
+  li s2, 0
+  sub s3, t1, s1
+  li a0, 32
+  j spaces_before
+
+spaces_before:
+  addi s2, s2, 1
+  call print_char
+  ble s2, s3, spaces_before
+  li s2, 0
+  j line_loop
+
+line_loop:
+  addi s2, s2, 1
+  li a0, 42
+  call print_char
+  li a0, 32
+  call print_char
+  ble s2, s1, line_loop
+  j line_end
+
+line_end:
+  addi s1, s1, 1
+  call newline
+  ble s1, t1, line
+  j end
+
+# Data comes here
+	.section	.data
+mydata:
+	.dword 7
