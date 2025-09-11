@@ -1,0 +1,140 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Modélisation d'un système quantique.}
+
+  \section{Bit probabiliste.}
+
+  On considère un système physique $X$ avec des niveaux distinguables\footnote{On peut distinguer de l'état physique deux états: un état $0$ (par exemple, pas de courant), et un état $1$ (par exemple, avoir du courant)}\showfootnote\ dans $\Sigma = \{0, 1\}$.
+  L'état de connaissance de ce système est un vecteur \[
+  v = \begin{pmatrix} a \\ b \end{pmatrix} 
+  ,\] 
+  où $a$ représente la probabilité que l'on ait un $0$, et $b$ la probabilité que l'on ait un $1$.
+  Ceci implique que l'on ait $a, b \in \mathds{R}^+$ et $a + b = 1$.
+
+  On peut considérer des \textit{transformations du système $X$}, passant d'un état à un autre :
+  \begin{itemize}
+    \item $\mathsf{INIT}_0 : \begin{pmatrix} a \\ b \end{pmatrix} \mapsto \begin{pmatrix} 1 \\ 0 \end{pmatrix} $ qui initialise à l'état $0$ ;
+    \item $\mathsf{INIT}_1 : \begin{pmatrix} a \\ b \end{pmatrix} \mapsto \begin{pmatrix} 0 \\ 1 \end{pmatrix} $ qui initialise à l'état $1$ ;
+    \item $\mathsf{NOT} : \begin{pmatrix} 1 \\ 0 \end{pmatrix} \mapsto \begin{pmatrix} 0 \\ 1 \end{pmatrix}, 
+        \begin{pmatrix} 0 \\ 1 \end{pmatrix} \mapsto \begin{pmatrix} 1 \\ 0 \end{pmatrix}
+      $ qui inverse l'état.
+  \end{itemize}
+  On demande que ces opérations soient \textit{linéaires} : 
+  \[
+  \mathsf{NOT}\begin{pmatrix} a \\ b \end{pmatrix}  = a \: \mathsf{NOT}\begin{pmatrix} 1 \\ 0 \end{pmatrix} + b \: \mathsf{NOT}\begin{pmatrix} 0 \\ 1 \end{pmatrix} 
+  .\]
+  On peut représenter une telle opération par une matrice stochastique : c'est une matrice 
+  \[
+    \begin{pmatrix} a & b \\ c & d \end{pmatrix} 
+  ,\] 
+  telle que $a, b, c, d \ge 0$ et $a + c = b + d = 1$.
+  Ainsi, $\mathsf{INIT}_0$ et $\mathsf{INIT}_1$ ne sont pas des transformations valides.
+
+  Lorsqu'on "observe" le système $X$, on change l'état de nos connaissances :
+  \[
+    \begin{tikzcd}[row sep=1]
+    & \begin{pmatrix} 1 \\ 0 \end{pmatrix} & \text{après avoir vu $0$} \\
+    \begin{pmatrix} 1/4 \\ 3 / 4 \end{pmatrix} \arrow[squiggly]{ur}{1/4} \arrow[squiggly,swap]{dr}{3/4} \\
+    & \begin{pmatrix} 0 \\ 1 \end{pmatrix} & \text{après avoir vu $1$.} \\
+  \end{tikzcd}
+  .\]
+  \section{Bit quantique.}
+
+  On considère un système physique $X$ avec des niveaux distinguables dans $\Sigma = \{0, 1\}$.
+  L'état de connaissance de ce système est un vecteur \[
+  v = \begin{pmatrix} \alpha \\ \beta \end{pmatrix} 
+  ,\] 
+  où $\alpha, \beta \in \mathds{C}$ sont les \textit{amplitudes} et vérifient $|\alpha|^2 + |\beta|^2 = 1$.
+
+  Les transformations de $X$ sont des opérations linéaires en $v$ et préservent la norme, représentations les matrices \textit{unitaires}, c'est-à-dire des matrices $U^\dagger U = \mathds 1$,\footnote{L'opération $-^\dagger$ est la  \textit{transconjuguasion} qui correspond à la transposée de la conjugaison composante par composante.}\showfootnote\ qui généralise les matrices orthogonales pour les matrices complexes.
+  Quelques exemples de matrices unitaires sont :
+  \begin{itemize}
+    \item la matrice identité $\mathds 1_2 := \begin{pmatrix} 1 & 0 \\ 0 & 1 \end{pmatrix}$ ;
+    \item la matrice $\mathbf{NOT} := \begin{pmatrix} 0 & 1 \\ 1 & 0 \end{pmatrix}$ ;
+    \item la matrice de Hadamard $\mathbf{H} := \begin{pmatrix} 1 / \sqrt{2}  & 1/\sqrt{2} \\ 1 / \sqrt{2} & - 1/\sqrt{2}   \end{pmatrix} $ ;
+    \item la matrice $\mathbf{Y} := \begin{pmatrix} 0 & \mathrm{i}\\ - \mathrm{i} & 0 \end{pmatrix} $ ;
+    \item la matrice de rotation $\mathbf{R}_\theta := \begin{pmatrix} \cos \theta & -\sin \theta \\ \sin \theta & \cos \theta \end{pmatrix}$ ;
+    \item mais les matrices des opérations $\mathsf{INIT}_i$ ne sont pas unitaires.
+  \end{itemize}
+
+  Lorsqu'on "observe" le système $X$ (que l'on appellera une \textit{mesure}), on change l'état de nos connaissances :
+  \[
+    \begin{tikzcd}[row sep=1]
+    & \begin{pmatrix} 1 \\ 0 \end{pmatrix} & \text{après avoir vu $0$} \\
+    \begin{pmatrix} - 1 / \sqrt{2} \\ 1 / \sqrt{2}  \end{pmatrix} \arrow[squiggly]{ur}{\frac{1}{2} = \left| -\frac{1}{\sqrt{2} }\right|^2} \arrow[squiggly,swap]{dr}{\frac{1}{2} = \left| \frac{1}{\sqrt{2} }\right|^2} \\
+    & \begin{pmatrix} 0 \\ 1 \end{pmatrix} & \text{après avoir vu $1$.} \\
+  \end{tikzcd}
+  .\]
+
+  \section{Plusieurs qubits.}
+
+  On considère deux systèmes $X_1, X_2$ avec $4$ niveaux $\Sigma = \{00, 01, 10, 11\}$.
+  On peut distinguer un vecteur probabiliste "classique" et un état quantique :
+  \[
+  \begin{pmatrix} 1 / 8 \\ 1 / 2 \\ 0 \\ 3 / 8 \end{pmatrix} \gets\!\!/\!\!\to
+  \begin{pmatrix} 1 / \sqrt{2} \\ 0 \\ - 1 / 2 \\ 1 / 2 \end{pmatrix} 
+  .\]
+
+  Un système à $n$ qubits sera représenté par un espace à $2^n$ dimensions.
+
+  L'opération importante est le \textit{produit tensoriel}.
+  Si l'on a deux matrices $A \in \mathds{C}^{k \times \ell}$ et $B \in \mathds{C}^{m \times n}$ alors on a une matrice $A \otimes B \in \mathds{C}^{km \times \ell n}$.
+
+  \begin{defn}[Construction du produit tensoriel]
+    Si on a :
+    \begin{itemize}
+      \item un espace vectoriel $V$ avec une base $\{e_1, \ldots, e_n\}$ ;
+      \item un espace vectoriel $V'$ avec une base $\{e'_1, \ldots, e'_m\}$ ;
+    \end{itemize}
+    alors l'espace vectoriel $V \otimes V'$ a pour base  \[
+    \{e_i \otimes e_j'  \mid i \in \llbracket 1, n\rrbracket \text{ et } j \in \llbracket 1, m\rrbracket \} 
+    .\]
+    Ainsi, \[
+      V \otimes V' = \operatorname{vect} \{v \otimes v'  \mid v \in V \text{ et } v' \in V\} 
+    .\] 
+  \end{defn}
+
+  On a quelques propriétés sur le produit tensoriel.
+
+  \begin{prop}
+    On a :
+    \begin{itemize}
+      \item $\lambda \otimes A = \lambda A$ où l'on identifie $\mathds{C}^{1 \times 1}$ et $\mathds{C}$ ;
+      \item $(A \otimes B) \otimes C = A \otimes (B \otimes C)$ ;
+      \item  $(A \otimes B)(C \otimes D) = AC \otimes BD$ ;
+      \item  $A \otimes (B + C) = A \otimes B + A \otimes C$.
+    \end{itemize}
+    On suppose ici que les matrices respectent les bonnes conditions de dimension pour que ces opérations aient du sens.
+    \qed
+  \end{prop}
+
+  \textbf{Attention !} En général, on a $A \otimes B \neq B \otimes A$.
+
+  \section{Notation de Dirac.}
+
+  On adopte les notations suivantes :
+  \[
+  \ket 0 = \begin{pmatrix} 1 \\ 0 \end{pmatrix}
+  \quad\quad
+  \ket 1 = \begin{pmatrix} 0 \\ 1 \end{pmatrix}
+  ,\]
+  que l'on appelle \textit{ket} $\ket -$.
+  Cette notation est linéaire dans le sens où l'on a 
+  \[
+  \begin{pmatrix} \alpha \\ \beta \end{pmatrix} = \alpha \ket 0 + \beta 1
+  .\]
+  
+  L'écriture des produits tensoriels est plus simple $\ket 0 \otimes \ket 0 = \ket{00}$.
+  L'avantage est que l'on peut écrire \[
+    \frac{1}{\sqrt{2} } \ket{0000} + \frac{1}{\sqrt{2}} \ket{1111} = \begin{pmatrix} 1/\sqrt{2} \\ 0 \\ \vdots \\ 0 \\ 1/\sqrt{2} \end{pmatrix} 
+  .\]
+
+  On a la notion de \textit{dualité} : $\ket \psi \leftrightarrow \bra \psi = (\ket \psi)^\dagger$.
+
+  Avec $\ket \psi = \begin{pmatrix} \alpha \\ \beta \end{pmatrix}$ et $\ket \varphi = \begin{pmatrix} \gamma \\ \delta \end{pmatrix}$, on peut définir des notations sympathiques :
+  \[
+  \bra \varphi \ket \psi = \begin{pmatrix} \bar{\gamma} & \bar{\delta} \end{pmatrix} \begin{pmatrix} \alpha \\ \beta \end{pmatrix} = \alpha \bar{\gamma} + \beta \bar{\delta} = \braket{\varphi | \psi} 
+  .\] 
+  On peut aussi définir $\ket- \bra -$. On peut ainsi interpréter  $\ket \psi \bra \psi$ comme la projection sur  $\operatorname{vect} \ket \psi$.
+\end{document}

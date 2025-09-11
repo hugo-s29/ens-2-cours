@@ -19,11 +19,16 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
 
   cp cap/main.pdf   ../web/public/data/ens2/cap.pdf
   cp cap/chap00.pdf ../web/public/data/ens2/cap-chap00.pdf
-  #cp cap/chap01.pdf ../web/public/data/ens2/cap-chap01.pdf
 
   cp sv/main.pdf   ../web/public/data/ens2/sv.pdf
   cp sv/chap00.pdf ../web/public/data/ens2/sv-chap00.pdf
   cp sv/chap01.pdf ../web/public/data/ens2/sv-chap01.pdf
+
+  cp opt/main.pdf   ../web/public/data/ens2/opt.pdf
+  cp opt/chap00.pdf ../web/public/data/ens2/opt-chap00.pdf
+
+  cp qcs/main.pdf   ../web/public/data/ens2/qcs.pdf
+  cp qcs/chap00.pdf ../web/public/data/ens2/qcs-chap00.pdf
 
 
   # ==========

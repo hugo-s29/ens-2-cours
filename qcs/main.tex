@@ -1,0 +1,32 @@
+\documentclass{../notes}
+
+\title{Informatique quantique}
+\author{Basé sur le cours de Sébastien \textsc{Designolle} \\ Notes prises par Hugo \textsc{Salou}}
+
+\usepackage{subfiles}
+\usepackage{braket}
+
+\ifSubfilesClassLoaded{%
+  \renewcommand\thesection{\arabic{section}}
+  \renewcommand\thepart{\Roman{part}}
+  \renewcommand\thechapter{\phantom}
+  \renewcommand\theequation{\arabic{section}.\arabic{equation}}
+}{}
+
+\begin{document}
+  \maketitle
+
+  \dominitoc
+  \tableofcontents
+
+  \pagebreak
+
+  Le cours aura lieu de 8h à 10h (sauf pour quelques exceptions, indiquées sur le \textit{pad}).
+  Les TDs seront le vendredi de 10h15 à 12h15.
+  Il y aura des devoirs, un partiel le 6/11 et un examen le 15/12.
+  % sebastien.designolle@ens-lyon.fr
+
+  \subfile{chap00.tex}
+  \subfile{chap01.tex}
+\end{document}
+
