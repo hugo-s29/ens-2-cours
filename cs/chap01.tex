@@ -133,7 +133,7 @@
       \mathrm{Adv}_\mathcal{A}(\lambda) := \big| \underbrace{\Pr_{x \gets \mathcal{D}_{1, \lambda}} [\mathcal{A}(X) = 1]}_{ \mathclap{\substack{\text{probability of}\\ \text{being right}}} } - \underbrace{\Pr_{x \gets \mathcal{D}_{0, \lambda}} [\mathcal{A}(X) = 1]}_{\mathclap{\substack{\text{probability of}\\ \text{being mistaken}}}} \big|
     .\] 
 
-    We say that $\mathcal{D}_{0, \lambda}$ and $\mathcal{D}_{1, \lambda}$ are \textit{computationally indistinguishable} if for any distinguisher $\mathcal{A}$ running in $\mathrm{O}(\lambda^c)$ for some $c > 0$\footnote{This means it is polynomial in $\lambda$.} its advantage $\mathrm{Adv}_\mathcal{A}$ is a $\mathrm{o}(1 / \lambda^c)$ for some $c > 0$.\footnote{This means it is negligible in terms of $\lambda$, which we will write $\mathrm{negl}(\lambda)$.}
+    We say that $\mathcal{D}_{0, \lambda}$ and $\mathcal{D}_{1, \lambda}$ are \textit{computationally indistinguishable} if for any distinguisher $\mathcal{A}$ running in $\mathrm{O}(\lambda^c)$ for some $c > 0$\footnote{This means it is polynomial in $\lambda$, which we will write $\mathrm{poly}(\lambda)$} its advantage $\mathrm{Adv}_\mathcal{A}$ is a $\mathrm{o}(1 / \lambda^c)$ for some $c > 0$.\footnote{This means it is negligible in terms of $\lambda$, which we will write $\mathrm{negl}(\lambda)$.}
   \end{defn}
   
   Our goal now is to extend the One-Time PAD to messages $m$ larger than the key $k$.
@@ -236,6 +236,25 @@
       \big) \\
     .\end{align*}
     where we write $\bar{\mathcal{D}}_{i+1}$ is the "flipped" of $\mathcal{D}_{i+1}$.
+    We have that:
+    \begin{align*}
+      &\phantom{={}}\Pr_{x \gets \mathcal{D}_i}[\mathcal{A}(x) = 1]\\
+      &= \Pr_{x \gets \mathcal{D}_i}[\mathcal{A}(x) = 1 \land x_{i+1} = G(k)_{i+1}] \\
+      &\quad+ \Pr_{x \gets \mathcal{D}_i}[\mathcal{A}(x) = 1 \land x_{i+1} = 1 - G(k)_{i+1}] \\
+      &= \frac{1}{2}\big(\Pr_{x \gets \mathcal{D}_i}[\mathcal{A}(x) = 1] + \Pr_{x \gets \bar{\mathcal{D}}_{i+1}}[\mathcal{A}(x) = 1]\big) \\
+    ,\end{align*}
+    thus
+    \[
+      \Pr_{x \gets \bar{\mathcal{D}}_{i+1}}[\mathcal{A}(x) = 1] = 2 \Pr_{x \gets \mathcal{D}_i}[\mathcal{A}(x) = 1] - \Pr_{x \gets \mathcal{D}_{i+1}}[\mathcal{A}(x) = 1]
+    .\]
+    Hence, 
+    \begin{align*}
+      \Pr[\mathcal{B}_i(G(k)_{|i}) - G(k)_{i+1}] =& \\
+      \frac{1}{2}\Pr_{x \gets \mathcal{D}_{i+1}}[\mathcal{A}(x) = 1] +{} &1 - 2 \Pr_{x \gets \mathcal{D}_i}[\mathcal{A}(x) = 1] + \Pr_{x \gets \mathcal{D}_{i+1}}[\mathcal{A}(x) = 1]
+    .\end{align*}
+    Finally, we can conclude that:
+    \[
+      \mathrm{Adv}_\mathcal{A}(\mathcal{D}_i, \mathcal{D}_{i+1}) = \Big|\Pr[\mathcal{B}_i(G(k)_{|i}) = G(k)_{i+1}] - \frac{1}{2}\Big| \ge \frac{\varepsilon}{n}
+    .\] 
   \end{prv}
-
 \end{document}
