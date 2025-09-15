@@ -8,8 +8,16 @@ Bonne lecture !
 
 ## Semestre 1.
 
-*sera complété bientôt*
- 
+**_Dept. Informatique_**
+
+- **OPT.** Optimization ▶ [/opt](/opt/)
+- **PDAP.** Parallel and Distributed Algorithms and Programs ▶ [/pdap](/pdap/)
+- **SV.** Semantics and Verification ▶ [/sv](/sv/)
+- **CAP.** Compiler and Program Analysis ▶ [/cap](/cap/)
+- **QCS.** Quantum Computer Science ▶ [/qcs](/qcs/)
+- **CS.** Cryptography and Security ▶ [/cs](/cs/)
+- **IP.** Integrated Project ▶ [/ip](/ip/)
+
 ## Semestre 2.
 
 *sera complété bientôt*
