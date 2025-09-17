@@ -65,7 +65,7 @@
         \[
           \mathrm{Eval}(TV) = \prod_{x \in \mathrm{Var}} \mathrm{Dom}(x)
         ,\]
-        the set of valuations of the form $\eta : x \in \mathrm{Var} \mapsto \eta(x) \in \mathrm{Dom}(x)$.
+        the set of valuations of the form $\eta : x \in \mathrm{Var} \mapsto \eta(x) \in \mathrm{Dom}(x)$ (in the sense of a dependent function type).
     \end{itemize}
   \end{defn}
 
@@ -76,10 +76,10 @@
     where
     \begin{itemize}
       \item $\mathrm{Loc}$ is the set of \textit{locations} (lines of codes);
-      \item $Act$ is the set of \textit{actions};
+      \item $\mathrm{Act}$ is the set of \textit{actions};
       \item $\mathrm{Effect} : \mathrm{Act} \times \mathrm{Eval}(TV) \to \mathrm{Eval}(TV)$;
       \item ${\hookrightarrow} \subseteq \mathrm{Loc} \times \mathrm{Conditions} \times \mathrm{Act} \times \mathrm{Loc}$ where conditions are propositional formula built from atoms of the forms "$x \in D$" for some variable $x$ and some set $D \subseteq \mathrm{Dom}(x)$;
-      \item $\mathrm{Loc}_0 \subseteq \mathrm{Loc}$ the set of initial locations;
+      \item $\mathrm{Loc}_0 \subseteq \mathrm{Loc}$ the set of \textit{initial locations};
       \item $g_0$ is the \textit{initial condition}.
     \end{itemize}
     We will write $\ell \trh{g : \alpha} \ell'$ for $(\ell, g, \alpha, \ell') \in {\hookrightarrow}$.
@@ -132,6 +132,35 @@
 
   \section{Transition system of a program graph.}
 
+  \begin{figure}[p]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (start11) {$\mathsf{start}, \mathtt{ns} = 1, \mathtt{nb} = 1$};
+      \node[state,below of=start11] (select11) {$\mathsf{select}, \mathtt{ns} = 1, \mathtt{nb} = 1$};
+      \node[state,below left=1cm and 0cm of select11] (start01) {$\mathsf{start}, \mathtt{ns} = 0, \mathtt{nb} = 1$};
+      \node[state,below right=1cm and 0cm of select11] (start10) {$\mathsf{start}, \mathtt{ns} = 1, \mathtt{nb} = 0$};
+      \node[state,below of=start01] (select01) {$\mathsf{select}, \mathtt{ns} = 0, \mathtt{nb} = 1$};
+      \node[state,below of=start10] (select10) {$\mathsf{select}, \mathtt{ns} = 1, \mathtt{nb} = 0$};
+      \node[state,below=5cm of select11] (start00) {$\mathsf{start}, \mathtt{ns} = 0, \mathtt{nb} = 0$};
+      \draw[->] (start11) to[loop above] node{$\mathtt{refill}$} (start11); 
+      \draw[->] (start11) to node{$\mathtt{ic}$} (select11);
+      \draw[->] (select11) to node{$\mathtt{gs}$} (start01);
+      \draw[->] (select11) to node[swap]{$\mathtt{gb}$} (start10);
+      \draw[->] (start01) to node{$\mathtt{ic}$} (select01);
+      \draw[->] (start10) to node{$\mathtt{ic}$} (select10);
+      \draw[->] (select01) to node[swap]{$\mathtt{gb}$} (start00);
+      \draw[->] (select10) to node{$\mathtt{gs}$} (start00);
+      \node[left=0.5cm of start01, inner sep=0,outer sep=0] (temp) {};
+      \draw[rounded corners] (start00) edge[straight-left] (temp.center)
+        (temp.center) edge[straight-right, ->] (start11);
+      \node[left=0cm of temp] {$\mathtt{refill}$};
+      \draw[->] (start01) to[bend left] node{$\mathtt{refill}$} (start11);
+      \draw[->] (start10) to[bend right] node[swap]{$\mathtt{refill}$} (start11);
+    \end{tikzpicture}
+    \caption{Transition system of the BVM program graph}
+    \label{fig:bvm-pg-ts}
+  \end{figure}
+
   \begin{defn}
     Given $TV$ and $PG$ a program graph, we define 
     \[
@@ -158,33 +187,4 @@
     The BVM program graph example seen in the previous example can be transformed as a transition system thanks to the previous definition; it is shown in figure~\ref{fig:bvm-pg-ts}.
     To simplify, we assume $\max = 1$.
   \end{exm}
-
-  \begin{figure}[p]
-    \centering
-    \begin{tikzpicture}
-      \node[state,initial] (start11) {$\mathsf{start}, \mathtt{ns} = 1, \mathtt{nb} = 1$};
-      \node[state,below of=start11] (select11) {$\mathsf{select}, \mathtt{ns} = 1, \mathtt{nb} = 1$};
-      \node[state,below left=1cm and 0cm of select11] (start01) {$\mathsf{start}, \mathtt{ns} = 0, \mathtt{nb} = 1$};
-      \node[state,below right=1cm and 0cm of select11] (start10) {$\mathsf{start}, \mathtt{ns} = 1, \mathtt{nb} = 0$};
-      \node[state,below of=start01] (select01) {$\mathsf{select}, \mathtt{ns} = 0, \mathtt{nb} = 1$};
-      \node[state,below of=start10] (select10) {$\mathsf{select}, \mathtt{ns} = 1, \mathtt{nb} = 0$};
-      \node[state,below=5cm of select11] (start00) {$\mathsf{start}, \mathtt{ns} = 0, \mathtt{nb} = 0$};
-      \draw[->] (start11) to[loop above] node{$\mathtt{refill}$} (start11); 
-      \draw[->] (start11) to node{$\mathtt{ic}$} (select11);
-      \draw[->] (select11) to node{$\mathtt{gs}$} (start01);
-      \draw[->] (select11) to node[swap]{$\mathtt{gb}$} (start10);
-      \draw[->] (start01) to node{$\mathtt{ic}$} (select01);
-      \draw[->] (start10) to node{$\mathtt{ic}$} (select10);
-      \draw[->] (select01) to node[swap]{$\mathtt{gb}$} (start00);
-      \draw[->] (select10) to node{$\mathtt{gs}$} (start00);
-      \node[left=0.5cm of start01, inner sep=0,outer sep=0] (temp) {};
-      \draw[rounded corners] (start00) edge[straight-left] (temp.center)
-        (temp.center) edge[straight-right, ->] (start11);
-      \node[left=0cm of temp] {$\mathtt{refill}$};
-      \draw[->] (start01) to[bend left] node{$\mathtt{refill}$} (start11);
-      \draw[->] (start10) to[bend right] node[swap]{$\mathtt{refill}$} (start11);
-    \end{tikzpicture}
-    \caption{Transition system of the PVM program graph}
-    \label{fig:bvm-pg-ts}
-  \end{figure}
 \end{document}

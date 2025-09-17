@@ -1,0 +1,281 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Linear Time Properties.}
+
+  \begin{defn}
+    Let $\Sigma$ be an alphabet (\textit{i.e.} a set).
+    \begin{enumerate}
+      \item A \textit{$\omega$-word} on $\Sigma$ is a function $\sigma : \mathds{N} \to \Sigma$.
+        We denote $\Sigma^\omega$ for the set of $\omega$-words on $\Sigma$.
+      \item We define $\Sigma^\infty := \Sigma^\omega \cup \Sigma^\star$ the set of finite or infinite words.
+      \item Given $\hat{\sigma} \in \Sigma^\star$ and $\sigma \in \Sigma^\infty$, we say that $\hat{\sigma}$ is a prefix of $\sigma$, written $\hat{\sigma} \subseteq \sigma$, whenever 
+        \[
+        \forall i < \mathsf{length}(\hat{\sigma}), \quad \hat{\sigma}(i) = \sigma(i)
+        .\]
+      \item Given $\sigma \in \Sigma^\infty$, we define \[
+        \mathrm{Pref}(\sigma) := \mleft\{\,\hat{\sigma} \in \Sigma^\star \;\middle|\; \hat{\sigma} \subseteq \sigma\,\mright\} 
+        ,\]
+        which we extend to sets of words: for $E \subseteq \Sigma^\infty$,
+        \[
+          \mathrm{Pref}(E) := \bigcup_{\sigma \in E} \mathrm{Pref}(\sigma)
+        .\]
+    \end{enumerate}
+  \end{defn}
+
+  \begin{rmk}
+    \begin{itemize}
+      \item The prefix order $\subseteq$ on $\Sigma^\star$ is generally a partial order: there are $u,v \in \Sigma^\star$ such that $u \not\subseteq v$ and $v \not\subseteq u$.
+      \item Given $\sigma \in \Sigma^\infty$, the prefix order $\subseteq$ on $\mathrm{Prefix}(\sigma)$ is a linear (or total order).
+    \end{itemize}
+  \end{rmk}
+
+  \section{Linear-time properties.}
+
+  Let $\mathrm{AP}$ be a set of \textit{atomic propositions}.
+
+  \begin{defn}
+    A \textit{linear-time property} (sometimes written LT property) on $\mathrm{AP}$ is a set $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$.
+  \end{defn}
+  
+  The idea is that a linear-time property $A : \mathds{N} \to \mathbf{2}^\mathrm{AP}$ specifies, for each $i \in \mathds{N}$, a set $\sigma(i) \subseteq \mathrm{AP}$ of all atomic propositions are assumed at time $i$.
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \node[state, initial, initial where=above] (pay) {$\mathsf{pay}$};
+      \node[state, below of=pay](select){$\mathsf{select}$};
+      \node[state, left of=select](soda){$\mathsf{soda}$};
+      \node[state, right of=select](beer){$\mathsf{beer}$};
+      \draw[->] (soda) edge node {$\mathtt{gs}$} (pay);
+      \draw[->] (beer) edge node[swap] {$\mathtt{gb}$} (pay);
+      \draw[->] (select) edge node {$\tau$} (soda);
+      \draw[->] (pay) edge node {$\mathtt{ic}$} (select);
+      \draw[->] (select) edge node[swap] {$\tau$} (beer);
+      \node[below=0.2cm of select] {$\{\mathsf{paid}\}$};
+      \node[below=0.2cm of beer] {$\{\mathsf{paid}, \mathsf{drink}\}$};
+      \node[below=0.2cm of soda] {$\{\mathsf{paid}, \mathsf{drink}\}$};
+      \node[above left=0.1cm and 0.1cm of pay] {$\emptyset$};
+    \end{tikzpicture}
+    \caption{Transition system for the BVM with labels}
+    \label{fig:bvm-ts-label}
+  \end{figure}
+
+  \begin{exm}
+    \label{exm:BVM-LTProp}
+    For the Beverage vending machine (shown in figure~\ref{fig:bvm-ts-label}), we can have the following linear-time properties:
+    \scriptsize
+    \begin{itemize}
+      \item $\{\sigma \in (\mathbf{2}^\mathrm{AP})^\omega \mid \forall n \in \mathds{N}, \mathsf{drink} \in \sigma(n) \implies\exists k < n, \mathsf{paid} \in \sigma(k) \}$,
+      \item $\{\sigma \in (\mathbf{2}^\mathrm{AP})^\omega  \mid \forall n \in \mathds{N}, \#\{k \le n  \mid \mathsf{drink} \in \sigma(k)\} \le \# \{k \le n  \mid \mathsf{paid} \in \sigma(k)\} \} $,
+      \item $\{\sigma \in (\mathbf{2}^\mathrm{AP})^\omega  \mid (\exists^\infty t, \mathsf{paid} \in \sigma(i)) \implies(\exists^\infty t, \mathsf{drink} \in \sigma(t)) \} $,
+      \item $\{\sigma \in (\mathbf{2}^\mathrm{AP})^\omega \mid (\forall^\infty t, \mathsf{paid} \not\in \sigma(t)) \implies (\forall^\infty t, \mathsf{drink} \not\in \sigma(t)) \} $.
+    \end{itemize}
+  \end{exm}
+
+  \begin{rmk}
+    The notations $\exists^\infty$ and $\forall^\infty$ are "infinitely many" and "ultimately all" quantifiers:
+    \begin{itemize}
+      \item $\forall^\infty t, P(t)$ is, by definition, $\forall N \in \mathds{N}, \exists t \ge N, P(t)$;
+      \item $\exists^\infty t, P(t)$ is, by definition, $\exists N \in \mathds{N}, \forall t \ge N, P(t)$.
+    \end{itemize}
+  \end{rmk}
+
+  \begin{defn}
+    A (finite or infinite) \textit{path} in $TS$ is a finite or infinite sequence $\pi = (s_i)_{i} \in S^\infty$ which respects transitions: for all $i$, we have $s_i \tr {\mathtt{a}} s_{i+1}$ for some $\mathtt{a} \in \mathrm{Act}$.
+
+    A path $\pi = (s_i)_i$ is \textit{initial} if $s_0 \in I$.
+  \end{defn}
+
+  \begin{defn}[Trace]
+    \begin{enumerate}
+      \item The \textit{trace} of a path $\pi = (s_i)_i$ is the (finite or infinite) word 
+        \[
+        L(\pi) := \big(L(s_i)\big)_i \in L^\infty
+        .\]
+      \item We define
+        \begin{itemize}
+          \item $\mathrm{Tr}(TS) := \{L(\pi)  \mid \pi \text{ is a finite or infinite path in } TS\}$;
+          \item $\mathrm{Tr}^\omega(TS) := \{L(\pi)  \mid \pi \text{ is a infinite path in } TS\}$;
+          \item $\mathrm{Tr}_\mathrm{fin}(TS) := \{L(\pi)  \mid \pi \text{ is a finite path in } TS\}$.
+        \end{itemize}
+    \end{enumerate}
+  \end{defn}
+
+  \begin{defn}[Satisfaction of a LT property]
+    We say that a transition system $TS$ over $\mathrm{AP}$ \textit{satisfies} a LT property $P$ on $\mathrm{AP}$, written $TS \md P$, when $\mathrm{Tr}^\omega(TS) \subseteq P$.
+  \end{defn}
+
+  \begin{exm}
+    The BVM satisfies all the properties from example~\ref{exm:BVM-LTProp}.
+  \end{exm}
+
+  \begin{exm}
+    We use a different transition system $\mathrm{BVM}'$ to model the beverage vending machine, as seen in figure~\ref{fig:bvm'-ts-label}.
+    The two transition systems are equivalent in the sense that:
+    \[
+    \mathrm{Tr}^\omega(\mathrm{BVM}') = \mathrm{Tr}^\omega(\mathrm{BVM})
+    ,\] so, for any LT Property $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$,
+    \[
+    \mathrm{BVM}' \md P \quad\quad\text{iff} \quad\quad \mathrm{BVM} \md P
+    .\]
+  \end{exm}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \node[state, initial, initial where=above] (pay) {$\mathsf{pay}$};
+      \node[state, below left of=pay](selects){$\mathsf{sels}$};
+      \node[state, below right of=pay](selectb){$\mathsf{selb}$};
+      \node[state, left of=selects](soda){$\mathsf{soda}$};
+      \node[state, right of=selectb](beer){$\mathsf{beer}$};
+      \draw[->] (soda) edge[bend left] node {$\mathtt{gs}$} (pay);
+      \draw[->] (beer) edge[bend right] node[swap] {$\mathtt{gb}$} (pay);
+      \draw[->] (selects) edge node {$\tau$} (soda);
+      \draw[->] (pay) edge node {$\mathtt{ic}$} (selects);
+      \draw[->] (pay) edge node {$\mathtt{ic}$} (selectb);
+      \draw[->] (selectb) edge node[swap] {$\tau$} (beer);
+      \node[below=0.2cm of selects] {$\{\mathsf{paid}\}$};
+      \node[below=0.2cm of selectb] {$\{\mathsf{paid}\}$};
+      \node[below=0.2cm of beer] {$\{\mathsf{paid}, \mathsf{drink}\}$};
+      \node[below=0.2cm of soda] {$\{\mathsf{paid}, \mathsf{drink}\}$};
+      \node[above left=0.1cm and 0.1cm of pay] {$\emptyset$};
+    \end{tikzpicture}
+    \caption{Transition system for the alternative BVM}
+    \label{fig:bvm'-ts-label}
+  \end{figure}
+
+  We have a very simple result, which we will (probably) prove in the tutorials.
+
+  \begin{prop}
+    Given two transition systems $TS_1$ and $TS_2$ over $\mathrm{AP}$, then the following are equivalent:
+    \begin{itemize}
+      \item $\mathrm{Tr}^\omega(TS_1) \subseteq \mathrm{Tr}^\omega(TS_2)$,
+      \item $\forall P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$, $TS_2 \md P \implies TS_1 \md P$.
+    \end{itemize}
+  \end{prop}
+
+  \section{Decomposition of a linear-time property.}
+
+  In this section, we introduce the notions of a "safety property" and a "liveness property" such that, for any LT property $P$,
+  \begin{enumerate}
+    \item there exists a safety property $P_\mathrm{safe}$ and a liveness property $P_\mathrm{liveness}$ such that \[
+      P = P_\mathrm{safe} \cap P_\mathrm{liveness}
+      ;\]
+    \item $P$ is a liveness and a safety property if and only if $P = (\mathbf{2}^\mathrm{AP})^\omega$.
+  \end{enumerate}
+
+  \subsection{Safety properties.}
+
+  The idea of a safety property is to ensure that "nothing bad is going to happen."
+
+  \begin{defn}
+    We say that $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ is a \textit{safety property} if there exists a set $P_\mathrm{bad} \subseteq (\mathbf{2}^\mathrm{AP})^\star$ such that
+    \[
+    \sigma \in P \iff \mathrm{Pref}(\sigma) \cap P_\mathrm{bad} = \emptyset
+    .\]
+  \end{defn}
+
+  \begin{exm}
+    Considering the examples of LT-properties from example~\ref{exm:BVM-LTProp},
+    \begin{itemize}
+      \item Property (1) is a safety property: we can consider
+        \[
+          \hspace{-2em}
+        P_\mathrm{bad}^{(1)} = \{\hat{\sigma} \in \Sigma^\star \mid \mathsf{drink} \in \hat{\sigma}(n) \land \forall i < n, \mathsf{paid} \not\in \hat{\sigma}(i) \},
+        \] 
+        where $n$ is the length of $\hat{\sigma}$.
+      \item Property (2) is a safety property: we can consider
+        \[
+          \hspace{-2em}
+        P_\mathrm{bad}^{(2)} = \{\hat{\sigma} \in \Sigma^\star \mid \# \{t  \mid \mathsf{paid} \in \hat{\sigma}(t)\} < \# \{t  \mid \mathsf{drink} \in \hat{\sigma}(t)\} \} .
+        \]
+      \item Properties (3) and (4) are not safety properties: for any finite word $\hat{\sigma} \in (\mathbf{2}^\mathrm{AP})^\omega$, there exists $\sigma \in (\mathbf{2}^\mathrm{AP})^\omega$ such that $\hat{\sigma} \subseteq \sigma$ and $\sigma \in P$.
+    \end{itemize}
+  \end{exm}
+
+  \begin{exm}[Traffic Light]
+    We consider a traffic light as a transition system over $\mathrm{AP} = \{\mathsf{G}, \mathsf{Y}, \mathsf{R}\}$, as shown in figure~\ref{fig:traffic-light}.
+    An example of a safety property is
+    \[
+    \forall n, \mathsf{R} \in \sigma(n) \implies n > 0 \text{ and } \mathsf{Y} \in \sigma(n-1)
+    .\] 
+  \end{exm}
+
+  \begin{figure}[b]
+    \centering
+    \begin{tikzpicture}
+      \node[state, initial, initial where=left] (G) {$\mathsf{G}$};
+      \node[state, right of=G] (Y) {$\mathsf{Y}$};
+      \node[state, right of=Y] (R) {$\mathsf{R}$};
+      \draw[->] (G) edge (Y);
+      \draw[->] (Y) edge (R);
+      \draw[->] (R) edge[bend left] (G);
+      \node[above=0.1cm of G] {$\{\mathsf{G}\}$};
+      \node[above=0.1cm of Y] {$\{\mathsf{Y}\}$};
+      \node[above=0.1cm of R] {$\{\mathsf{R}\}$};
+    \end{tikzpicture}
+    \caption{Transition system for the traffic light}
+    \label{fig:traffic-light}
+  \end{figure}
+
+  \begin{exm}
+    Consider the transition system shown in figure~\ref{fig:two-states-ts}, a safety property $P$ with $P_\mathrm{bad} = \{\mathsf{a}\}^\star \{\mathsf{b}\}$ is satisfied: $TS \md P$. 
+    This is true since $\mathrm{Tr}^\omega(TS) = \{\mathsf{a}\}^\omega$.
+    However, when we consider \textit{finite} (instead of infinites) traces, we have that $\mathrm{Tr}_\mathrm{fin}(TS) \cap P_\mathrm{bad} \neq \emptyset$.
+  \end{exm}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \node[state, initial, initial where=left] (A) {};
+      \node[state, right of=A] (B) {};
+      \draw[->] (A) edge (B);
+      \draw[->] (A) edge[loop below] (A);
+      \node[above=0.1cm of A] {$\{\mathsf{a}\}$};
+      \node[above=0.1cm of B] {$\{\mathsf{b}\}$};
+    \end{tikzpicture}
+    \caption{Transition system for the traffic light}
+    \label{fig:two-states-ts}
+  \end{figure}
+
+  \begin{defn}[Terminal state]
+    A state $s \in S$ of a transition system $TS$  is \textit{terminal} if
+    \[
+      \forall s' \in S, \quad \forall \alpha \in \mathrm{Act}, \quad s \centernot{\tr\alpha} s'
+    .\]
+  \end{defn}
+
+  \begin{prop}
+    Let $TS$ be a transition system without terminal states, and a safety property $P$ with the set of "bad behaviours" is written $P_\mathrm{bad}$.
+    Then, 
+    \[
+    TS \md P \quad\quad \text{ if and only if } \mathrm{Tr}_\mathrm{fin}(TS) \cap P_\mathrm{bad} = \emptyset
+    .\] 
+  \end{prop}
+  \begin{prv}
+    See the course notes in section §\,3.2.3.
+  \end{prv}
+
+  \subsection{Safety properties and trace equivalences.}
+
+  \begin{lem}
+    Let $TS$ and $TS'$ be two transition systems over $\mathrm{AP}$ without terminal states.
+    Then, the following are equivalent:
+    \begin{itemize}
+      \item $\mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$;
+      \item for any safety property $P$, $TS' \md P$ implies $TS \md P$.
+    \end{itemize}
+  \end{lem}
+  \begin{prv}
+    \begin{itemize}
+      \item "$\implies$". This is true by the last proposition.
+      \item "$\impliedby$". 
+        Let $P$ be a safety property with \[
+        P_\mathrm{bad} = (\mathbf{2}^\mathrm{AP})^\star \setminus \mathrm{Tr}_\mathrm{fin}(TS')
+        .\]
+        So, $TS' \md P$ hence  $TS \md P$ by assumption.
+        Therefore,  $\mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$ by the last proposition.
+    \end{itemize}
+  \end{prv}
+\end{document}

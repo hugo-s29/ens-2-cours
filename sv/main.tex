@@ -4,6 +4,7 @@
 \author{Based on the lectures of Colin \textsc{Riba} \\ Notes written by Hugo \textsc{Salou}}
 
 \usepackage{subfiles}
+\usepackage{centernot}
 
 \ifSubfilesClassLoaded{%
   \renewcommand\thesection{\arabic{section}}
@@ -14,6 +15,7 @@
 
 \newcommand\tr[1]{\ensuremath{\mathrel{\xrightarrow{#1}}}}
 \newcommand\trh[1]{\ensuremath{\mathrel{\xhookrightarrow{#1}}}}
+\newcommand\md{\ensuremath{\mathrel{{|}\!{\approx}}}}
 
 \tikzset{
   initial text={},
@@ -34,5 +36,6 @@
 
   \subfile{chap00.tex}
   \subfile{chap01.tex}
+  \subfile{chap02.tex}
 \end{document}
 
