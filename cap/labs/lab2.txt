@@ -1,0 +1,72 @@
+         ________  ________  ________                           ___       ________  ________           _____
+        |\   ____\|\   __  \|\   __  \                         |\  \     |\   __  \|\   __  \         /  ___  \    
+        \ \  \___|\ \  \|\  \ \  \|\  \      ____________      \ \  \    \ \  \|\  \ \  \|\ /_       /__/|_/  /|   
+         \ \  \    \ \   __  \ \   ____\    |\____________\     \ \  \    \ \   __  \ \   __  \      |__|//  / /   
+          \ \  \____\ \  \ \  \ \  \___|    \|____________|      \ \  \____\ \  \ \  \ \  \|\  \         /  /_/__  
+           \ \_______\ \__\ \__\ \__\                             \ \_______\ \__\ \__\ \_______\       |\________\
+            \|_______|\|__|\|__|\|__|                              \|_______|\|__|\|__|\|_______|        \|_______|
+                                                                                                                   
+                                                                                                           
+                                                                                                           
+
+
+-------------
+EXERCICE  #5:
+-------------
+
+
+------| EX 1 |------
+
+OP : '+'| '*' | '-' | '/' ;
+DIGIT : [0-9] ;
+LETTER : [A-Za-z] ;
+LPAREN : '(' ;
+RPAREN : ')' ;
+ID : LETTER (LETTER | DIGIT)* ;             // match idents
+WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
+
+
+--> example: "(1 + 2"
+
+-------------
+EXERCICE  #6:
+-------------
+
+grammar WFParens;
+
+
+full_expr: expr_opt EOF ;
+
+expr_opt: | expr;
+
+expr: '(' expr ')'
+    | '[' expr ']'
+    | '(' ')'
+    | '[' ']'
+    | expr expr
+    ;
+
+CHARS: ~[()[\]] -> skip ;
+
+-------------
+EXERCICE  #7:
+-------------
+
+The statement
+  if x then if y then a else b
+is interpreted as
+  if x then (if y then a else b).
+
+
+grammar ITE;
+
+prog: stmt EOF;
+
+stmt : ifStmt | ID ;
+
+ifStmt:
+  'if' ID 'then' thenstmt=stmt ('else' elsestmt=stmt)? {print($thenstmt.text)};
+
+
+ID : [a-zA-Z]+;
+WS : [ \t\r\n]+ -> skip ; // skip spaces, tabs, newlines
