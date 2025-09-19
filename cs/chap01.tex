@@ -108,7 +108,9 @@
   \begin{center}
   \textbf{\textit{Computational complexity} is sufficient in practice.}
   \end{center}
-  Let us be more precise.
+  Let us be more precise in the next section.
+
+  \section{Pseudo-random generators.}
 
   \begin{defn}
     Let $\mathcal{D}_0$ and $\mathcal{D}_1$ be two distributions over $\{0,1\}^n$.
@@ -119,6 +121,7 @@
     .\] 
 
     We say that $\mathcal{D}_0$ and $\mathcal{D}_1$ are \textit{computationally indistinguishable} if for any efficient distinguisher $\mathcal{A}$ its advantage $\mathrm{Adv}_\mathcal{A}$ is small.
+    We will write, in this case, $\mathcal{D}_1 \simeq^\mathrm{c} \mathcal{D}_2$.
   \end{defn}
 
   This definition is not very formal yet, we have not defined "efficient" and "small."
@@ -153,7 +156,7 @@
       \item the distributions $\{\mathcal{U}(\{0,1\}^{\ell(\lambda)})\}_{\lambda \in \mathds{N}}$ and $\{G(\mathcal{U}(\{0,1\} ^{n(\lambda)}))\}_{\lambda \in \mathds{N}}$ are computationally indistinguishable (we call it \textit{pseudo-randomness}).
     \end{itemize}
   \end{defn}
-  
+
   Another way of defining a pseudo-random generator is with \textit{unpredictability} instead of \textit{pseudo-randomness}.
   \begin{defn}
     This is the same definition as before but replacing pseudo-randomness with \textit{unpredictability}.
@@ -257,4 +260,183 @@
       \mathrm{Adv}_\mathcal{A}(\mathcal{D}_i, \mathcal{D}_{i+1}) = \Big|\Pr[\mathcal{B}_i(G(k)_{|i}) = G(k)_{i+1}] - \frac{1}{2}\Big| \ge \frac{\varepsilon}{n}
     .\] 
   \end{prv}
+
+  \begin{exm}
+    Let us go back to the One-Time PAD example.
+    As said before, to get information-theoretic security, one needs the key's bit length to be no smaller than the message's length.
+    
+    Now, how do we use the PRG to have a secure protocol?
+    We encode using the PRG:
+    \[
+    \mathrm{Enc}_k(m \in \{0,1\}^\ell) = m \oplus G(k) \in \{0,1\}^\ell
+    .\]
+    We can use a key of length $128$ bits but encode a $1\:\mathrm{Gb}$ message.
+
+    If we have a PRG $G : \{0,1\}^n \to \{0,1\}^{n+1}$ where $n$ is the length of the key, then we can call $G$ on itself a lot of times to get a string of any length~$\ell > n$. (This is likely to be proven in the tutorials.)\footnote{The teacher gave us an explanation on how we can double the length of a string, then it is easy to go from $128$ to $2^{30}$ bits. However, that construction is still using the $n \to n + 1$ construction  $2^{23}$ times.}
+  \end{exm}
+
+  As seen before with the One-Time PAD, this kind of encryption can only be used once: you cannot re-use the key to encrypt multiple messages.
+
+
+  \begin{defn}
+    An encryption scheme $(\mathrm{KeyGen}, \mathrm{Enc}, \mathrm{Dec})$ is called \textit{secure against a single message chosen plain-text attack} if, for all polynomial-time adversary $\mathcal{A}$, and all $m_0, m_1$ chosen by $\mathcal{A}$, we have that the two distributions are computationally indistinguishable:
+    \[
+      \big( \mathrm{Enc}(k, m_0) \big)_{k \gets \mathrm{KeyGen}(\,)} \simeq^\mathrm{c} \big( \mathrm{Enc}(k, m_1) \big)_{k \gets \mathrm{KeyGen}(\,)}
+    .\]
+  \end{defn}
+
+  \begin{rmk}
+    Another way of thinking about this kind of security is to imagine two players, the adversary $\mathcal{A}$ and the challenger $\mathcal{C}$.
+    \begin{itemize}
+      \item The challenger generates a secret key $k \in \{0,1\}^n$ (which we assume to be uniform) and a uniform bit $b \gets \mathcal{U}(\{0,1\})$.
+      \item The adversary give two messages $m_1$ and $m_2$ to $\mathcal{C}$.
+      \item Then, the challenger encrypt $m_b$ using the key, and gives it to  $\mathcal{A}$.
+      \item Finally, $\mathcal{A}$ tries to "guess" $b$ (\textit{i.e.}\ which message was encrypted ($m_0$ or $m_1$).
+    \end{itemize}
+    Writing $b^\star$ for the guess of the adversary, we obtain a different formulation for the advantage of $\mathcal{A}$ :
+    \[
+    \mathrm{Adv}(\mathcal{A}) = \big| 2 \times \Pr[b^\star = b] - 1 \big|
+    .\]
+    This definition of the advantage is equivalent (\textit{c.f.}\ tutorials) to the one used before :
+    \[
+      \mathrm{Adv}(\mathcal{A}) = \big|{\Pr[\mathcal{A} \text{ guesses } 1  \mid b = 0]} - \Pr[\mathcal{A} \text{ guesses } 1  \mid b = 1]\big|
+    .\] 
+  \end{rmk}
+
+  \begin{prop}
+    The PRG-based construction is secure against a single message chosen plain-text attack.
+  \end{prop}
+  \begin{prv}
+    We want to show that, if there is an attacker against the PRG-based scheme, then there is a distinguisher fo the PRG.
+    We will use the "encryption security game" analogy in this proof.
+    We define two games:
+    \begin{itemize}
+      \item Let $\mathrm{Hybrid}_0$ be the game where $\mathcal{C}$ uses $m_0$.
+      \item Let $\mathrm{Hybrid}_4$ be the game where $\mathcal{C}$ uses $m_1$.
+    \end{itemize}
+    which we then complete with three other "intermediate" games:
+    \begin{itemize}
+      \item Let $\mathrm{Hybrid}_1$ be the game similar to $\mathrm{Hybrid}_0$ except that $c = m_0 \oplus G(k)$ is replaced by $c = m_0 \oplus u$ where $u \gets \mathcal{U}(\{0,1\}^\ell)$.
+      \item Let $\mathrm{Hybrid}_2$ be the game similar to $\mathrm{Hybrid}_1$ except that $m_0$ is changed with $m_1$ and thus $c = m_1 \oplus u$.
+      \item Let $\mathrm{Hybrid}_3$ be the game similar to $\mathrm{Hybrid}_2$ except that $c = m_1 \oplus u$ is replaced with $c = m_1 \oplus G(k)$.
+    \end{itemize}
+    We define \[
+      p_n := \Pr[\mathcal{A} \text{ guesses $1$ in the game } \mathrm{Hybrid}_n]
+    .\] 
+    The goal is to show that $|p_0 - p_4|$ is negligible.
+    To prove that we will prove that $|p_0 - p_1|$, $|p_1 - p_2|$, $|p_2 - p_3|$ and $|p_3 - p_4|$ are all negligible (we will then conclude by the triangle inequality).
+    This strategy is called \textit{Game Hopping}.
+    By symmetry, we only need to consider $|p_0 - p_1|$ and $|p_1 - p_2|$.
+
+    \begin{itemize}
+      \item Consider the games $\mathrm{Hybrid}_0$ and $\mathrm{Hybrid}_1$.
+        If $\mathcal{A}$ can see the difference between the two cyphers, then it can be used to break the PRG.
+        To prove this, we proceed by reduction.
+        We introduce a new player, $\mathcal{B}$, who will pretend to be $\mathcal{A}$ from the point of view of $\mathcal{C}$ and \textit{vice-versa}.
+
+        The players are then:
+        \begin{itemize}
+          \item $\mathcal{A}$ is the encryption adversary;
+          \item $\mathcal{C}$ is the PRG challenger;
+          \item $\mathcal{B}$ is both the encryption challenger and the PRG adversary.
+        \end{itemize}
+        We consider two cases: the "PRG" case and the "Uniform" case (depending on the choice for the key used to cypher the message.
+        From the point of view of $\mathcal{A}$,
+        \begin{itemize}
+          \item in the "PRG" case, it should be exactly as in $\mathrm{Hybrid}_0$;
+          \item in the "Uniform" case, it should be exactly as in $\mathrm{Hybrid}_1$.
+        \end{itemize}
+        The game will take place in the following way:
+        \begin{itemize}
+          \item $\mathcal{A}$ will give $\mathcal{B}$ two messages $m_0$ and $m_1$;
+          \item $\mathcal{C}$ will give $\mathcal{B}$ a key $y$ with the required length (either generated uniformly in the "Uniform" case, or with the PRG in the "PRG" case).
+          \item $\mathcal{B}$ encrypts the message $m_0$ using the key $y$, and gives it to $\mathcal{A}$.
+          \item $\mathcal{A}$ sends its guess $b^\star$ to $\mathcal{B}$, who directly sends it to $\mathcal{C}$.
+        \end{itemize}
+        Because $\mathcal{A}$'s view is consistent, it behaves as unexpected in $\mathrm{Hybrid}_0$ or $\mathrm{Hybrid}_1$.
+        This means that: 
+        \begin{itemize}
+          \item in the "PRG" case, $\mathcal{B}$ outputs $1$ iff $\mathcal{A}$ outputs $1$, which happens with probability $p_0$.
+          \item in the "PRG" case, $\mathcal{B}$ outputs $1$ iff $\mathcal{A}$ outputs $1$, which happens with probability $p_1$.
+        \end{itemize}
+        If $|p_0 - p_1| = |\Pr[\mathcal{B} \gets 1  \mid \text{PRG case}] - \Pr[\mathcal{B} \gets 1  \mid \text{Uniform case}]|$ is non-negligible, then $\mathcal{B}$ breaks the PRG.
+        And, if $\mathcal{A}$ is efficient, so is $\mathcal{B}$.
+        Thus, if the PRG is secure, then $|p_0 - p_1|$ is negligible.
+      \item For the games $\mathrm{Hybrid}_1$ and $\mathrm{Hybrid}_2$, we will prove that $p_1 = p_2$.
+        As $u$ is chosen uniformly, then $\mathcal{A}$ receives a uniform cypher $c$ in both games.
+        Then, as $\mathcal{A}$ has the same view, it has the same behavior.
+        The rest of the proof is exactly the one for the perfect security of the One-Time PAD.
+    \end{itemize}
+  \end{prv}
+
+  \subsection{How to get PRGs? Cryptographic assumptions.}
+
+  One example of a PRG is called RC4 (defined by Rivest in '87).
+  It has some weaknesses.
+  This PRG was used in WEP, an very old WiFi protocol (still used by 2 \% of WiFi routers), and it has been totally broken (the WEP protocol added weaknesses  on top of RC4's).
+  It is also used by Bittorent.
+  The state of the art is Salsa20 (software) or Trivium (hardware).
+
+  \begin{defn}
+    A function $f : \{0,1\}^k \to \{0,1\}^\ell$ is called \textit{one way} (with no relation between $l$ and $k$ ) if it is computable in polyomial-time and 
+    for any polynomial-time adversary $\mathcal{A}$, its advantage \[
+      \mathrm{Adv}(\mathcal{A}) = \Pr_{x \gets \mathcal{U}(\{0,1\}^k)}[\mathcal{A}(f(x)) = x' \text{ where } f(x) = f(x') ]
+    \]
+    is negligible.
+  \end{defn}
+
+  We have that:
+  \begin{itemize}
+    \item if there exists a PRG, then there is a one-way function
+    \item if there is a one-way function, then there is a PRG (Goldreich-Levin hard-cord bits).
+  \end{itemize}
+  There also exists explicit universal functions: if a one-way function exists, then the universal function is one way.
+
+  This problem is connected to the $\mathbf{P}$ \textit{vs.}\ \textbf{NP} problem (existence of one-way function implies $\mathbf{P} \neq \mathbf{NP}$).
+
+  \begin{defn}[Discrete Logarithm Problem, DLP]
+    The DLP is defined relative to a prime-order cyclic group $G$ with a generator~$g \in G$.
+    This means that \[
+    G = \{g^k  \mid k = 0, \ldots, p - 1\} 
+    ,\] 
+    where $p = |G|$ is a prime number. The group $G$ and the element $g$ are publicly known.
+    The goal is, given $h \in G$, find a $x$ such that $g^x = h$.
+  \end{defn}
+
+  \begin{exm}
+    In $(\mathds{Z} / p \mathds{Z}, +)$, the DLP problem is quite easy.
+
+    In $G_p := ((\mathds{Z} / p \mathds{Z})^\times, \times)$ is cyclic of order $p-1$, but $p-1$ is not necessarily a prime!
+    We take a prime $p$ such that $p = 2q + 1$ where $q$ is prime (such primes are called \textit{safe primes}).
+    We have that 
+    \[
+      G_p = \{g, g^2, g^3, \ldots, g^{p-1}\}
+    \] and \[G_q = \{(g^2)^0, (g^2)^2, \ldots, (g^2)^k, \ldots, \overbrace{(g^2)^{(p-1) / 2}}^{p^q}\} 
+    .\] 
+    The group $G_q$ is cyclic with prime order $q$. To find a generator for $G_q$, we simply sample uniformly an element $g_0$ of $(\mathds{Z} / p \mathds{Z})^\star$, then take $h := g_0^2$.
+    This is in fact a generator as long as $g_0 \not\in \{-1, 1\}$.
+  \end{exm}
+
+  In the 2000s, cryptographers started using the group of elements of an elliptic curve over a finite field.
+  For prime order subgroups of $((\mathds{Z} / p \mathds{Z})^\star, \times )$, the best known algorithms cost 
+  \[
+    \exp(\tilde{\mathrm{O}}(\sqrt[3]{\ln |G|} )) \ll \exp(\mathrm{O}(\ln |G|))
+  .\]
+  The other cost is for generic "black box" groups (hardness of DLP).
+  This blackbox algorithm is the best known algorithm for elliptic curves with $\log_2 |G| \approx 256$.
+
+  Thus, $p$ and $q$ have to be quite large to be hard-to-solve (around $4\,096$ bits) on the case of prime order subgroups of $(\mathds{Z} / p \mathds{Z})^\star$.
+  Given $h = g^x$, there is a baby-step-giant-step algorithm to find $x$.
+  \begin{itemize}
+    \item We start by computing $\{g^0, g, g^1, \ldots, g^{\sqrt{q}}\} $ (baby steps);
+    \item Then, we compute $\{h g^{-\sqrt{q}},  hg^{-2\sqrt{q}}, hg^{-3\sqrt{q}}, \ldots, hg^{-\sqrt{q} \sqrt{q} }\} $ (giant steps).
+  \end{itemize}
+  The cost for each step is around $\sqrt{q}$.
+  As $h = g^x = g^{x_0 + \sqrt{q} x_1}$, then we have that $g^{x_0} = h \cdot g^{\sqrt{-q} x_1}$.
+  Each of these elements is in one set.
+
+  Then, if we find two elements $g^{x_0}$ in the baby steps and $h \cdot g^{-\sqrt{q} x_1}$ in the giant steps that are equal, then we get $h = g^{x_0} \cdot g^{\sqrt{q} x_1} = g^{x_0 + \sqrt{q} x_1}$, thus we solve the DLP solution.
+
+  That's a $\mathrm{O}(\sqrt{|G|})$ time algorithm for finding the DLP.\footnote{The intersection of two lists of length in $\sqrt{|G|}$ is a bit more complex than it seems.}
+
 \end{document}
