@@ -25,7 +25,7 @@
 
   \begin{rmk}
     \begin{itemize}
-      \item The prefix order $\subseteq$ on $\Sigma^\star$ is generally a partial order: there are $u,v \in \Sigma^\star$ such that $u \not\subseteq v$ and $v \not\subseteq u$.
+      \item The prefix order $\subseteq$ on $\Sigma^\star$ is generally\footnote{As long as the alphabet has at least two letters.} a partial order: there are $u,v \in \Sigma^\star$ such that $u \not\subseteq v$ and $v \not\subseteq u$.
       \item Given $\sigma \in \Sigma^\infty$, the prefix order $\subseteq$ on $\mathrm{Prefix}(\sigma)$ is a linear (or total order).
     \end{itemize}
   \end{rmk}
@@ -76,8 +76,8 @@
   \begin{rmk}
     The notations $\exists^\infty$ and $\forall^\infty$ are "infinitely many" and "ultimately all" quantifiers:
     \begin{itemize}
-      \item $\forall^\infty t, P(t)$ is, by definition, $\forall N \in \mathds{N}, \exists t \ge N, P(t)$;
-      \item $\exists^\infty t, P(t)$ is, by definition, $\exists N \in \mathds{N}, \forall t \ge N, P(t)$.
+      \item $\exists^\infty t, P(t)$ is, by definition, $\forall N \in \mathds{N}, \exists t \ge N, P(t)$;
+      \item $\forall^\infty t, P(t)$ is, by definition, $\exists N \in \mathds{N}, \forall t \ge N, P(t)$.
     \end{itemize}
   \end{rmk}
 
@@ -219,7 +219,10 @@
     \label{fig:traffic-light}
   \end{figure}
 
+  \subsection{Safety properties and trace equivalences.}
+
   \begin{exm}
+    \label{exm:two-states-ts}
     Consider the transition system shown in figure~\ref{fig:two-states-ts}, a safety property $P$ with $P_\mathrm{bad} = \{\mathsf{a}\}^\star \{\mathsf{b}\}$ is satisfied: $TS \md P$. 
     This is true since $\mathrm{Tr}^\omega(TS) = \{\mathsf{a}\}^\omega$.
     However, when we consider \textit{finite} (instead of infinites) traces, we have that $\mathrm{Tr}_\mathrm{fin}(TS) \cap P_\mathrm{bad} \neq \emptyset$.
@@ -227,7 +230,7 @@
 
   \begin{figure}
     \centering
-    \begin{tikzpicture}
+    \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
       \node[state, initial, initial where=left] (A) {};
       \node[state, right of=A] (B) {};
       \draw[->] (A) edge (B);
@@ -235,7 +238,7 @@
       \node[above=0.1cm of A] {$\{\mathsf{a}\}$};
       \node[above=0.1cm of B] {$\{\mathsf{b}\}$};
     \end{tikzpicture}
-    \caption{Transition system for the traffic light}
+    \caption{Another transition system}
     \label{fig:two-states-ts}
   \end{figure}
 
@@ -247,17 +250,15 @@
   \end{defn}
 
   \begin{prop}
-    Let $TS$ be a transition system without terminal states, and a safety property $P$ with the set of "bad behaviours" is written $P_\mathrm{bad}$.
+    Let $TS$ be a transition system without terminal states, and a safety property $P$ with $P_\mathrm{bad}$ the set of "bad behaviours".
     Then, 
     \[
-    TS \md P \quad\quad \text{ if and only if } \mathrm{Tr}_\mathrm{fin}(TS) \cap P_\mathrm{bad} = \emptyset
+    TS \md P \quad\quad \text{ if and only if } \quad\quad \mathrm{Tr}_\mathrm{fin}(TS) \cap P_\mathrm{bad} = \emptyset
     .\] 
   \end{prop}
   \begin{prv}
-    See the course notes in section §\,3.2.3.
+    See the course notes in §\,3.2.3.
   \end{prv}
-
-  \subsection{Safety properties and trace equivalences.}
 
   \begin{lem}
     Let $TS$ and $TS'$ be two transition systems over $\mathrm{AP}$ without terminal states.
@@ -278,4 +279,82 @@
         Therefore,  $\mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$ by the last proposition.
     \end{itemize}
   \end{prv}
+
+  \begin{exm}
+    Consider the transition system $TS$ from figure~\ref{fig:two-states-ts} (example~\ref{exm:two-states-ts}, which has a terminal state), and the transition system $TS'$ from figure~\ref{fig:one-state-ts}.
+    Safety properties satisfied in $TS'$ are satisfied in $TS$. However, $\mathrm{Tr}_\mathrm{fin}(TS) \not\subseteq \mathrm{Tr}_\mathrm{fin}(TS')$ (even though the sets of infinite traces are equal).
+  \end{exm}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
+      \node[state, initial, initial where=left] (A) {};
+      \draw[->] (A) edge[loop below] (A);
+      \node[above=0.1cm of A] {$\{\mathsf{a}\}$};
+    \end{tikzpicture}
+    \caption{One-state transition system}
+    \label{fig:one-state-ts}
+  \end{figure}
+
+  \begin{exm}
+    Consider the transition system $TS'$ shown in figure~\ref{fig:two-states-ts-oo} (page~\pageref{fig:two-states-ts-oo}) and $TS$ the transition system shown in figure~\ref{fig:two-states-ts-loop}.
+    The transition system $TS'$ has terminal states and $TS$ does not. However, we have that
+    \[
+    \mathrm{Tr}_\mathrm{fin}(TS) = \mathrm{Tr}_\mathrm{fin}(TS')
+    .\]
+    We also have that \[
+    \mathrm{Tr}^\omega(TS') = \{\mathsf{a}\}^\omega \quad \text{ and }\quad \mathrm{Tr}^\omega(TS) = \{\mathsf{a}\}^\omega \cup \{\mathsf{a}\}^+ \cdot \{b\}^\omega
+    .\] 
+    Thus giving a counter example to the previous lemma if one of the transition system has terminal states: consider a linear-time property $P$ with the set of "bad behaviors" as $P_\mathrm{bad} = \{\mathsf{a}\}^+ \cdot \{\mathsf{b}\}$, then $TS' \md P$ but  $TS \nmd P$.
+  \end{exm}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
+      \node[state, initial, initial where=left] (A) {};
+      \node[state, right of=A] (B) {};
+      \draw[->] (A) edge (B);
+      \draw[->] (A) edge[loop below] (A);
+      \draw[->] (B) edge[loop below] (B);
+      \node[above=0.1cm of A] {$\{\mathsf{a}\}$};
+      \node[above=0.1cm of B] {$\{\mathsf{b}\}$};
+    \end{tikzpicture}
+    \caption{A transition system with no terminal state}
+    \label{fig:two-states-ts-loop}
+  \end{figure}
+
+  \begin{figure}
+    \centering
+    \begin{adjustbox}{center}
+      \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
+        \node[state, initial, initial where=left] (A0) {};
+        \node[state, below of=A0] (B00) {};
+        \draw[->] (A0) edge (B00);
+        \draw[->] (A0) edge[loop above] (A0);
+        \node[right=-0.1cm of B00] {$\{\mathsf{b}\}$};
+        \node[right=-0.1cm of A0] {$\{\mathsf{a}\}$};
+
+        \foreach \i [remember=\i as \lasti (initially 0)] in {1,...,5}
+        {
+          \node[state, initial, initial where=left, right=1.5cm of A\lasti] (A\i) {};
+          \node[state, below of=A\i] (B0\i) {};
+          \draw[->] (A\i) edge (B0\i);
+          \draw[->] (A\i) edge[loop above] (A\i);
+          \node[right=-0.1cm of B0\i] {$\{\mathsf{b}\}$};
+          \foreach \j [remember=\j as \lastj (initially 0)] in {1,...,\i}{
+            \node[state, below of=B\lastj\i] (B\j\i) {};
+            \draw[->] (B\lastj\i) edge (B\j\i);
+            \node[right=-0.1cm of B\j\i] {$\{\mathsf{b}\}$};
+          }
+          \node[right=-0.1cm of A\i] {$\{\mathsf{a}\}$};
+        }
+
+        \node[right of=A5] {$\ldots$};
+        \foreach \i in {0,...,5} \node[right of=B\i5] (D\i) {$\ldots$};
+        \node[below of=D5] {$\ddots$};
+      \end{tikzpicture}
+    \end{adjustbox}
+    \caption{An infinite transition system}
+    \label{fig:two-states-ts-oo}
+  \end{figure}
 \end{document}
