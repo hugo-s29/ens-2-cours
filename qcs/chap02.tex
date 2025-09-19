@@ -1,0 +1,32 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Circuits quantiques.}
+
+  On donne une définition informelle des circuits quantiques :
+  \begin{itemize}
+    \item le temps va de gauche à droite ;
+    \item les lignes horizontales sont les quibts ;
+    \item les opérations sont les matrices unitaires ou des mesures.
+  \end{itemize}
+  Voici quelques exemples de circuits quantiques.
+
+  Avec la matrice de Hadamard :
+  \begin{center}
+    \begin{quantikz}
+      \ket 0 & \gate{\mathbf{H}} & \meter{} &
+      \ensuremath{
+        \begin{cases}
+          0 &\text{avec une probabilité } 1/2\\
+          1 &\text{avec une probabilité } 1/2
+        \end{cases}
+      }
+    \end{quantikz}
+  \end{center}
+
+  La matrice $\mathbf{CNOT} = \begin{pmatrix} 1 & 0 & 0 & 0  \end{pmatrix} $
+  \begin{quantikz}
+    \ket a & \ctrl{1} & \ket a \\
+    \ket b & \targ{} & \ket{a \oplus b}
+  \end{quantikz}
+\end{document}
