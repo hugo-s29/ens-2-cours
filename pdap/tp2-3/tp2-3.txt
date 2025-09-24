@@ -1,0 +1,36 @@
+Q1(b) The runtime increases as the latency increases (10 μs -> 100 μs has a 10x time effect) but not as much when we only increase a little the latency (1 μs -> 10 μs).
+Q1(c) Yes! For small latency, the M / β term has a bigger impact, but increasing the lattency is (affine) proportionnal with the cost. This reflects what we saw in the runtime experiments.
+
+Q2(b) None. I am not happy :( ! 
+
+Q3(b) It is very rarely worse than the ring broadcast and, when it is, it is only by a few miliseconds. On the other hand, it is a lot better (/10).
+
+
+
+
+
+
+
+
+
++----------------------------------------------+----------+----------+----------+
+|                                              |   1 μs   |  10 μs   |  100 μs  |
++----------------------------------------------+----------+----------+----------+
+|                              NAIVE BROADCAST |  0.284 s |  0.394 s |  3.202 s |
++----------------------------------------------+----------+----------+----------+
+|                               RING BROADCAST |  0.277 s |  0.282 s |  0.332 s |
++----------------------------------------------+----------+----------+----------+
+|                     PIPELINED RING BROADCAST |          |          |          |
+|                   with a chunk size of   1 % |  0.023 s |  0.053 s |  0.360 s |
+|                   with a chunk size of  10 % |  0.045 s |  0.051 s |  0.157 s |
+|                   with a chunk size of  25 % |  0.083 s |  0.089 s |  0.160 s |
+|                   with a chunk size of  50 % |  0.148 s |  0.153 s |  0.205 s |
+|                   with a chunk size of 100 % |  0.277 s |  0.282 s |  0.332 s |
++----------------------------------------------+----------+----------+----------+
+|                     PIPELINED RING BROADCAST |          |          |          |
+|                   with a chunk size of   1 % |  0.013 s |  0.032 s |  0.235 s |
+|                   with a chunk size of  10 % |  0.036 s |  0.042 s |  0.136 s |
+|                   with a chunk size of  25 % |  0.076 s |  0.081 s |  0.147 s |
+|                   with a chunk size of  50 % |  0.143 s |  0.148 s |  0.193 s |
+|                   with a chunk size of 100 % |  0.277 s |  0.282 s |  0.326 s |
++----------------------------------------------+----------+----------+----------+
