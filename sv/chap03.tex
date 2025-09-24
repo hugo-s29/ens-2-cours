@@ -1,0 +1,29 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{L'approche topologique.}
+
+  \begin{defn}
+    Un \textit{espace topologique} est une paire $(X, \Omega X)$ où $X$ est un ensemble et $\Omega X \subseteq \wp(X)$ que l'on appelle \textit{ensemble des ouverts} telle que
+    \begin{itemize}
+      \item si $\mathcal{S} \subseteq_\mathrm{fin} \Omega X$ alors $\bigcap \mathcal{S} = \bigcap_{V \in \mathcal{S}} V \in \Omega X$ ;
+      \item si $\mathcal{S} \subseteq \Omega X$ alors $\bigcup \mathcal{S} = \bigcup_{V \in \mathcal{S}} V \in \Omega X$.
+    \end{itemize}
+  \end{defn}
+
+  \begin{rmk}
+    On a toujours $\emptyset, X \in \Omega X$ avec $\emptyset = \bigcup \emptyset$ et $X = \bigcap \emptyset$.
+  \end{rmk}
+
+  \begin{rmk}[Intuition]
+    On peut voir les ouverts comme "analogues" aux ensembles récursivement énumérables.
+
+    Dans la suite, on va définir une topologie  sur $\Sigma^\omega$ où les ouverts sont  $\mathsf{ext}(W)$ où $W \subseteq \Sigma^\star$ et $\mathsf{ext}(W) = \bigcup_{u \in W} \mathsf{ext}(u)$ et 
+    \[
+    \mathsf{ext}(u) = \{\sigma \in \Sigma^\omega  \mid u \subseteq \sigma\} 
+    .\]
+
+    Ainsi, si on a une manière d'énumérer $W$, on peut tester si $u \in \mathsf{ext}(W)$ en temps fini, mais il n'est pas forcément possible de vérifier que $u \not\in \mathsf{ext}(W)$.
+  \end{rmk}
+
+\end{document}

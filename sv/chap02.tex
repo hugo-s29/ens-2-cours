@@ -3,7 +3,7 @@
 \begin{document}
   \chapter{Linear Time Properties.}
 
-  \begin{defn}
+  \begin{en-defn}
     Let $\Sigma$ be an alphabet (\textit{i.e.} a set).
     \begin{enumerate}
       \item A \textit{$\omega$-word} on $\Sigma$ is a function $\sigma : \mathds{N} \to \Sigma$.
@@ -21,22 +21,22 @@
           \mathrm{Pref}(E) := \bigcup_{\sigma \in E} \mathrm{Pref}(\sigma)
         .\]
     \end{enumerate}
-  \end{defn}
+  \end{en-defn}
 
-  \begin{rmk}
+  \begin{en-rmk}
     \begin{itemize}
       \item The prefix order $\subseteq$ on $\Sigma^\star$ is generally\footnote{As long as the alphabet has at least two letters.} a partial order: there are $u,v \in \Sigma^\star$ such that $u \not\subseteq v$ and $v \not\subseteq u$.
       \item Given $\sigma \in \Sigma^\infty$, the prefix order $\subseteq$ on $\mathrm{Prefix}(\sigma)$ is a linear (or total order).
     \end{itemize}
-  \end{rmk}
+  \end{en-rmk}
 
   \section{Linear-time properties.}
 
   Let $\mathrm{AP}$ be a set of \textit{atomic propositions}.
 
-  \begin{defn}
+  \begin{en-defn}
     A \textit{linear-time property} (sometimes written LT property) on $\mathrm{AP}$ is a set $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$.
-  \end{defn}
+  \end{en-defn}
   
   The idea is that a linear-time property $A : \mathds{N} \to \mathbf{2}^\mathrm{AP}$ specifies, for each $i \in \mathds{N}$, a set $\sigma(i) \subseteq \mathrm{AP}$ of all atomic propositions are assumed at time $i$.
 
@@ -61,7 +61,7 @@
     \label{fig:bvm-ts-label}
   \end{figure}
 
-  \begin{exm}
+  \begin{en-exm}
     \label{exm:BVM-LTProp}
     For the Beverage vending machine (shown in figure~\ref{fig:bvm-ts-label}), we can have the following linear-time properties:
     \scriptsize
@@ -71,23 +71,23 @@
       \item $\{\sigma \in (\mathbf{2}^\mathrm{AP})^\omega  \mid (\exists^\infty t, \mathsf{paid} \in \sigma(i)) \implies(\exists^\infty t, \mathsf{drink} \in \sigma(t)) \} $,
       \item $\{\sigma \in (\mathbf{2}^\mathrm{AP})^\omega \mid (\forall^\infty t, \mathsf{paid} \not\in \sigma(t)) \implies (\forall^\infty t, \mathsf{drink} \not\in \sigma(t)) \} $.
     \end{itemize}
-  \end{exm}
+  \end{en-exm}
 
-  \begin{rmk}
+  \begin{en-rmk}
     The notations $\exists^\infty$ and $\forall^\infty$ are "infinitely many" and "ultimately all" quantifiers:
     \begin{itemize}
       \item $\exists^\infty t, P(t)$ is, by definition, $\forall N \in \mathds{N}, \exists t \ge N, P(t)$;
       \item $\forall^\infty t, P(t)$ is, by definition, $\exists N \in \mathds{N}, \forall t \ge N, P(t)$.
     \end{itemize}
-  \end{rmk}
+  \end{en-rmk}
 
-  \begin{defn}
+  \begin{en-defn}
     A (finite or infinite) \textit{path} in $TS$ is a finite or infinite sequence $\pi = (s_i)_{i} \in S^\infty$ which respects transitions: for all $i$, we have $s_i \tr {\mathtt{a}} s_{i+1}$ for some $\mathtt{a} \in \mathrm{Act}$.
 
     A path $\pi = (s_i)_i$ is \textit{initial} if $s_0 \in I$.
-  \end{defn}
+  \end{en-defn}
 
-  \begin{defn}[Trace]
+  \begin{en-defn}[Trace]
     \begin{enumerate}
       \item The \textit{trace} of a path $\pi = (s_i)_i$ is the (finite or infinite) word 
         \[
@@ -100,17 +100,17 @@
           \item $\mathrm{Tr}_\mathrm{fin}(TS) := \{L(\pi)  \mid \pi \text{ is a finite path in } TS\}$.
         \end{itemize}
     \end{enumerate}
-  \end{defn}
+  \end{en-defn}
 
-  \begin{defn}[Satisfaction of a LT property]
+  \begin{en-defn}[Satisfaction of a LT property]
     We say that a transition system $TS$ over $\mathrm{AP}$ \textit{satisfies} a LT property $P$ on $\mathrm{AP}$, written $TS \md P$, when $\mathrm{Tr}^\omega(TS) \subseteq P$.
-  \end{defn}
+  \end{en-defn}
 
-  \begin{exm}
+  \begin{en-exm}
     The BVM satisfies all the properties from example~\ref{exm:BVM-LTProp}.
-  \end{exm}
+  \end{en-exm}
 
-  \begin{exm}
+  \begin{en-exm}
     We use a different transition system $\mathrm{BVM}'$ to model the beverage vending machine, as seen in figure~\ref{fig:bvm'-ts-label}.
     The two transition systems are equivalent in the sense that:
     \[
@@ -119,7 +119,7 @@
     \[
     \mathrm{BVM}' \md P \quad\quad\text{iff} \quad\quad \mathrm{BVM} \md P
     .\]
-  \end{exm}
+  \end{en-exm}
 
   \begin{figure}
     \centering
@@ -147,13 +147,13 @@
 
   We have a very simple result, which we will (probably) prove in the tutorials.
 
-  \begin{prop}
+  \begin{en-prop}
     Given two transition systems $TS_1$ and $TS_2$ over $\mathrm{AP}$, then the following are equivalent:
     \begin{itemize}
       \item $\mathrm{Tr}^\omega(TS_1) \subseteq \mathrm{Tr}^\omega(TS_2)$,
       \item $\forall P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$, $TS_2 \md P \implies TS_1 \md P$.
     \end{itemize}
-  \end{prop}
+  \end{en-prop}
 
   \section{Decomposition of a linear-time property.}
 
@@ -169,14 +169,14 @@
 
   The idea of a safety property is to ensure that "nothing bad is going to happen."
 
-  \begin{defn}
+  \begin{en-defn}
     We say that $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ is a \textit{safety property} if there exists a set $P_\mathrm{bad} \subseteq (\mathbf{2}^\mathrm{AP})^\star$ such that
     \[
     \sigma \in P \iff \mathrm{Pref}(\sigma) \cap P_\mathrm{bad} = \emptyset
     .\]
-  \end{defn}
+  \end{en-defn}
 
-  \begin{exm}
+  \begin{en-exm}
     Considering the examples of LT-properties from example~\ref{exm:BVM-LTProp},
     \begin{itemize}
       \item Property (1) is a safety property: we can consider
@@ -192,15 +192,15 @@
         \]
       \item Properties (3) and (4) are not safety properties: for any finite word $\hat{\sigma} \in (\mathbf{2}^\mathrm{AP})^\omega$, there exists $\sigma \in (\mathbf{2}^\mathrm{AP})^\omega$ such that $\hat{\sigma} \subseteq \sigma$ and $\sigma \in P$.
     \end{itemize}
-  \end{exm}
+  \end{en-exm}
 
-  \begin{exm}[Traffic Light]
+  \begin{en-exm}[Traffic Light]
     We consider a traffic light as a transition system over $\mathrm{AP} = \{\mathsf{G}, \mathsf{Y}, \mathsf{R}\}$, as shown in figure~\ref{fig:traffic-light}.
     An example of a safety property is
     \[
     \forall n, \mathsf{R} \in \sigma(n) \implies n > 0 \text{ and } \mathsf{Y} \in \sigma(n-1)
     .\] 
-  \end{exm}
+  \end{en-exm}
 
   \begin{figure}[b]
     \centering
@@ -221,12 +221,12 @@
 
   \subsection{Safety properties and trace equivalences.}
 
-  \begin{exm}
+  \begin{en-exm}
     \label{exm:two-states-ts}
     Consider the transition system shown in figure~\ref{fig:two-states-ts}, a safety property $P$ with $P_\mathrm{bad} = \{\mathsf{a}\}^\star \{\mathsf{b}\}$ is satisfied: $TS \md P$. 
     This is true since $\mathrm{Tr}^\omega(TS) = \{\mathsf{a}\}^\omega$.
     However, when we consider \textit{finite} (instead of infinites) traces, we have that $\mathrm{Tr}_\mathrm{fin}(TS) \cap P_\mathrm{bad} \neq \emptyset$.
-  \end{exm}
+  \end{en-exm}
 
   \begin{figure}
     \centering
@@ -242,33 +242,33 @@
     \label{fig:two-states-ts}
   \end{figure}
 
-  \begin{defn}[Terminal state]
+  \begin{en-defn}[Terminal state]
     A state $s \in S$ of a transition system $TS$  is \textit{terminal} if
     \[
       \forall s' \in S, \quad \forall \alpha \in \mathrm{Act}, \quad s \centernot{\tr\alpha} s'
     .\]
-  \end{defn}
+  \end{en-defn}
 
-  \begin{prop}
+  \begin{en-prop}
     Let $TS$ be a transition system without terminal states, and a safety property $P$ with $P_\mathrm{bad}$ the set of "bad behaviours".
     Then, 
     \[
     TS \md P \quad\quad \text{ if and only if } \quad\quad \mathrm{Tr}_\mathrm{fin}(TS) \cap P_\mathrm{bad} = \emptyset
     .\] 
-  \end{prop}
-  \begin{prv}
+  \end{en-prop}
+  \begin{en-prv}
     See the course notes in §\,3.2.3.
-  \end{prv}
+  \end{en-prv}
 
-  \begin{lem}
+  \begin{en-lem}
     Let $TS$ and $TS'$ be two transition systems over $\mathrm{AP}$ without terminal states.
     Then, the following are equivalent:
     \begin{itemize}
       \item $\mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$;
       \item for any safety property $P$, $TS' \md P$ implies $TS \md P$.
     \end{itemize}
-  \end{lem}
-  \begin{prv}
+  \end{en-lem}
+  \begin{en-prv}
     \begin{itemize}
       \item "$\implies$". This is true by the last proposition.
       \item "$\impliedby$". 
@@ -278,12 +278,12 @@
         So, $TS' \md P$ hence  $TS \md P$ by assumption.
         Therefore,  $\mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$ by the last proposition.
     \end{itemize}
-  \end{prv}
+  \end{en-prv}
 
-  \begin{exm}
+  \begin{en-exm}
     Consider the transition system $TS$ from figure~\ref{fig:two-states-ts} (example~\ref{exm:two-states-ts}, which has a terminal state), and the transition system $TS'$ from figure~\ref{fig:one-state-ts}.
     Safety properties satisfied in $TS'$ are satisfied in $TS$. However, $\mathrm{Tr}_\mathrm{fin}(TS) \not\subseteq \mathrm{Tr}_\mathrm{fin}(TS')$ (even though the sets of infinite traces are equal).
-  \end{exm}
+  \end{en-exm}
 
   \begin{figure}
     \centering
@@ -296,7 +296,7 @@
     \label{fig:one-state-ts}
   \end{figure}
 
-  \begin{exm}
+  \begin{en-exm}
     Consider the transition system $TS'$ shown in figure~\ref{fig:two-states-ts-oo} (page~\pageref{fig:two-states-ts-oo}) and $TS$ the transition system shown in figure~\ref{fig:two-states-ts-loop}.
     The transition system $TS'$ has terminal states and $TS$ does not. However, we have that
     \[
@@ -306,7 +306,7 @@
     \mathrm{Tr}^\omega(TS') = \{\mathsf{a}\}^\omega \quad \text{ and }\quad \mathrm{Tr}^\omega(TS) = \{\mathsf{a}\}^\omega \cup \{\mathsf{a}\}^+ \cdot \{b\}^\omega
     .\] 
     Thus giving a counter example to the previous lemma if one of the transition system has terminal states: consider a linear-time property $P$ with the set of "bad behaviors" as $P_\mathrm{bad} = \{\mathsf{a}\}^+ \cdot \{\mathsf{b}\}$, then $TS' \md P$ but  $TS \nmd P$.
-  \end{exm}
+  \end{en-exm}
 
   \begin{figure}
     \centering
@@ -357,4 +357,243 @@
     \caption{An infinite transition system}
     \label{fig:two-states-ts-oo}
   \end{figure}
+
+  The rest of the course will be done in french.
+
+  \selectlanguage{french}
+  \setquotestyle{french}
+
+  L'objectif  est de trouver des conditions sur $TS$ et $TS'$ telles que l'on ait l'équivalence entre :
+  \begin{itemize}
+    \item $\mathrm{Tr}^\omega(TS) \subseteq \mathrm{Tr}^\omega(TS')$ ;
+    \item pour toute propriété de sûreté $P$, $TS' \md P$ implique $TS \md P$.
+  \end{itemize}
+
+  On commence par trouver des conditions sur $TS$ et $TS'$ telles que l'on ait l'équivalence :
+  \[
+  \mathrm{Tr}^\omega(TS) \subseteq \mathrm{Tr}^\omega(TS') \iff \mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS') 
+  .\]
+  Pour que l'on ait "${\implies}$", il est nécessaire que $TS$ soit sans état terminal.
+  En effet, si $TS$ est sans état terminal, alors pour tout $\hat{\sigma} \in \mathrm{Tr}_\mathrm{fin}(TS)$, il existe $\sigma \in \mathrm{Tr}^\omega(TS)$ tel que $\hat{\sigma} \subseteq \sigma$.
+
+  Dans l'autre sens, supposons que $\mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$.
+  Soit $\sigma \in \mathrm{Tr}^\omega(TS)$. Alors, pour tout $\hat{\sigma} \subseteq \sigma$, on a $\hat{\sigma} \in \mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$.
+  Ainsi, pour tout $n \in \mathds{N}$, on a qu'il existe un chemin $\pi^n := (\pi_i^n)_{i \le n}$ initial dans $TS'$ tel que $L(\pi^n) = \sigma(0) \ldots \sigma(n)$.
+
+  \begin{exm}
+    On considère $TS$ comme celui représenté en figure~\ref{fig:two-states-ts-loop} et $TS'$ comme représenté en figure~\ref{fig:two-states-ts-oo'}.
+    On a que \[
+    \mathrm{Tr}_\mathrm{fin}(TS) = \mathrm{Tr}_\mathrm{fin}(TS') = \{\mathsf{a}\}^\star \cup \{\mathsf{a}\}^+ \{\mathsf{b}\} ^\star
+    ,\] 
+    et \[
+    \mathrm{Tr}^\omega(TS) = \{\mathsf{a}\}^\omega \cup \{\mathsf{a}\}^+\{\mathsf{b}\}^\omega \neq \{\mathsf{a}\}^+ \{\mathsf{b}\}^\omega = \mathrm{Tr}^\omega(TS')
+    .\] 
+    Dans notre cas, on a $\{\mathsf{a}\}^n \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$ mais on n'a pas $\{\mathsf{a}\}^\omega \subseteq \mathrm{Tr}^\omega(TS')$.
+  \end{exm}
+
+  \begin{figure}
+    % BOUCLES SUR LE PLUS BAS, ET AVEC LABEL {b}
+    \centering
+    \begin{adjustbox}{center}
+      \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
+        \node[state, initial, initial where=left] (A0) {};
+        \node[state, below of=A0] (B00) {};
+        \draw[->] (A0) edge (B00);
+        \draw[->] (B00) edge[loop below] (B00);
+        \node[right=-0.1cm of B00] {$\{\mathsf{b}\}$};
+        \node[right=-0.1cm of A0] {$\{\mathsf{a}\}$};
+
+        \foreach \i [remember=\i as \lasti (initially 0)] in {1,...,5}
+        {
+          \node[state, initial, initial where=left, right=1.5cm of A\lasti] (A\i) {};
+          \node[state, below of=A\i] (B0\i) {};
+          \draw[->] (A\i) edge (B0\i);
+          \node[right=-0.1cm of B0\i] {$\{\mathsf{a}\}$};
+          \foreach \j [remember=\j as \lastj (initially 0)] in {1,...,\i}{
+            \node[state, below of=B\lastj\i] (B\j\i) {};
+            \draw[->] (B\lastj\i) edge (B\j\i);
+            \node[right=-0.1cm of B\lastj\i] {$\{\mathsf{a}\}$};
+          }
+          \node[right=-0.1cm of A\i] {$\{\mathsf{a}\}$};
+          \node[right=-0.1cm of B\i\i] {$\{\mathsf{b}\}$};
+          \draw[->] (B\i\i) edge[loop below] (B\i\i);
+        }
+
+        \node[right of=A5] {$\ldots$};
+        \foreach \i in {0,...,5} \node[right of=B\i5] (D\i) {$\ldots$};
+        \node[below of=D5] {$\ddots$};
+      \end{tikzpicture}
+    \end{adjustbox}
+    \caption{Un système de transition infini}
+    \label{fig:two-states-ts-oo'}
+  \end{figure}
+
+  \begin{defn}[Branchement fini]
+    Un système de transition $TS = (S, \mathrm{Act}, {\to}, I,  \mathrm{AP}, L)$ est à \textit{branchement fini} si
+    \begin{enumerate}
+      \item $I$ est fini ;
+      \item pour tout $s \in S$, l'ensemble $\{s'  \mid \exists \alpha \in \mathrm{Act}, s \tr\alpha s'\} $ est fini.
+    \end{enumerate}
+  \end{defn}
+
+  \subsubsection{Interlude. Le lemme de Kőnig.}
+
+  \begin{defn}
+    Soit $A$ un ensemble.
+    \begin{enumerate}
+      \item Un \textit{arbre} sur $A$ est un ensemble $T \subseteq A^\star$ clos par préfixe, c'est-à-dire que si $u \in T$ alors pour tout préfixe $v \subseteq u$, on a $v \in T$.
+      \item Un chemin infini dans un arbre $T \subseteq A^\star$ est un mot $\pi \in A^\omega$ tel que, pour tout $n \in \mathds{N}$, $\pi(0)\ldots \pi(n) \in T$.
+      \item Un arbre est à \textit{branchement fini} si, pour tout $u \in T$, l'ensemble $\{ua  \mid a \in A \text{ et } ua \in T\}$ est fini.
+    \end{enumerate}
+  \end{defn}
+
+  \begin{rmk}
+    Si $A$ est fini, alors tout arbre sur $A$ est à branchement fini.
+    
+    Aussi, si $T$ est fini alors $T$ n'as pas de chemin infini.
+  \end{rmk}
+
+  \begin{exm}
+    Avec $T \subseteq \mathds{N}^\star$ défini par $T = \{\varepsilon\} \cup \mathds{N}$ alors $T$ est sans chemin infini et à branchement infini (figure~\ref{fig:tree-N}).
+  \end{exm}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \node (0) {$0$};
+      \node[right of=0] (1) {$1$};
+      \node[right of=1] (2) {$2$};
+      \node[right of=2] (u) {$\ldots$};
+      \node[right of=u] (n) {$n$};
+      \node[right of=n] (v) {$\ldots$};
+      \node[below of=1] (e) {$\varepsilon$};
+      \draw (e) -- (0);
+      \draw (e) -- (1);
+      \draw (e) -- (2);
+      \draw (e) -- (n);
+    \end{tikzpicture}
+    \caption{Arbre $\{\varepsilon\} \cup \mathds{N}$ sur $\mathds{N}$}
+    \label{fig:tree-N}
+  \end{figure}
+
+  \begin{lem}[Lemme de Kőnig]
+    Si $T$ est un arbre infini et à branchement fini alors $T$ a un chemin infini.
+  \end{lem}
+  \begin{prv}
+    Soit $T \subseteq A^\star$ un arbre infini à branchement fini.
+    Si $u \in T$ on note $T \upharpoonright u$ l'arbre 
+    \[
+    \{v \in T  \mid u \subseteq v \text{ ou } v \subseteq u \} 
+    .\]
+    On remarque que $T = T \upharpoonright \varepsilon$ et  $T \upharpoonright u = \bigcup_{a \in A \; ua \in T} T \upharpoonright ua$.
+    Alors, comme que $T$ est infini et $T = \bigcup_{a \in A \cap T} T \upharpoonright a$, par e lemme des tiroirs infini, il existe $a \in A \cap T$ tel que $T \upharpoonright a$ est infini.
+    On a donc 
+     \[
+    T \upharpoonright a = \bigcup_{b \in A \; ab \in T} T \upharpoonright ab
+    .\]
+    Par induction sur $n \in \mathds{N}$, on définit $a_0,\ldots,a_n \in A$ (en étendant) tel que $a_0\ldots a_n \in T$ et $T \upharpoonright a_0 \ldots a_n$ est infini.
+    On obtient donc $\pi = (a_i)_{i \in \mathds{N}}$ qui est un chemin infini dans $T$.
+  \end{prv}
+
+  \begin{rmk}[Attention !]
+    On doit manipuler un arbre !
+
+    En considérant $A = \{0,1\}$ avec $T_0 = \{0\}^\star \{1\} \subseteq A^\star$, on a que :
+    \begin{itemize}
+      \item $T_0$ est infini ;
+      \item $T_0$ est à branchement fini ;
+      \item MAIS, ce n'est pas un arbre.
+    \end{itemize}
+    On considère donc $T = \mathrm{Pref}(T_0)$ qui est un arbre infini et à branchement fini.
+    Alors, par le lemme de Kőnig, on a que $T$ a un chemin infini $\pi \in \{0\}^\omega$ (il n'y a qu'un seul choix possible).
+    Et, on a $\mathrm{Pref}(\pi) \subseteq T$ sauf que $\mathrm{Pref}(\pi) \cap T_0 = \emptyset$.
+  \end{rmk}
+
+  On peut maintenant revenir à notre objectif de caractériser les propriétés de sûreté par les traces.
+
+  \begin{prop}
+    Si $TS$ est sans état terminal et $TS'$ est à branchement fini, on a que
+    \[
+    \mathrm{Tr}^\omega(TS) \subseteq \mathrm{Tr}^\omega(TS') \iff
+    \mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')
+    .\]
+  \end{prop}
+  \begin{prv}
+    \begin{itemize}
+      \item "$\implies$". On l'a déjà vu précédemment.
+      \item "$\impliedby$". Supposons $\mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$.
+        Considérons un mot $\sigma \in \mathrm{Tr}^\omega(TS)$.
+        Soit $T' \subseteq (S')^\star$ (où $S'$ est l'ensemble des états de $TS'$) défini par 
+        \[
+        T' = \{u \in (S')^\star  \mid u \text{ chemin initial fini de } TS' \text{ et } L'(u) \subseteq \sigma \} 
+        .\]
+        On a que $T'$ est un arbre, qui est infini (car $\mathrm{Tr}_\mathrm{fin}(TS) \subseteq \mathrm{Tr}_\mathrm{fin}(TS')$.
+        Aussi, on a que $T'$ est à branchement fini car $TS'$ est à branchement fini.
+        Par le lemme de Kőnig, on a que $T'$ a un chemin infini $\pi$.
+        On a aussi $L'(\pi) = \sigma$ et donc $\sigma \in \mathrm{Tr}^\omega(TS')$.
+    \end{itemize}
+  \end{prv}
+
+  \begin{crlr}
+    Si $TS$ et $TS'$ sont deux systèmes de transitions sans états terminaux et à branchement fini alors les deux propriétés suivantes sont équivalentes :
+    \begin{itemize}
+      \item $\mathrm{Tr}^\omega(TS) = \mathrm{Tr}^\omega(TS')$ ;
+      \item pour toute propriété de sûreté $P$, $TS' \md P$ ssi $TS \md P$.
+      \qed
+    \end{itemize}
+  \end{crlr}
+
+  \subsection{Propriétés de vivacité.}
+
+  L'idée est de s'assurer que "quelque chose de bon peut toujours arriver".
+
+  \begin{exm}
+    Avec $\mathrm{AP} = \{\mathsf{G}, \mathsf{Y}, \mathsf{R}\} $ et $TS$ défini comme en figure~\ref{fig:one-state-trafic-light}.
+    On a que $TS$ satisfait "si $\mathsf{R}$ à un instant donné alors $\mathsf{Y}$ à l'instant précédent" (on note cette propriété $P_\mathrm{safe}$).
+    Cependant $TS$ ne satisfait pas $P_\mathrm{live} := \{\sigma  \mid \exists^\infty t, \mathsf{R} \in \sigma(t)\}$.
+  \end{exm}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
+      \node[state, initial, initial where=left] (A) {};
+      \draw[->] (A) edge[loop below] (A);
+      \node[above=0.1cm of A] {$\{\mathsf{G}\}$};
+    \end{tikzpicture}
+    \caption{Un feu tricolore un peu dangereux}
+    \label{fig:one-state-trafic-light}
+  \end{figure}
+
+  \begin{defn}[Vivacité]
+    On dit que $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est une propriété de \textit{vivacité} si, pour tout mot fini $\hat{\sigma} \in (\mathbf{2}^\mathrm{AP})^\star$, il existe $\sigma \in (\mathbf{2}^\mathrm{AP})^\omega$ tel que $\hat{\sigma} \subseteq \sigma$ et $\sigma \in P$.
+  \end{defn}
+
+  \begin{exm}
+    Avec l'exemple de la BVM, les propriétés $(3)$ et $(4)$ sont des propriétés de vivacité.
+  \end{exm}
+
+  Dans la suite, on montrera le théorème de décomposition suivant en passant au point de vue topologique.
+
+  \begin{thm}
+    Pour toute propriété $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$, il existe
+    \begin{itemize}
+      \item  $P_\mathrm{safe}$ une propriété de sûreté,
+      \item  $P_\mathrm{live}$ une propriété de vivacité,
+    \end{itemize}
+    tels que $P = P_\mathrm{safe} \cap P_\mathrm{live}$.
+  \end{thm}
+
+  \begin{prop}
+    La propriété $\mathsf{True} := (\mathbf{2}^\mathrm{AP})^\omega \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est l'unique LT-property sur $\mathrm{AP}$ qui est une propriété de sûreté et de vivacité.
+  \end{prop}
+  \begin{prv}
+    \begin{itemize}
+      \item On a que $\mathsf{True}$ est une propriété de sûreté en posant l'ensemble des "mauvais comportements" comme $\mathsf{True}_\mathrm{bad} := \emptyset$.
+      \item On a que $\mathsf{True}$ est une propriété de vivacité car, pour tout mot fini $\hat{\sigma} \in (\mathbf{2}^\mathrm{AP})^\star$, il existe $\sigma \in (\mathbf{2}^\mathrm{AP})^\omega$ tel que $\hat{\sigma} \subseteq \sigma$.
+      \item \textbf{Unicité.}
+        Soit $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ de sûreté pour $P_\mathrm{bad} \subseteq (\mathbf{2}^\mathrm{AP})^\star$.
+        Si $P$ est une propriété de vivacité alors pour tout $\hat{\sigma} \in P_\mathrm{bad}$ alors il existe $\sigma \in P$ tel que $\hat{\sigma} \subseteq \sigma$.
+        Donc, on a que $P_\mathrm{bad} = \emptyset$ et donc $P = \mathsf{True}$.
+    \end{itemize}
+  \end{prv}
 \end{document}
