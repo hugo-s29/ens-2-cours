@@ -369,7 +369,7 @@
     \end{itemize}
   \end{prv}
 
-  \subsection{How to get PRGs? Cryptographic assumptions.}
+  \section{How to get PRGs? Cryptographic assumptions.}
 
   One example of a PRG is called RC4 (defined by Rivest in '87).
   It has some weaknesses.
@@ -437,6 +437,235 @@
 
   Then, if we find two elements $g^{x_0}$ in the baby steps and $h \cdot g^{-\sqrt{q} x_1}$ in the giant steps that are equal, then we get $h = g^{x_0} \cdot g^{\sqrt{q} x_1} = g^{x_0 + \sqrt{q} x_1}$, thus we solve the DLP solution.
 
-  That's a $\mathrm{O}(\sqrt{|G|})$ time algorithm for finding the DLP.\footnote{The intersection of two lists of length in $\sqrt{|G|}$ is a bit more complex than it seems.}
+  That's a $\mathrm{O}\big(\sqrt{|G|}\big)$ time algorithm for finding the DLP.\footnote{The intersection of two lists of length $\sqrt{|G|}$ can be easily done in $\mathrm{O}\big(\sqrt{|G|}\big)$ by using a hashmap, for example, to check if there are collisions.}\showfootnote
 
+  \begin{defn}[Computational Diffie-Hellman Problem, CDH]
+    The CDH problem is defined as taking as input $g$ a generator of a group $G$, and two elements $g^a$ and  $g^b$.
+    The goal is to find $g^{ab}$.
+    This is not as easy as computing $g^a \cdot g^b$ as it'd give us $g^{a+b}$ which is generally different from $g^{ab}$.
+  \end{defn}
+
+  If DLP can be easily solved, then so is CDH: we say CDH \textit{reduces} to DLP.
+  The other direction is still an open problem, with partial results by Mauer and Wolf in '99.
+
+  \begin{defn}[Decisional Diffie Hellman, DDH]
+    The DDH is the problem defined by the following.
+    It takes as input three elements $h_1$, $h_2$ and $h_3$ of $G$ either uniformly chosen (\textit{i.e.}\ $g^a, g^b, g^c$ for  $a,b,c \gets \mathcal{U}(\mathds{Z} / p \mathds{Z})$) or of the form $(g^a, g^b, g^{ab})$ for some $a,b \in \mathcal{U}(\mathds{Z} / p \mathds{Z})$.
+    The goal is to distinguish between the two cases.
+
+    The advantage of an distinguisher $\mathcal{A}$ is given by 
+    \begin{align*}
+      \mathrm{Adv}^\mathrm{DDH}(\mathcal{A}) := \Big| \Pr_{\substack{a, b, c \gets \mathcal{U}(\mathds{Z} / p \mathds{Z})\\ \mathrm{coins}(\mathcal{A})}}&[\mathcal{A}(g^a, g^b, g^c) \text{ outputs } 1]\\
+        &{}- \Pr_{\substack{a, b \gets \mathcal{U}(\mathds{Z} / p \mathds{Z})\\ \mathrm{coins}(\mathcal{A})}}[\mathcal{A}(g^a, g^b, g^{ab}) \text{ outputs } 1]
+      \Big|
+    ,\end{align*}
+    where the "$\mathrm{coins}(\mathcal{A})$" means the internal randomness of $\mathcal{A}$.
+
+    If $\mathrm{Adv}^\mathrm{DDH}(\mathcal{A})$ is non-negligible then we say $\mathcal{A}$  \textit{solves} the DDH problem.
+  \end{defn}
+
+  If one can solve the CDH problem, then we can also solve the DDH.
+  But we know groups for which DDH is easy and CDH is presumed/believed to be hard (elliptic curves with efficient pairings, which are very frequently used in blockchain or BLS signatures).
+  The DDH direclty gives a PRG (we will use $\mathsf{G}$ for the PRG and $G$ for the group):
+  \begin{align*}
+    \mathsf{G}: (\mathds{Z} / p \mathds{Z}) \times (\mathds{Z} / p \mathds{Z}) &\longrightarrow G \times G \times G \\
+    (a,b) &\longmapsto (g^a, g^b, g^{ab})
+  .\end{align*}
+  It is expanding if the bit-size of the group elements is around $\log_2 p$.
+  "It is indistinguishable from uniform by the DDH assumption."
+
+  The DDH problem only says that $(g^a, g^b, g^{ab})_{a,b \in \mathds{Z} / p \mathds{Z}} \simeq^\mathrm{c} \mathcal{U}(G^3)$ but not uniform over the bit-strings of the same length.
+  It is not obvious  how to do one-time encryption by XORing.
+  To tackle this we can use a hash function $H$ and output $H(g^a, g^b, g^{ab})$ (and we'd need to modify the DDH problem to put $H$ in it).
+
+
+  The discrete logarithm problem is quantumly easy with Shor's algorithm (Shor '94).
+  Thus DLP-based cryptography is not quantum-safe.
+  This is the main assumption used for quantum-safe (or post-quantum) cryptography.
+  For example, the LWE (learning with errors, 2005, Regev) is defined as in the following.
+
+  \begin{defn}[Search LWE]
+    Fix $n, m, q, B$ four integers.
+    The inputs are a matrix  $A$ of size $n \times m$ of elements chosen uniformly in $\mathds{Z} / q \mathds{Z}$, a vector $b$ of size $m$ such that $b = A s + e \mod q$ where $s$ is chosen uniformly in $(\mathds{Z} / q \mathds{Z})^n$, $e$ is chosen uniformly in $\llbracket {-B}, B\rrbracket^m$ with the assumption that $B \ll q$.
+    The goal is to find such a vector $s$.
+
+    We call:
+    \begin{itemize}
+      \item $s$, the secret;
+      \item $e$, the error;
+      \item $n$, the LWE dimension;
+      \item $m$, the number of samples;
+      \item $q$, the modulus.
+    \end{itemize}
+  \end{defn}
+
+  \begin{rmk}
+    \begin{itemize}
+      \item The integer $q$ does not have to be prime, but to prove thins it's much easier when it is, as $\mathds{Z} /q \mathds{Z}$ is a field (we will restrict ourselves to this case).
+      \item If $B = 0$ then LWE is easy as we can use probabilistic arguments to solve the systems.
+      \item If $B$ is large, LWE is trivially hard as $(A, b)$ is uniform so the vector $s$ is not even well-defined.
+      \item Typically, $m$ is a bit larger than $n$, $q$ is a small polynomial in $n$ and $B$ is like $\sqrt{n}$.
+        In this case, the best-known  algorithms (classical and quantum) cost $2^{\Omega(n)}$.
+      \item Very often, the error vector $e$ is sampled from other distributions than $\mathcal{U}(\llbracket {-B}, B\rrbracket)$.
+        The most frequent choice is the use of an integer Gaussian as it simplify proofs.
+    \end{itemize}
+  \end{rmk}
+  % TODO figure of the integer Gaussian
+
+  \begin{defn}[Decision LWE]
+    Extending from the definition of the search LWE, we define the Decision LWE problem as the following: Given $(A, b)$ which is either uniform in $(\mathds{Z} / q \mathds{Z})^{m \times n} \times (\mathds{Z}/q\mathds{Z})^m$ or of the form $(A, As + b)$ as before, tell in which case you are with non-negligible advantage.
+
+    We define the advantage of some distinguisher $\mathcal{A}$ as:
+    \begin{align*}
+      \mathrm{Adv}^\mathrm{LWE}(\mathcal{A}) := \Big| &\Pr_{\substack{(A, b) \text{ uniform} \mod q \\ \mathrm{coins}(\mathcal{A})}}[\mathcal{A}(A, b) \text{ outputs } 1]\\
+      &{}- \Pr_{\substack{(A, s) \text{ uniform} \mod q\\ e \gets \mathcal{U}(\llbracket {-B}, B\rrbracket)\\    \mathrm{coins}(\mathcal{A})}}[\mathcal{A}(A, As + e) \text{ outputs } 1]
+      \Big|
+    .\end{align*}
+  \end{defn}
+
+  A surprising fact is that search LWE and decision LWE are equivalent (in the sense that there are reductions to one another in polynomial time).
+
+  Also, the decision LWE gives us a PRG:
+  \begin{align*}
+    \mathsf{G}: (\mathds{Z} / q \mathds{Z})^{m \times n} \times (\mathds{Z} / q \mathds{Z})^n \times \llbracket {-B}, B\rrbracket^m  &\longrightarrow (\mathds{Z} / q \mathds{Z})^{m \times n} \times (\mathds{Z} / q \mathds{Z})^m \\
+    (A, s, e) &\longmapsto (A, A s + e)
+  .\end{align*}
+  This really is a PRG as:
+  \begin{itemize}
+    \item the output is computationally indistinguishable from uniform (over $(\mathds{Z}/q \mathds{Z})^{m \times n} \times (\mathds{Z} / q \mathds{Z})^m$;
+    \item it is expanding (if $m \gg n$ and $q \gg B$) as we have
+      \begin{itemize}
+        \item $m n + \log q + m \log q + m (1 + \log B)$ bits for the input,
+        \item  $mn \log q + m \log n$ bits for the output.
+      \end{itemize}
+  \end{itemize}
+
+  In a way, search LWE is a kind of DLP problem in additive notation\ldots\ with some noise.
+
+  \section{Pseudo Random Functions.}
+
+  A PRG $G : \{0,1\}^s \to \{0,1\}^n$ with $n > s$ is such that  $G(s)$ looks uniform when $s$ is uniform.
+  In terms of difficulty, a PRG-based encryption is only one-time secure.
+
+  \begin{defn}
+    A \textit{pseudo random function} or \textit{PRG} is a deterministic  and efficiently computable function $F : \{0,1\}^s \times \{0,1\}^n \to \{0,1\}^m$ such that $F(k, -)$ is computationally indistinguishable from a truly uniform function from $\{0,1\}^n$ to $\{0,1\}^m$ when $k$ is uniform in $\{0,1\}^s$.
+  \end{defn}
+
+  \begin{rmk}
+    We can see this as a game between a challenger $\mathcal{C}$ and an adversary $\mathcal{A}$.
+    The goal is to distinguish between two kind of games.
+
+    The "Real" experiment is:
+    \begin{itemize}
+      \item The challenger picks a key $k$ uniformly over $\{0,1\}^s$.
+      \item The attacker picks an input $x_1$ and sends it to $\mathcal{C}$.
+      \item The challenger computes  $y_1 := F(k, x_1)$ and sends it to $\mathcal{A}$.
+      \item The attacker picks an input $x_2$ and sends it to $\mathcal{C}$.
+      \item The challenger computes  $y_2 := F(k, x_2)$ and sends it to $\mathcal{A}$.
+      \item \textit{etc}
+      \item The attacker picks an input $x_Q$ and sends it to $\mathcal{C}$.
+      \item The challenger computes  $y_Q := F(k, x_Q)$ and sends it to $\mathcal{A}$.
+      \item Finally the attacker outputs a bit $b \in \{0,1\}$.
+    \end{itemize}
+
+    The "Ideal" experiment is:
+    \begin{itemize}
+      \item The challenger picks a function $f$ uniformly over $\{0,1\}^n \to \{0,1\}^m$.
+      \item The attacker picks an input $x_1$ and sends it to $\mathcal{C}$.
+      \item The challenger computes  $y_1 := f(x_1)$ and sends it to $\mathcal{A}$.
+      \item The attacker picks an input $x_2$ and sends it to $\mathcal{C}$.
+      \item The challenger computes  $y_2 := f(x_2)$ and sends it to $\mathcal{A}$.
+      \item \textit{etc}
+      \item The attacker picks an input $x_Q$ and sends it to $\mathcal{C}$.
+      \item The challenger computes  $y_Q := f(x_Q)$ and sends it to $\mathcal{A}$.
+      \item Finally the attacker outputs a bit $b \in \{0,1\}$.
+    \end{itemize}
+
+    The advantage is defined by:
+    \[
+      \mathrm{Adv}(\mathcal{A}) := \big| \Pr_{\mathrm{coins}(\mathcal{C}), \mathrm{coins}(\mathcal{A})}[\mathcal{A} \xrightarrow{\text{"Real" exp.}} 1] - \Pr_{\mathrm{coins}(\mathcal{C}), \mathrm{coins}(\mathcal{A})}[\mathcal{A} \xrightarrow{\text{"Ideal" exp.}} 1] \big|
+    .\]
+
+    We say that the PRF is \textit{secure} if there is no poly-time adversary $\mathcal{A}$ such that $\mathrm{Adv}(\mathcal{A})$ is non-negligible.
+  \end{rmk}
+
+  \begin{rmk}
+    This definitions as a game can be tricky to deal with, as the challenger $\mathcal{C}$ has to pick uniformly a function $f : \{0,1\} ^n \to \{0,1\}^m$.
+
+    We can define a uniform function to be a function (if you query twice the same input, you get the same output) such that for each input $x$ the output $f(x)$ is uniform.
+
+    To deal with such a function, we can use a table to store outputs for already-given inputs.
+    If the input is in the table, we give the corresponding output. Otherwise, we sample uniformly in the output space.
+
+    Now it is clear that $\mathcal{C}$ is efficient as the number of queries is bounded by the runtime of $\mathcal{A}$.
+  \end{rmk}
+
+  The number of functions for the "Real" experiment is $2^s$, one for each key.
+  The number of functions for the "Ideal" experiment is $(2^m)^{(2^n)}$.
+  There is a large difference in the number of such functions.
+
+  \section{Equivalence between PRGs and PRFs.}
+
+  We will show (in the following classes) that the existence of a PRG is equivalent to the existence of a PRF.
+
+  \subsection{From PRF to PRG.}
+
+  This is the "easy part."
+  Let $F : \{0,1\}^s \times \{0,1\}^n \to \{0,1\}^m$ be a PRF.
+
+  How to build a PRG $G : \{0,1\}^s \to \{0,1\}^{\ell m}$ for an arbitrary (but small) integer~$\ell \ge 1$?
+
+  We can define
+  \begin{align*}
+    G: \{0,1\}^s &\longrightarrow \{0,1\}^{\ell m} \\
+    k &\longmapsto F(k, \bar{0}) || F(k, \bar{1}) || \cdots || F(k, \overline{\ell-1}) 
+  ,\end{align*}
+  where $\bar{n}$ is the number $n$ written in binary in $\{0,1\}^s$.
+
+  \begin{lem}
+    The generator $G$ is a PRG.
+  \end{lem}
+  \begin{prv}
+    We proceed by reduction. Assume that we have a distinguisher $\mathcal{A}$ against $G$.
+    I want to build a PRF distinguisher $\mathcal{B}$ against the PRF $F$, using $\mathcal{A}$.
+
+    Let $\mathcal{C}$ be a PRF challenger.
+    The $\mathcal{B}$ will be a PRF attacker while also being a PRG challenger.
+    Finally, $\mathcal{A}$ will be the PRG attacker.
+    \begin{itemize}
+      \item Initially, $\mathcal{C}$ chooses whether it'll play the "Real" or "Ideal".
+      \item $\mathcal{B}$ will send $\bar{0}$ to $\mathcal{C}$.
+      \item $\mathcal{C}$ will return some value $y_0$.
+      \item $\mathcal{B}$ will send $\bar{1}$ to $\mathcal{C}$.
+      \item $\mathcal{C}$ will return some value $y_1$.
+      \item \textit{etc}
+      \item $\mathcal{B}$ will send $\overline{\ell-1}$ to $\mathcal{C}$.
+      \item $\mathcal{C}$ will return some value $y_{\ell - 1}$.
+      \item Then, $\mathcal{B}$ will send $\mathcal{A}$ the string
+         \[
+        y_0 || y_1 || \cdots  || y_{\ell-1}
+        .\]
+      \item Finally, $\mathcal{A}$ will send $\mathcal{B}$ a bit, that $\mathcal{B}$ will send $\mathcal{C}$.
+    \end{itemize}
+
+    We can consider two cases.
+    \begin{description}
+      \item[Case 1.] Challenger $\mathcal{C}$ plays the "real" experiment, \textit{i.e.}\ it samples $k$ uniformly and sets $y_i = F(k, \bar{i})$.
+        Thus, $\mathcal{A}$ gets \[
+          F(k, \bar{1}) || \ldots|| F(k, \overline{\ell-1}) = G(k)
+        .\] 
+      \item[Case 2.]
+        Challenger $\mathcal{C}$ plays the "ideal" experiment, \textit{i.e.}\ the replies $y_i$ to queries on different $i$s are chosen  uniformly and independent.
+        Thus, $\mathcal{A}$ gets $y_0 || \cdots  || y_{\ell- 1}$ which is uniform.
+    \end{description}
+
+    We have that 
+    \begin{align*}
+      \mathrm{Adv}(\mathcal{B}) &= \big| \Pr[\mathcal{B} \xrightarrow{\text{"real" exp.}} 1] - \Pr[\mathcal{B} \xrightarrow{\text{"ideal" exp.}} 1]  \big|\\
+                                &= \big| \Pr_{k \gets \mathcal{U}(\{0,1\}^s)}[\mathcal{A}(G(k)) \to 1] - \Pr_{y \gets \mathcal{U}(\{0,1\}^{\ell m})}[\mathcal{A}(y) \to 1]\big|
+    ,\end{align*}
+    which is non-negligible as $\mathcal{A}$ is a PRG attacker for $G$.
+    Thus $\mathcal{B}$ has a non-negligible advantage in breaking the PRF $F$.
+    Finally, if $\mathcal{A}$ is poly-time then so is  $\mathcal{B}$.
+  \end{prv}
 \end{document}
