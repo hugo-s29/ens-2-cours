@@ -1,0 +1,83 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Ordres partiels et treillis.}
+
+  \section{Ordres partiels.}
+  \begin{defn}
+    Un \textit{ordre partiel} (ou \textit{poset} en anglais) est une paire $(P,{\le})$ où $\le$ est une relation binaire sur $P$ telle que 
+    \begin{itemize}
+      \item (\textit{reflexivité}) $\forall  x \in P, x \le x$ ;
+      \item (\textit{transitivité}) $\forall x, y \in P, x \le y \implies y \le z \implies x \le z$ ;
+      \item (\textit{antisymétrie}) $\forall x, y \in P, x \le y \implies y \le x \implies x = y$.
+    \end{itemize}
+
+    Un préodre est une relation binaire reflexive et transitive.
+  \end{defn}
+
+  \begin{exm}
+    On donne quelques exemples de poset :
+    \begin{enumerate}
+      \item $(\wp(X), \subseteq)$, l'inclusion dans les parties de $X$
+      \item $(\Omega X, \subseteq)$, l'inclusion dans les ouverts de $X$
+      \item $(\Sigma^\star, \subseteq)$, la relation préfixe dans les mots sur $\Sigma$
+    \end{enumerate}
+    Attention, dans les trois exemples, il existe deux éléments $u, v$ où
+    \[
+      u \not\le v
+      \quad\text{et}\quad
+      v \not\le u
+    .\] 
+  \end{exm}
+
+  \begin{defn}[Dual]
+    Soit $(P, \le)$ un poset.
+    Le \textit{dual} de $P$ est $(P, \le)^\mathrm{op} := (P, \ge)$ où
+    \[
+    a \ge b \iff b \le a
+    .\] 
+  \end{defn}
+
+  \begin{defn}[Fonction (anti)monotone]
+    Soit $(P, \le_P)$ et $(L, \le_L)$ deux posets.
+    Une fonction $f : P \to L$ est \textit{monotone} si pour tout $a, b \in P$ on a 
+    \[
+    a \le_P b \implies f(a) \le_L f(b)
+    .\]
+
+    On dit que $f : (P, \le) \to (L, \le)$ est \textit{antimonotone} si $f : {(P, \flip{\le_P})} = (P, \le_P)^\mathrm{op} \to (L, \le_L)$ est monotone, autrement dit pour tout $a, b \in P$ on a  
+    \[
+      a \le_P b \implies f(a) \ge_L f(b)
+    .\]
+  \end{defn}
+
+  \section{Treillis complet.}
+
+  \begin{defn}
+    Soit $(A, {\le})$ un poset et $S \subseteq A$.
+    \begin{itemize}
+      \item Un \textit{upper bound} de $S$ est un élément $a \in A$ tel que $\forall s \in S$, $s \le a$.
+      \item Un \textit{least upper bound} (\textit{lub} ou \textit{sup}) de $S$ est un upper bound $a \in A$ de $S$ tel que, pour tout upper bound $b \in A$ de $S$, on a $a \le b$.
+    \end{itemize}
+
+    Par dualité, on a les définitions suivantes.
+    \begin{itemize}
+      \item Un élément $a \in A$ est un \textit{lower bound} de $S$ ssi $a$ est un upper bound de $S$ dans $A^\mathrm{op}$.
+      \item Un élément $a \in A$ est un \textit{greatest lower bound} (\textit{glb}, \textit{inf}) de $S$ ssi $a$ est un least upper bound de $S$ dans $A^\mathrm{op}$.
+    \end{itemize}
+  \end{defn}
+
+  \begin{exm}
+    Soit $S \subseteq \wp(X)$ alors le least upper bound de $S$ dans $(\wp(X), \subseteq)$ est $\bigcup S \in \wp(X)$.
+    Le greatest lower bound de $S$ dans $(\wp(X), \subseteq)$ est $\bigcap S \in \wp(X)$.
+  \end{exm}
+
+  \begin{exm}
+    Soit $S \subseteq \Omega X$ alors le least upper bound dans ${(\Omega X, \subseteq)}$ est $\bigcup S \in \Omega X$.
+    Le greatest lower bound dans $(\Omega X, \subseteq)$ n'existe pas forcément.
+  \end{exm}
+
+  \begin{exm}
+    
+  \end{exm}
+\end{document}

@@ -15,15 +15,197 @@
     On a toujours $\emptyset, X \in \Omega X$ avec $\emptyset = \bigcup \emptyset$ et $X = \bigcap \emptyset$.
   \end{rmk}
 
-  \begin{rmk}[Intuition]
+  \begin{exm}[Topologie sur $\Sigma^\omega$ et intuition]
     On peut voir les ouverts comme "analogues" aux ensembles récursivement énumérables.
 
-    Dans la suite, on va définir une topologie  sur $\Sigma^\omega$ où les ouverts sont  $\mathsf{ext}(W)$ où $W \subseteq \Sigma^\star$ et $\mathsf{ext}(W) = \bigcup_{u \in W} \mathsf{ext}(u)$ et 
+    On définit une topologie  sur $\Sigma^\omega$ où les ouverts sont  $\mathsf{ext}(W)$ où $W \subseteq \Sigma^\star$ et $\mathsf{ext}(W) = \bigcup_{u \in W} \mathsf{ext}(u)$ et 
     \[
     \mathsf{ext}(u) = \{\sigma \in \Sigma^\omega  \mid u \subseteq \sigma\} 
     .\]
 
     Ainsi, si on a une manière d'énumérer $W$, on peut tester si $u \in \mathsf{ext}(W)$ en temps fini, mais il n'est pas forcément possible de vérifier que $u \not\in \mathsf{ext}(W)$.
+  \end{exm}
+
+  \begin{defn}
+    Soit $(X, \Omega X)$ un espace topologique.
+    Alors, on appelle \textit{fermé} un sous-ensemble $C \subseteq X$ tel que $X \setminus C \in \Omega X$.
+  \end{defn}
+
+  \begin{rmk}
+    On a donc que $\emptyset$ et $X$ sont toujours fermés.
   \end{rmk}
 
+  \begin{rmk}
+    L'ensemble des fermés sur $(X, \Omega X)$ est stable par 
+    \begin{itemize}
+      \item intersections arbitraire ;
+      \item unions finies.
+    \end{itemize}
+    Ce sont les "duales" des propriétés de stabilité des ouverts.
+  \end{rmk}
+
+  Avec quelques manipulations "simples", on peut arriver à la caractérisation suivante.
+
+  \begin{lem}
+    Soit $(X, \Omega X)$ un espace topologique.
+    \begin{itemize}
+      \item On a que $A \subseteq X$ est un ouvert ssi $\forall x \in X$ on a l'équivalence suivante 
+        \[
+        x \in A \iff \exists  U \in \Omega X, \quad x \in U \subseteq A
+        .\]
+      \item On a que $A \subseteq X$ est un fermé ssi $\forall x \in X$ on a l'équivalence suivante 
+        \[
+        x \in A \iff \forall U \in \Omega X, \quad (x \in U \implies A \cap U \neq \emptyset)
+        .\]
+    \end{itemize}
+  \end{lem}
+
+  \begin{lem}[Avec $\Sigma^\omega$]
+     \begin{itemize}
+      \item Sur $\Sigma^\omega$, on a que  $A \subseteq \Sigma^\omega$ est ouvert ssi $\forall \sigma \in \Sigma^\omega$, on a l'équivalence suivante 
+        \[
+        \sigma \in A \iff \exists \hat{\sigma} \subseteq \sigma, \mathsf{ext}(\hat{\sigma}) \subseteq A
+        .\] 
+      \item Sur $\Sigma^\omega$, on a que  $A \subseteq \Sigma^\omega$ est fermé ssi $\forall \sigma \in \Sigma^\omega$, on a l'équivalence suivante 
+        \[
+        \sigma \in A \iff \forall \hat{\sigma} \subseteq \sigma, \mathsf{ext}(\hat{\sigma}) \cap A \neq \emptyset
+        ,\] 
+        autrement dit,\[
+        \sigma \in A \iff \forall n \in \mathds{N}, \begin{cases}
+          \mathsf{ext}(\sigma(0)\ldots \sigma(n)) \cap A \neq \emptyset\\
+          \quad\quad\quad\quad\vertical\iff\\
+          \forall \hat{\sigma} \subseteq \sigma, \exists \beta \supseteq \hat{\sigma}, \beta \in A.
+        \end{cases}
+        \]
+    \end{itemize}
+  \end{lem}
+
+
+  \begin{exm}
+    L'ensemble $\{\mathsf{a}\}^\omega$ est un fermé mais pas un ouvert.
+    En effet, si $\hat{\sigma} \subseteq \mathsf{a}^\omega$ alors $\hat{\sigma} = \mathsf{a}^n$, mais, si $|\Sigma| \ge 2$,
+    \[
+    \mathsf{ext}(\mathsf{a}^n) \not\subseteq \{\mathsf{a}^\omega\} 
+    .\]
+  \end{exm}
+
+  \begin{crlr}
+    Une propriété $P\subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est de sûreté ssi $P$ est un fermé.
+  \end{crlr}
+  \begin{prv}
+    L'idée est que $\mathsf{ext}(P_\mathrm{bad})$ est un ouvert et que \[
+    P = (\mathbf{2}^\mathrm{AP})^\omega \setminus \mathsf{ext}(P_\mathrm{bad})
+    .\]
+  \end{prv}
+
+  \begin{prop}[Clôture]
+    Soit $A \subseteq X$ où $(X, \Omega X)$ est un espace topologique.
+    Alors, 
+    \[
+    \bar{A} := \bigcap_{A \subseteq C \text{ où } C \text{ fermé}} C
+    \]
+    est un fermé.
+  \end{prop}
+
+
+  \begin{rmk}
+    On a que $A$ est un fermé ssi $\bar{A} = A$.
+  \end{rmk}
+
+  \section{Théorème de décomposition.}
+
+  \begin{defn}
+    Pour $(X, \Omega X)$ un espace topologique, on dit que $A \subseteq X$ est \textit{dense} si \[
+    \forall U \in \Omega X, \quad U \neq \emptyset \implies U \cap A \neq \emptyset
+    .\] 
+  \end{defn}
+
+  \begin{exm}
+    Une partie $A \subseteq \Sigma^\omega$ est dense ssi 
+    \[
+    \forall u \in \Sigma^\star \quad \mathsf{ext}(u) \cap A \neq \emptyset
+    ,\] 
+    autrement dit, pour tout mot fini $u \in \Sigma^\star$, il existe $\sigma \in \Sigma^\omega$ qui étend $u$ (\textit{i.e.} $u \subseteq \sigma$) et tel que $\sigma \in A$.
+  \end{exm}
+
+  \begin{lem}
+    On a que $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est une propriété de vivacité ssi $P$ est dense.
+  \end{lem}
+
+  \begin{thm}[Décomposition]
+    Soit $(X, \Omega X)$ un espace et $A \subseteq X$.
+    Alors il existe $C \subseteq X$ un fermé et $D \subseteq X$ dense tel que 
+    \[
+    A = C \cap D
+    .\] 
+  \end{thm}
+  \begin{prv}
+    On pose $C := \bar{A}$ et $D := A \cup (X \setminus \bar{A})$.
+    Ainsi, on a bien que $A = C \cap D$.
+    On a aussi que $C$ est fermé.
+    Montrons que $D$ est dense.
+
+    Soit $U \in \Omega X$ non vide.
+    Si $U \cap A = \emptyset$ alors $A \subseteq X \setminus U$, qui est un fermé.
+    Donc $\bar{A} \subseteq X \setminus U$ et $U \subseteq X \setminus \bar{A}$.
+  \end{prv}
+
+  \section{Bases.}
+
+  \begin{defn}
+    Soit $X$ un ensemble et $\mathcal{B} \subseteq \wp(X)$ tel que $\mathcal{B}$ est stable par intersections finies.
+    Alors, 
+    \[
+      \Omega := \mleft\{\,\bigcup_{i \in I} B_i \;\middle|\; \forall i \in I, B_i \in \mathcal{B}\,\mright\} 
+    \]
+    est une topologie sur $X$ et $\mathcal{B}$ est appelée \textit{base} de $\Omega$.
+    Autrement dit, on a défini
+    \[
+    \Omega := \mleft\{\,\bigcup \mathcal{F}  \;\middle|\; \mathcal{F} \subseteq \mathcal{B}\,\mright\} 
+    .\] 
+  \end{defn}
+
+  \begin{lem}[Quelques propriétés]
+    \begin{itemize}
+      \item Si $u \subseteq v$ alors $\mathsf{ext}(v) \subseteq \mathsf{ext}(u)$.
+      \item Si $|\Sigma| \ge 2$ et $\mathsf{ext}(v) \subseteq \mathsf{ext}(u)$ alors $u \subseteq v$.
+    \end{itemize}
+    (Attention à la contravariance !)
+
+    \begin{itemize}
+      \item Pour $u, v \in \Sigma^\star$, 
+        on a 
+        \[
+        \mathsf{ext}(u) \cap \mathsf{ext}(v) = \begin{cases}
+          \mathsf{ext}(v) & \text{ si } u \subseteq v\\
+          \mathsf{ext}(u) & \text{ si } v \subseteq u\\
+          \emptyset & \text{ sinon}.
+        \end{cases}
+        \] 
+    \end{itemize}
+  \end{lem}
+
+  \begin{rmk}
+    Sur $\Sigma^\omega$, on a que pour tout ouvert $U$, il existe $W \subseteq \Sigma^\star$ tel que $U = \bigcup_{v \in W} \mathsf{ext}(v)$.
+    Avec le lemme précédent, on a que $\Omega\Sigma^\omega$ a pour base 
+    \[
+    \{\mathsf{ext}(u)  \mid u \in \Sigma^\star\}  \cup \{\emptyset\} 
+    .\]
+  \end{rmk}
+
+  \begin{rmk}
+    On a $\mathsf{ext}(\varepsilon) = \Sigma^\omega$.
+  \end{rmk}
+
+  \begin{rmk}
+    L'ensemble $\Sigma^\omega$ est un \textit{espace métrique complet} pour la distance 
+    \begin{align*}
+      d: \Sigma^\omega \times \Sigma^\omega &\longrightarrow [0,1] \\
+      \alpha, \beta &\longmapsto \begin{cases}
+        0 & \text{ si } \alpha = \beta\\
+        1 / {2^{\min n  \mid \alpha(n) \neq \beta(n)}} & \text{ sinon}.
+      \end{cases}
+    \end{align*}
+    On a que $d(\alpha, \gamma) \le \max\big(d(\alpha, \beta), d(\beta, \gamma)\big)$.
+  \end{rmk}
 \end{document}

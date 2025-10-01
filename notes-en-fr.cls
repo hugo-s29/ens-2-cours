@@ -20,6 +20,7 @@
 \RequirePackage{stmaryrd} % for \bigsqcap
 \RequirePackage{bold-extra}
 \RequirePackage{slantsc}
+\RequirePackage{multicol}
 \RequirePackage{mleftright} % scale sets like { BIG THING HERE |  }
 \RequirePackage{mathtools}
 \RequirePackage{tikz}
@@ -301,6 +302,10 @@
   \rotatebox[origin=c]{90}{\ensuremath{#1}}
 }
 
+\newcommand\flip[1]{
+  \scalebox{-1}[1]{\ensuremath{#1}}
+}
+
 \RequirePackage[makeroom, thicklines]{cancel}
 \renewcommand{\CancelColor}{\color{nicered}}
 
@@ -492,4 +497,17 @@
   \tfn@tablefootnoteprintout% 
   \gdef\tfn@fnt{0}% 
 }
+\makeatother
+
+
+\makeatletter
+\def\moverlay{\mathpalette\mov@rlay}
+\def\mov@rlay#1#2{\leavevmode\vtop{%
+   \baselineskip\z@skip \lineskiplimit-\maxdimen
+   \ialign{\hfil$\m@th#1##$\hfil\cr#2\crcr}}}
+\newcommand{\charfusion}[3][\mathord]{
+    #1{\ifx#1\mathop\vphantom{#2}\fi
+        \mathpalette\mov@rlay{#2\cr#3}
+      }
+    \ifx#1\mathop\expandafter\displaylimits\fi}
 \makeatother
