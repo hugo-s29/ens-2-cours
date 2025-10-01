@@ -92,4 +92,36 @@ if (strcmp(bcast_implementation_name, "default_bcast") == 0) {
 
 } else if (strcmp(bcast_implementation_name, "asynchronous_pipelined_bintree_bcast") == 0) { 
   // Each process send chunks successively chunk to its +0 neighbour
+
+  long int remaining = NUM_BYTES;
+  long int sent = 0;
+  bool first = true;
+  MPI_Request request;
+
+  rank = (rank - ROOT + num_procs) % num_procs;
+
+  do {
+    long int size = remaining >= chunk_size ? chunk_size : remaining;
+
+
+    for(int i = 0, old_size = num_procs; old_size > 1; old_size /= 2, i++) {
+      int new_size = old_size / 2;
+
+      if (rank % new_size == 0) {
+        if(rank % old_size >= new_size) {
+          int pair = rank - new_size;
+          MPI_Recv(buffer + sent, size, MPI_CHAR, pair, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+        } else {
+          if(!first) MPI_Wait(&request, MPI_STATUS_IGNORE);
+
+          int pair = rank + new_size;
+          MPI_Isend(buffer + sent, size, MPI_CHAR, pair, 0, MPI_COMM_WORLD, &request);
+          if (first) first = false;
+        }
+      }
+    }
+
+    sent += size;
+    remaining -= size;
+  } while (remaining > 0);
 }
