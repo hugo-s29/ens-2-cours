@@ -29,6 +29,7 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp sv/chap01.pdf ../web/public/data/ens2/sv-chap01.pdf
   cp sv/chap02.pdf ../web/public/data/ens2/sv-chap02.pdf
   cp sv/chap03.pdf ../web/public/data/ens2/sv-chap03.pdf
+  cp sv/chap04.pdf ../web/public/data/ens2/sv-chap04.pdf
 
   cp opt/td.pdf     ../web/public/data/ens2/opt-td.pdf
   cp opt/main.pdf   ../web/public/data/ens2/opt.pdf
@@ -40,7 +41,8 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp qcs/chap01.pdf ../web/public/data/ens2/qcs-chap01.pdf
   cp qcs/chap02.pdf ../web/public/data/ens2/qcs-chap02.pdf
   cp qcs/assignment1.pdf ../web/public/data/ens2/qcs-assignment1.pdf
-  cp qcs/assignment2.pdf ../web/public/data/ens2/qcs-assignment1.pdf
+  cp qcs/assignment2.pdf ../web/public/data/ens2/qcs-assignment2.pdf
+  cp qcs/assignment3.pdf ../web/public/data/ens2/qcs-assignment3.pdf
 
   cp hott/partie1.pdf ../web/public/data/ens2/hott-partie1.pdf
   cp hott/partie2.pdf ../web/public/data/ens2/hott-partie2.pdf
