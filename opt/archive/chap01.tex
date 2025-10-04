@@ -1,0 +1,45 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Application of linear programming.}
+
+
+  Consider the two player game of Morra:
+  \begin{itemize}
+    \item Alice hides one or two coins;
+    \item Bob hides one or two coins;
+    \item Alice and Bob announce one or two coins.
+  \end{itemize}
+  Each player will have a pair $(i, j) \in [2] \times [2]$ where $i$ is the hidden number of coins, and $j$ is the guess.
+  This is a zero-sum game: 
+
+  \ldots fill this \ldots
+
+  Alice wants a probability vector which maximizes the gain for every possible move of Bob.
+  In our example, it means maximizing \[
+  \min (-2 x_2 + 3x_3, 2 x_1 + 3 x_4, -3x_1 + 4x_4, 3 x_2 - 4x_3)
+  \] 
+  under the constraints $x_1 + x_2 + x_3 + x_4 = 1$ and $x_1, x_2, x_3, x_4 \ge 0$.
+  This is not exactly a linear program, but we can easily translate it into one:
+  \[
+    \text{maximize } y \text{ such that }
+    \begin{cases}
+      -2 x_2 + 3x_3 \ge y \\
+      2 x_1 + 3 x_4 \ge y \\
+      -3x_1 + 4x_4 \ge y \\
+      3 x_2 - 4x_3 \ge y \\
+      x_1 + x_2 + x_3 + x_4 = 1\\
+      x_1, x_2, x_3, x_4 \ge 0
+    \end{cases}
+  .\]
+  We can find an unconventional solution (alternatively, we can use the Simplex algorithm to get the solution).
+  The game is symmetric thus $y = 0$.
+  By multiplying the second by $3$ and third inequality by $2$, we get that  $x_4 = 0$ and $x_1 = 0$.
+  Finally, by $x_1 = 1 - x_3$, we can conclude that \[
+    x_3 \ge \frac{2}{5} = 0.4 \text{ and } x_1 \le \frac{3}{7} = 0.\overline{428571}
+  .\]
+
+  The optimal strategy for Alice is to chose $t \in [0.4, 0.\overline{428571}]$ and to play $(2, 1)$ with probability  $t$ and $(1, 2)$ with probability $1-t$.
+
+  Let us go back to the simplex algorithm.
+\end{document}

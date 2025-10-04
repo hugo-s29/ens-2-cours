@@ -1,0 +1,174 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Linear optimization.}
+
+  \begin{exm}
+    \begin{itemize}
+      \item A \textit{vertex cover} in a graph $G = (V, E)$ is a set of vertices  $X \subseteq V$ such that, for every edge $xy \in E$, $x \in X$ or $y \in X$. We will write $\tau(G)$ for the minimum size of a vertex cover of  $G$.
+      \item A \textit{matching} is a set of disjoint edges.
+        We will denote $\nu(G)$ is the maximum size of a matching.
+    \end{itemize}
+
+    \let\pentagon\triangle
+
+    For the pentagonal graph $G_\pentagon$, we have that that $\nu(G_\pentagon) = 2$ and  $\tau(G_\pentagon) = 3$.
+
+    Computing a vertex cover of minimum size is $\mathbf{NP}$-hard; and, finding a matching of maximal size is very tricky but polynomial (Edmond's theorem).
+    It is obvious that we have $\nu \le \tau$.
+
+    We will consider the \textit{fractional relaxation} of these problems.
+
+    Consider a variable $x_v$ for every vertex $v$ and ask that 
+    \begin{itemize}
+      \item $\forall uv \in E$, $x_u + x_v \ge 1$;
+      \item $\forall u \in V$, $x_u \ge 0$;
+    \end{itemize}
+    such that $\sum_{v \in V} x_v$ is minimal, which we will write $\tau^*(G)$.
+    This is called the \textit{parameter fractional vertex cover}.
+    We have that $\tau^*(G_\pentagon) = \frac{5}{2}$.
+
+    For matching, we put a weight $y_e$ for every edge $e$ such that
+    \begin{itemize}
+      \item $\forall v \in V$, $ \sum_{e \ni v} y_e \le 1$;
+      \item $y_e \ge 0$,
+    \end{itemize}
+    such that $\sum_{e \in E} y_e$ is maximized, which we will write $\nu^*$.
+    We have that $\nu^*(G_\pentagon) = \frac{5}{2}$.
+
+    The fact that $\nu^*(G_\pentagon) = \tau^*(G_\pentagon)$ is a more general fact:
+     \[
+    \nu \le \nu^* = \tau^* \le \tau
+    .\] 
+  \end{exm}
+
+  \begin{rmk}
+    \begin{itemize}
+      \item The problem of linear programming is in $\mathbf{P}$.
+        Linear solver programs can be done in polynomial time.
+        Thus, computing a released solution is possible and useful.
+      \item \textit{Duality}: Dual fractional parameters are equal, parameters come by pairs.
+    \end{itemize}
+  \end{rmk}
+
+  \begin{rmk}[Why is linear programming tractable?]
+    \begin{itemize}
+      \item There is an efficient algorithm called the \textit{simplex algorithm}, but it is not in $\mathbf{P}$.
+      \item There is a polynomial algorithm (using ellipsoids) but it is not useful in practice.
+      \item There is an algorithm which is both in $\mathbf{P}$ and efficient using interaction-point methods.
+    \end{itemize}
+  \end{rmk}
+
+  \section{The simplex algorithm.}
+
+  Let $(\mathrm{P})$ be the following linear problem:
+  \[
+    (\mathrm{P}) :
+    \text{maximize } 5x_1 + 4x_2 + 3x_3 \text{ with }
+    \begin{cases}
+    2x_1 + 3x_2 + x_3 &\le 5 \\
+    4x_1 + 3 x_2 + 2x_3 &\le 11\\
+    3 x_1 + 4x_2 + 2x_3 &\le 8\\
+    x_1, x_2, x_3 &\ge 0
+  \end{cases}
+  .\]
+  We can try to increase $x_1$, or $x_2$, or $x_3$ but what's the next step?
+  Introduce new variables called \textit{slack variables} $x_4, x_5, x_6$ (one for each constraint).
+
+  We can transform $(\mathrm{P})$ with:
+  \[
+    (\mathrm{D}_0) : \begin{cases}
+    x_4 = 5 - 2x_1 - 3 x_2 - x_3\\
+    x_5 = 11 - 4x_1 - x_2 - 2 x_3 \\
+    x_6 = 8 - x_1 - 4x_2 - 2x_3\\
+    z = 5x_1 + 4x_2 + 3x_3
+  \end{cases}
+  .\]
+  The problem of maximizing the objectif function of $(\mathrm{P})$ if equivalent to maximize $z$ under the constraints of the inequalities transformed into equalities and with $x_1, \ldots x_6 \ge 0$.
+
+  The problem $(\mathrm{D}_0)$ is the \textit{(initial) dictionary}.
+
+  To a dictionary, we associate a solution by setting to $0$ the non-basic variables $x_1, x_2, x_3$ and getting solutions for the basic variables $x_4, x_5, x_6$.
+  In our case, we would have $x_4 = 5$, $x_5 = 11$ and $x_6 = 8$, for an objective of $0$.
+
+  \textbf{\LARGE !}
+  If one of these values of the solution (here, $5, 11, 8$), would negative, there would be a problem.
+  We could have an empty domain (this is the problem of solving the decision problem associated to $(\mathrm{P})$).
+  We will see later how to solve this problem.
+
+  We can try by hand to increase $z$.
+  If we try to increase $x_1$, we have that the highest limitation for $x_1$ is $\frac{5}{2}$ (we can see that using $x_4, x_5, x_6 \ge 0$ by solving for $x_1$ with $x_2 = x_3 = 0$, this constraint is from the one on $x_4$).
+  We increase it, but\ldots\ what next?
+
+  Now, this is the idea of Dantzig: \textbf{Pivot}.
+  We will call $x_1$ the \textit{entering variable} and $x_4$ the \textit{leaving variable}.
+  We will then exchange the role of $x_1$ and $x_4$ and substitute:
+  \[
+    (\mathrm{D}_1)
+    :
+    \begin{cases}
+      x_1 = \frac{5}{2} - \frac{x_4}{2} - \frac{3 x_2}{2} - \frac{x_3}{2}\\
+      x_5 = 1 + 2x_4+ 5x_2 \\
+      x_6 = \frac{1}{2} + \frac{3}{2} x_4 - \frac{x_2}{2}\\
+      z = \frac{25}{4} - \frac{5x_4}{2} - \frac{7x_2}{2} + \frac{x_3}{2}
+    \end{cases}
+  .\]
+
+  We observe that $(\mathrm{D}_1)$ is equivalent to $(\mathrm{D}_0)$ and $(\mathrm{P})$ when $x_1, \ldots, x_6 \ge 0$.
+  We can now iterate the process, choosing a new entering variable.
+  To increase $z$, we only have one choice: increasing $x_3$.
+  To find the leaving variable, we have that $x_3 \le 1$ with the constraint on $x_6$.
+  We should then pivot $x_3$ and $x_6$:
+  \[
+    (\mathrm{D}_2)
+    \begin{cases}
+    x_1 = 2 - x_4 - 2x_2 + x_6\\
+    x_5 = 1 + 2x_4 + 5x_2 \\
+    x_3 = 1 + 3x_4 + x_2 - 2x_6\\
+    z = 13 - x_4 - 3x_2 - x_6
+  \end{cases}
+  .\]
+
+  Now, we have no choice for an entering variable.
+  This means we are on an \textit{\textbf{optimal solution}} and the simplex algorithm stops.
+
+  The solutions of $(\mathrm{D}_2)$ with $x_1, \ldots, x_6 \ge 0$ are equivalent to $(\mathrm{P})$.
+  This means that $z \le 13$.
+  The solution associated to $(\mathrm{D}_2)$ is \[
+    s_2 = (\underset{x_1} 2, \underset{x_2} 0, \underset{x_3} 1, \underset{x_4} 0, \underset{x_5} 1, \underset{x_6} 0)
+  .\]
+  The optimal for $(\mathrm{P})$ is $(2, 0, 1)$ for an objective of $13$.
+
+  \textbf{\LARGE !}
+  The linear problem $(\mathrm{D}_2)$ contains the certificate that $\mathrm{OPT} \le 13$.
+  In $z = 13 - x_4 - 3x_2 - x_6$, the variables $x_4$ and $x_6$ are slack and thus correspond to the constraints
+  \begin{itemize}
+    \item $x_4 \to 2x_1 + 3x_2 + x_3 \le 5$ ($\times 1$);
+    \item $x_6 \to 3x_1 + 4x_2 + 2x_3 \le 8$ ($\times 1$);
+  \end{itemize}
+  thus, the objective is \[
+  \mathrm{obj} \le  5x_1 + 7x_2 + 3x_3 \le 13
+  ,\]
+  which we obtain by summing the two rows.
+  We get back the original objective functions.
+  The certificate of optimality is: a non-negative combination of constraints is larger than the objective function.
+
+
+  \textbf{Intuition: What are pivots?}
+  The simplex moves from every vertex to another (adjacent) vertex of the polyhedron.
+
+
+  \textbf{How many steps?}
+  Consider a polyhedron $P$ with $n$ vertex and $m$ facets.
+  The \textit{skeleton} is the graph obtain from vertices of $P$ and edges of $P$.
+  An upper bound of the number of pivots is the diameter (\textit{i.e.}\ the distance between the furthest vertices) of $G$.
+
+  For the cube, we get that the dimension is $3$ with a diameter $3$ and $6$ facets.
+  For the $K_4$ the complete graph with $4$ vertices, we have a dimension of $3$, with $4$ facets and we have a diameter of $1$.
+
+  It is conjectured that the diameter is bounded by the number of facets minus the dimension (Hirsch conjecture).
+
+  If this conjecture is true, we have that there exists a sequence of pivots with length bounded by $n + m - n = m$.
+
+  This is false but polynomial versions are still open.
+\end{document}
