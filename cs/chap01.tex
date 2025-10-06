@@ -1,7 +1,7 @@
 \documentclass[./main]{subfiles}
 
 \begin{document}
-  \chapter{A perfectly secure symmetric encryption scheme: ONE-TIME PAD}
+  \chapter{Private key encryption.}
 
   This encryption scheme achieves information-theoric security.
 
@@ -661,11 +661,260 @@
 
     We have that 
     \begin{align*}
-      \mathrm{Adv}(\mathcal{B}) &= \big| \Pr[\mathcal{B} \xrightarrow{\text{"real" exp.}} 1] - \Pr[\mathcal{B} \xrightarrow{\text{"ideal" exp.}} 1]  \big|\\
+      \mathrm{Adv}(\mathcal{B}) &= \big| \Pr[\mathcal{B} \xrightarrow{\text{``Real'' exp.}} 1] - \Pr[\mathcal{B} \xrightarrow{\text{``Ideal'' exp.}} 1]  \big|\\
                                 &= \big| \Pr_{k \gets \mathcal{U}(\{0,1\}^s)}[\mathcal{A}(G(k)) \to 1] - \Pr_{y \gets \mathcal{U}(\{0,1\}^{\ell m})}[\mathcal{A}(y) \to 1]\big|
     ,\end{align*}
     which is non-negligible as $\mathcal{A}$ is a PRG attacker for $G$.
     Thus $\mathcal{B}$ has a non-negligible advantage in breaking the PRF $F$.
     Finally, if $\mathcal{A}$ is poly-time then so is  $\mathcal{B}$.
   \end{prv}
+
+
+  \subsection{From PRG to PRF.}
+
+  This construction of PRF from a PRG is the first non-trivial construction (it is called the GGM construction, from Goldreich, Geldwesser and Micali in the mid '80s).
+
+  Consider a PRG $G : \{0,1\}^n \to \{0,1\}^{2m}$.
+  We will define a PRF 
+  \[
+  F : \{0,1\}^{n} \times \{0,1\}^{m} \to \{0,1\}^n
+  .\] 
+
+  Let us do, as a warm-up, some small values of $m$.
+
+  \begin{description}
+    \item[Case $m = 1$.]
+      We define
+      \[
+        F(k, 0) := G(k)_{1-\!\!-n} \quad\quad \text{ and }\quad\quad F(k, 1) := G(k)_{n+1 -\!\!- 2n}
+      .\]
+      In this case, the proof of the secureness of the PRF is tautological: the first half is uniform and independent from the second half, which is also uniform.
+    \item[Case $m = 2$.]
+      For $m = 2$, I need a new idea as $G(k)$ has only $2n$ bits, but I need $4n$ pseudo-random bits (for inputs $00$, $01$, $10$, $11$).
+      The idea is to apply $G$ to itself.
+      If the first bit of the input is $0$, then apply $G$ to the first half of $G(k)$ and use case $m=1$ for that.
+      Otherwise (the first bit of the input is $1$), apply $G$ to the second half and proceed like the case $m = 1$.
+  \end{description}
+
+  For larger values of $m$, we consider a tree of height $m$, where leaves corresponds to outputs of $F$ in the sense that, if the path is labelled as $b_1, \ldots, b_m$, the leaf corresponds to $F(k, b_1 \ldots b_m)$.
+
+  As an algorithm, we get the following.
+
+  \begin{algorithm}[H]
+    \centering
+    \begin{algorithmic}
+      \Require $k, x \in \{0,1\}^m$
+
+      \State $\mathsf{tmp} \gets G(k) \in \{0,1\}^{2n}$
+
+      \For{$i = 1 \ldots m$}
+      \State $\mathsf{tmp} \gets \begin{cases}
+        G(\mathsf{tmp}_{1 -\!\!- n}) & \text{ if } x_i = 0\\
+        G(\mathsf{tmp}_{n+1 -\!\!- 2n}) & \text{ if } x_i = 1
+      \end{cases}$
+      \EndFor
+      \State \Return $\mathsf{tmp}$
+    \end{algorithmic}
+    \caption{Construction of a PRF from a PRG}
+  \end{algorithm}
+
+  It's indeed an efficient function $\{0,1\} ^n \times \{0,1\}^m \to \{0,1\}^n$. But why is it a PRF?
+
+  \textbf{Warning!} We can use the assumption that $G$ is a PRG only if its input is uniform.
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \foreach \x in {-1, 0} {
+        \draw (\x, 0) rectangle (\x+1, 0.5);
+      }
+
+      \foreach \x in {-2, -1, 0, 1} {
+        \draw (\x, -2) rectangle (\x+1, -1.5);
+      }
+
+      \foreach \x in {-4, -3, -2, -1, 0, 1, 2, 3} {
+        \draw (\x, -4) rectangle (\x+1, -3.5);
+        \draw[->, dashed, gray] (\x+0.5, -4) -- (\x+0.75, -4.5);
+        \draw[->, dashed, gray] (\x+0.5, -4) -- (\x+0.25, -4.5);
+      }
+
+      \draw[->] (-0.5, 0) to (-1.5,-1.5);
+      \draw[->] (-0.5, 0) to (-0.5,-1.5);
+      \draw[->] (+0.5, 0) to (+1.5,-1.5);
+      \draw[->] (+0.5, 0) to (+0.5,-1.5);
+
+      \draw[->] (-0.5, -2) to (-1.5,-3.5);
+      \draw[->] (-0.5, -2) to (-0.5,-3.5);
+      \draw[->] (+0.5, -2) to (+1.5,-3.5);
+      \draw[->] (+0.5, -2) to (+0.5,-3.5);
+      \draw[->] (-1.5, -2) to (-2.5,-3.5);
+      \draw[->] (-1.5, -2) to (-3.5,-3.5);
+      \draw[->] (+1.5, -2) to (+2.5,-3.5);
+      \draw[->] (+1.5, -2) to (+3.5,-3.5);
+    \end{tikzpicture}
+  \end{figure}
+
+
+  \begin{lem}
+    The constructed function is a PRF.
+  \end{lem}
+  \begin{prv}
+    Define the following games.
+    \begin{itemize}
+      \item $\mathrm{Hybrid}_0$ is the "Real" experience PRF game.
+      \item $\mathrm{Hybrid}_j$ is defined with the following changes:
+        \begin{itemize}
+          \item at the outset of the game, the challenger initializes an empty table $T$,
+          \item given a query $x_1 \ldots x_m$, the challenger executes the following algorithm:
+            \begin{itemize}
+              \item it looks at whether $(x_1 \ldots x_j , \mathsf{tmp}_{x_1 -\!\!- x_j}) \in T$, if so, define $\mathsf{tmp} := \mathsf{tmp}_{x_1 -\!\!-x_j}$, otherwise it samples $\mathsf{tmp} \gets \mathcal{U}(\{0,1\}^{2n})$ and appends $(x_1\ldots x_j, \mathsf{tmp})$ to $T$.
+                (this is ta lazy sampling of a uniform function $\{0,1\}^j \to \{0,1\}^{2n}$).
+              \item For $i = j + 1\ldots m$, it updates $\mathsf{tmp} \gets G(\mathsf{tmp}_{1 -\!\!- n})$ if $x_{j+1} $ is $0$, and the result of $G$ on the other half if $x_{j+1} = 1$.
+            \end{itemize}
+        \end{itemize}
+        This way, the game $\mathrm{Hybrid}_j$ is the initial game except that we "cut off" the first $j$ levels of the tree of calls to $G$, and replace them with uniform random values.
+    \end{itemize}
+    For $j = m$, the game $\mathrm{Hybrid}_m$ is exactly the "Ideal" experience of the PRF game.
+    We can bound the advantage using the triangular inequality:
+    \begin{align*}
+    \mathrm{Adv}_\mathrm{PRF}(\mathcal{A})
+    &= \big| \Pr[\mathcal{A} \xrightarrow{\text{Real}} 1] - \Pr[\mathcal{A} \xrightarrow{\text{Ideal}} 1] \big| \\
+    &\le \sum_{j=1}^m \big| \Pr[\mathcal{A} \xrightarrow{\mathrm{Hybrid}_j} 1] - \Pr[\mathcal{A} \xrightarrow{\mathrm{Hybrid}_{j+1}} 1] \big|
+    .\end{align*}
+    We have $m$ hybrids.
+
+
+    Continuing with hybrid games, we define
+    \begin{itemize}
+      \item $\mathrm{Hybrid}_{j,\ell}$ to be the same game as $\mathrm{Hybrid}_j$ except that, for the first $\ell$ prefixes $x_i \ldots x_{j+1}$ that are queried, use $\mathrm{Hybrid}_{j+1}$, for the next ones, use $\mathrm{Hybrid}_j$.
+        Here, $\ell \in \llbracket 0, q_{j+1}\rrbracket$ where $q_{j+1}$ is the number of $(n-j-1)$-prefixes that occur in the queries from the adversary.
+    \end{itemize}
+    The number of $\mathrm{Hybrid}_{j,\ell}$'s games is no larger than the number of queries made by $\mathcal{A}$, and $q$ is smaller than the run-time of $\mathcal{A}$, it is polynomial.
+    We also have that
+    \[
+    \mathrm{Adv}_{\mathrm{PRF}}(\mathcal{A}) \le \sum_{j=1}^m \sum_{\ell=1}^{q_{j+1}} \big|
+    \Pr[\mathcal{A} \xrightarrow{\mathrm{Hybrid}_{j,\ell}} 1]
+    -
+    \Pr[\mathcal{A} \xrightarrow{\mathrm{Hybrid}_{j,\ell-1}} 1]
+    \big|
+    .\]
+    The difference between $\mathrm{Hybrid}_{j, \ell}$ and $\mathrm{Hybrid}_{j, \ell+1}$ is exactly one call to $G$ on a uniform input.
+    Assuming $G$ is a secure  PRG, this advantage is $\mathrm{negl}(n) = n^{-\omega(1)}$.
+    Thus:
+    \[
+      \mathrm{Adv}_\mathrm{PRF}(\mathcal{A}) \le n^{-\omega(1)} \times m \times \max(q_{j+1}) \le n^{-\omega(1)} \times \underbrace{m \times q}_{\mathrm{poly}(n)} \le n^{-\omega(1)}
+    .\]
+    (The number of hybrid games must be less than a polynomial in $n$.)
+  \end{prv}
+
+  As a consequence, we have the following implications:
+  \[
+  \begin{tikzcd}
+    \text{DDH} \arrow[Rightarrow]{dr}{} \\
+    & \text{PRG} \arrow[Rightarrow, bend left]{r}{} & \text{PRF} \arrow[Rightarrow, bend left]{l}{}\\
+    \text{LWE} \arrow[Rightarrow]{ur}{} \\
+  \end{tikzcd}
+  .\]
+  These PRFs are not used in practice: for basic PRFs, we use ad-hoc constructions, for PRFs with more advanced functionalities, we direction constructions from LWE and DDH can be interesting.
+
+
+  \section{Key homomorphic PRF.}
+
+  Can we construct a PRF such that with the following property?
+  \[
+  F(k_1 \oplus k_2, x) = F(k_1, x) \oplus F(k_2, x)
+  .\]
+
+  We can make an ad-hoc construction, the old default PRF is DES (deterministic encryption standard).
+  DES  is based on a Feistel network with \textbf{16 rounds} (with distinct keys for every round, all derived from the "master" key).
+
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      \node (l0) at (-2, 0) {$\mathsf{left}_0$};
+      \node (r0) at (2, 0) {$\mathsf{right}_0$};
+      \draw (-0.5, -0.25) rectangle (-3.5, 0.25);
+      \draw (0.5, -0.25) rectangle (3.5, 0.25);
+
+      \draw (2, -0.25) -- (2, -3) -- (-2, -3) -- (-2, -3.75);
+
+      \node (l0) at (-2, -4) {$\mathsf{left}_0$};
+      \node (r0) at (2, -4) {$\mathsf{right}_0$};
+      \draw (-0.5, -3.75) rectangle (-3.5, -4.25);
+      \draw (0.5, -3.75) rectangle (3.5, -4.25);
+    \end{tikzpicture}
+  \end{figure}
+
+  A \textit{Feistel network} gives a permutation even if $f_k$ is not a permutation.
+
+  In the one presented above, we have $\mathsf{right}_0 = \mathsf{left}_1$, and $\mathsf{left}_0 = f_k(\mathsf{left}_1) \oplus \mathsf{right}_1$.
+
+  A PRP is a pseudo random permutation that come in two kinds: weak and strong.
+  \begin{itemize}
+    \item A \textit{weak PRP} is defined like a PRF except that $F(k, -)$ is a permutation for any key $k$.
+    \item A \textit{strong PRP} is a weak PRP except that $F(k, -)^{-1}$ should be efficient and the adversary is  given query access to both $F(k, -)$ and  $F(k, -)^{-1}$.
+  \end{itemize}
+
+  We can consider five exercises:
+  \begin{itemize}
+    \item a PRF and a two-round Feistel network doesn't define a weak PRP ;
+    \item a PRF and a three-round Feistel network does define a weak PRP ;
+    \item a PRF and a four-round Feistel network doesn't define a strong PRP ;
+    \item a PRF and a five-round Feistel network does define a strong PRP.
+  \end{itemize}
+
+  In practice today, people use AES which is not based on a Feistel network (the key size in AES is $128$, $192$ or $256$).
+
+  How do we encrypt with a PRF $F : \{0,1\}^n \times \{0,1\}^n \to \{0,1\}^n$?
+
+  Given $k$ and $m = m_1 m_2 m_3$, we could encrypt it as 
+  \[
+  F(k, m_1) || F(k, m_2) || F(k, m_3)
+  .\]
+  DON'T DO THIS!!
+  The adversary can see of two $m_i$'s are the same.
+  To avoid this kind of attacks, it is necessary that the encryption is randomized.
+
+
+  An encryption scheme $(\mathrm{Enc}, \mathrm{Dec})$ is \textit{IND-CPA} (\textit{undistinguishable under chosen plain-text attacks}) secure for multiple messages of the advantage of any polynomial-time adversary $\mathcal{A}$ is negligible where the game is the following.
+  \begin{itemize}
+    \item The challenger gets a random uniform bit $b \in \{0,1\}$.
+    \item The challenger chooses a key $k \in \{0,1\}^n$ uniformly.
+    \item The adversary sends two messages $(m^{0}_0, m^{0}_1)$ to $\mathcal{C}$.
+    \item The challenger encodes $m^0_b$ using $k$ and sends it to $\mathcal{A}$.
+    \item The adversary can send as many two-messages packets $(m_0^i, m_1^i)$ as it wants, and the challenger will give the cipher-text corresponding to $m^{i}_b$.
+    \item Finally, the adversary will return a guess $b'$ for $b$.
+  \end{itemize}
+
+  The advantage is defined as:
+  \[
+    \mathrm{Adv}(\mathcal{A}) := \big| \Pr[\mathcal{A} \to 1  \mid b = 1] - \Pr[\mathcal{A} \to 1  \mid b = 0] \big|
+  .\]
+
+
+  How do we formalize the previous attack?
+  Consider three messages $(m_0, m_1, m_2)$.
+  Then the attacker will send $(m_0, m_1)$ and $(m_0, m_2)$.
+  If the PRF $F$ is deterministic, then $c_0 = c_1$ in the case  $b = 0$.
+  This gives a distinguisher.
+
+
+  The right way to encrypt with a PRF is the following.
+  \begin{description}
+    \item[Encryption.]
+      Given the inputs $(k,m)$, take  $r \gets \mathcal{U}(\{0,1\}^n)$ and output $c = r || m \oplus F(k, r) \in \{0,1\}^{2n}$.
+    \item[Decryption.]
+      Given $(k, c_1 || c_2)$, output $F(k, c_1) \oplus c_2$.
+  \end{description}
+
+  We immediately have that $\mathrm{Dec}(k, \mathrm{Enc}(k, m)) = m$ for any $(k, m)$.
+
+  The intuition for the security proof is the following.
+  As the number of queries is less than a polynomial in $n$, it's very unlikely that two queries are being replied to with the same $r$.
+  If the $r$s are distinct, then $F(k, r)$ plays the role of a mask and hides $m$.
+
+  If I encrypt a message of length $\ell$ plain-text by using this $t$ times, then the output has size $2 \ell$.
+
 \end{document}
