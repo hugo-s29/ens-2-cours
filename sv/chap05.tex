@@ -1,0 +1,87 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \selectlanguage{french}
+  \setquotestyle{french}
+
+  \chapter{Propriétés "observables".}
+
+  La terminologie "propriété observable" n'est pas utilisée, mais c'est en réalité la compacité.
+
+  \begin{rmk}[Rappel]
+    Si $f : X \to Y$ alors  \[
+    f_! \dashv f^\bullet: \wp(X) \to \wp(Y)
+    ,\]
+    où $f_!$ est l'image directe, et $f^\bullet$ est l'image réciproque.
+
+    Ainsi, $f^\bullet : \wp(Y) \to \wp(X)$  préserve les intersections (\textit{i.e.} si $\mathcal{S}\subseteq \wp(Y)$ alors on a que$f^\bullet (\bigcap \mathcal{S}) = \bigcap_{S \in \mathcal{S}}  f^\bullet(S)$).
+
+    De plus, $f^\bullet$ préserve les unions car $f^\bullet \dashv f_\bullet : \wp(Y) \to \wp(X)$ où
+     \begin{align*}
+      f_\bullet: \wp(X) &\longrightarrow \wp(Y) \\
+      A &\longmapsto \bigcup \{B \subseteq Y  \mid f^\bullet(B) \subseteq A\} 
+    .\end{align*}
+  \end{rmk}
+
+  \begin{defn}
+    Soient $(X, \Omega X)$ et $(Y, \Omega Y)$ deux espaces topologiques.
+    Une fonction $f : X \to Y$ est \textit{continue} si $f^\bullet : \wp(Y) \to \wp(X)$ se restreint en une fonction $f^\bullet : \Omega Y \to \Omega X$, autrement dit 
+    \[
+    \forall  V \in \Omega Y, \quad\quad f^\bullet(V) = \{x \in X  \mid f(x) \in V\}  \in \Omega(X)
+    .\]
+
+    On définie ainsi une catégorie d'espaces topologiques.
+
+    Un \textit{homéomorphisme} $f : X \to Y$ est une bijection continue telle que 
+    \[
+    f^{-1} : Y \to X
+    \]
+    est continue.\footnote{Ce n'est pas évident : par exemple, il y a une bijection $[0, 1] \to \mathds S^1$ (où $\mathds S^1$ est le cercle unité de $\mathds{R}^2$) continue mais la réciproque ne l'est pas.}
+  \end{defn}
+
+  \begin{lem}
+    Une fonction $f : \Sigma^\omega \to \Gamma^\omega$ est continue si et seulement si
+    \begin{gather*}
+    \forall \alpha \in \Sigma^\omega, \forall n \in \mathds{N},
+    \exists k \in \mathds{N}, \forall \beta \in \Sigma^\omega,\\
+    \beta(0)\ldots\beta(k) = \alpha(0)\ldots\alpha(k)\\
+    \vertical\implies\\
+    f(\beta)(0) \ldots f(\beta)(n) = f(\alpha)(0) \ldots f(\alpha)(n)
+    .\end{gather*}
+
+    Autrement dit, $f$ est continue ssi on peut déterminer une partie finie de sa sortie à partir d'une partie finie de son entrée.
+  \end{lem}
+
+  Soit $P \subseteq \Sigma^\omega$, et on définit la \textit{fonction caractéristique} de $P$ :
+  \begin{align*}
+    \chi_P: \Sigma^\omega &\longrightarrow \mathbf{2} = \{0,1\} \\
+    \alpha &\longmapsto \begin{cases}
+      1 & \text{ si } \alpha \in P\\
+      0 & \text{ si } \alpha \not\in P\\
+    \end{cases}
+  .\end{align*}
+
+  Avec $\Omega \mathbf{2} = \wp(\mathbf{2}) = \{\emptyset, \{0\} , \{1\} , \{0,1\}\}$ (ce qui est cohérent avec l'idée que $\mathbf{2}$ représente les booléens), on a que $\chi_P$ est continue ssi 
+  \begin{itemize}
+    \item $\chi_P^\bullet \{0\} = \Sigma^\omega \setminus P$ est un ouvert ;
+    \item $\chi_P^\bullet \{1\} = P $ est un ouvert.
+  \end{itemize}
+  On arrive donc à la notion de \textit{clopen}.
+
+  \begin{defn}
+    Soit $(X, \Omega X)$ un espace topologique.
+    Une partie $P \subseteq X$ est \textit{clopen} (\textit{ouvert fermé} en français) si $P$ et $X \setminus P$ sont ouverts.
+  \end{defn}
+
+  \begin{exm}
+    Soit $u \in \Sigma^\star$, on a que $\mathsf{ext}(u)$ est ouvert.
+    Mais, on a aussi que $\Sigma^\omega \setminus \mathsf{ext}(u)$ est ouvert :
+    \[
+    \Sigma^\omega \setminus \mathsf{ext}(u) = \bigcup \{ \mathsf{ext}(v)  \mid v \neq u \text{ et } \mathsf{length}(v) = \mathsf{length}(u) \}
+    .\]
+  \end{exm}
+
+  \begin{rmk}
+    Sur $\Sigma^\omega$, tous les $\mathsf{ext}(W)$ où $W \subseteq \Sigma^\star$ sont clopen.
+  \end{rmk}
+\end{document}

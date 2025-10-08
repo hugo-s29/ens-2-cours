@@ -1,6 +1,9 @@
 \documentclass[./main]{subfiles}
 
 \begin{document}
+  \selectlanguage{french}
+  \setquotestyle{french}
+
   \chapter{Ordres partiels et treillis.}
 
   \section{Ordres partiels.}
@@ -57,14 +60,17 @@
     Soit $(A, {\le})$ un poset et $S \subseteq A$.
     \begin{itemize}
       \item Un \textit{upper bound} de $S$ est un élément $a \in A$ tel que $\forall s \in S$, $s \le a$.
-      \item Un \textit{least upper bound} (\textit{lub} ou \textit{sup}) de $S$ est un upper bound $a \in A$ de $S$ tel que, pour tout upper bound $b \in A$ de $S$, on a $a \le b$.
+      \item Un \textit{least upper bound} (\textit{lub}, \textit{join} ou \textit{sup}) de $S$ est un upper bound $a \in A$ de $S$ tel que, pour tout upper bound $b \in A$ de $S$, on a $a \le b$.
     \end{itemize}
 
     Par dualité, on a les définitions suivantes.
     \begin{itemize}
       \item Un élément $a \in A$ est un \textit{lower bound} de $S$ ssi $a$ est un upper bound de $S$ dans $A^\mathrm{op}$.
-      \item Un élément $a \in A$ est un \textit{greatest lower bound} (\textit{glb}, \textit{inf}) de $S$ ssi $a$ est un least upper bound de $S$ dans $A^\mathrm{op}$.
+      \item Un élément $a \in A$ est un \textit{greatest lower bound} (\textit{glb}, \textit{meet}, \textit{inf}) de $S$ ssi $a$ est un least upper bound de $S$ dans $A^\mathrm{op}$.
     \end{itemize}
+
+    On note $\bigvee S$ le least upper bound de $S$.
+    On note $\bigwedge S$ le greatest lower bound de $S$.
   \end{defn}
 
   \begin{exm}
@@ -78,6 +84,266 @@
   \end{exm}
 
   \begin{exm}
-    
+    Dans $(\Sigma^\star, \subseteq)$ (la relation "préfixe de"), une partie $S \subseteq \Sigma^\star$ n'a pas forcément de sup.
   \end{exm}
+
+  \textbf{[Il manque une partie du cours ici, je la complèterai plus tard\ldots]}
+
+  \begin{defn}
+    Un poset $(L, \le)$ est un \textit{treillis complet} si
+    \begin{itemize}
+      \item tout $S \subseteq L$ a un sup $\bigvee S \in L$ ;
+      \item tout $S \subseteq L$ a un inf $\bigwedge S \in L$.
+    \end{itemize}
+  \end{defn}
+
+  En conséquence on a que tout treillis complet a 
+  \begin{itemize}
+    \item un plus petit élément $\bot := \bigvee \emptyset \in L$ ;
+    \item un plus grand élément $\top := \bigwedge \emptyset \in L$.
+  \end{itemize}
+
+  \begin{rmk}[Non-exemple]
+    Le poset $(\Sigma^\star, \subseteq)$ (avec la relation "préfixe de") n'est \textit{\textbf{pas}} un treillis complet, car il n'a pas de plus grand élément $\top$.
+  \end{rmk}
+
+  \section{Opérateur de clôture.}
+
+  \begin{defn}
+    Soit $(A, \le)$ un poset.
+    Un \textit{opérateur de clôture} suer $(A, \le)$ est une fonction
+    \[
+    c : A \to A
+    \] 
+    telle que
+    \begin{itemize}
+      \item $c$ est monotone ;
+      \item $c$ est "\textit{expansive}" : pour tout $a \in A$, $a \le c(a)$ ;
+      \item $c$ est \textit{idempotent} : $c(c(a)) = c(a)$ pour tout $a \in A$.
+    \end{itemize}
+  \end{defn}
+
+  \begin{exm}
+    Soit $(X, \Omega X)$ un espace topologique.
+    Alors
+    \[
+    \wp(X) \ni A \mapsto \bar{A} \in \wp(X)
+    \]
+    est un opérateur de clôture sur $(\wp(X), \subseteq)$.
+  \end{exm}
+
+  \begin{lem}
+    Soit $c$ un opérateur de clôture sur $(L, \le)$.
+    On pose \[
+      L^c := \{a \in L  \mid \underbrace{c(a) = a}_{a \in \operatorname{im} c}\} 
+    .\]
+    Si $(L, \le )$ est un treillis complet alors $(L^c, \le)$ est un treillis complet avec \[
+    \forall S \subseteq L^C, \quad\quad \bigwedge^{L^c} S = \bigwedge^L S
+    .\] 
+  \end{lem}
+
+  \begin{exm}
+    Pour $\overline{(-)} : \wp(X) \to \wp(X)$ où $(X, \Omega X)$ est un espace topologique, on a
+    \[
+      \big(\wp(X)\big)^{\overline{(-)}} = \{F \in \wp(X)  \mid F \text{ fermé}\}
+    .\]
+    Dans ce treillis complet :
+    \[
+      \bigwedge \mathcal{F} = \bigcap \mathcal{F} \quad\quad \text{ et } \quad\quad \bigvee \mathcal{F} = \overline{\bigcup \mathcal{F}} 
+    ,\] 
+    où $\mathcal{F}$ est un ensemble de fermés.
+  \end{exm}
+
+  \section{Connexion de Galois.}
+
+  \begin{defn}
+    Considérons deux posets $(A, \le_A)$ et $(B, \le_B)$.
+    Une \textit{connexion de Galois} $g \dashv f : A \to B$ est une paire $(f, g)$ de fonctions :
+    \[
+    f : B \to A \quad\quad \text{ et }\quad\quad g : A \to B
+    \] 
+    telle que \[
+    g(a) \le_B b \iff a \le_A f(b)
+    .\] 
+  \end{defn}
+
+  \begin{exm}
+    Soit $f : X \to Y$ une fonction.
+    On possède deux "lifts" de $f$ sur les powersets :
+    \begin{itemize}
+      \item le lift covariant $
+        f_! : \begin{array}{rcl}
+          \wp(X) & \longrightarrow & \wp(Y)\\
+          A & \longmapsto & \{f(a)  \mid a \in A\}
+        \end{array}$ ;
+      \item le lift contravariant $
+        f^\bullet : \begin{array}{rcl}
+          \wp(Y) & \longrightarrow & \wp(X)\\
+          B & \longmapsto & \{x \in X  \mid f(x) \in B\}
+        \end{array}$.\footnote{On note habituellement $f^*$ et non $f^\bullet$, mais vu qu'on utilise souvent "$*$" dans le cours, on change de notation.}
+    \end{itemize}
+
+    On a que $f_! \dashv f^\bullet$.
+    En effet, pour tout  $A \in \wp(X)$ et $B \in \wp(Y)$,
+    \begin{align*}
+      f_!(A) \subseteq B &\iff \forall x \in X, (x \in A \implies f(x) \in B)\\
+                         &\iff A \subseteq f^\bullet(B)
+    .\end{align*}
+  \end{exm}
+
+  \begin{exm}
+    Soit $\Sigma$ un alphabet.
+    On a, d'une part,
+    \begin{align*}
+      \mathrm{Pref}: \wp(\Sigma^\omega) &\longrightarrow \wp(\Sigma^\star) \\
+      A &\longmapsto \underbrace{\{\hat{\sigma} \in \Sigma^\star  \mid \exists \sigma \in A, \hat{\sigma} \subseteq \sigma\}} _{\bigcup_{\sigma \in A} \mathrm{Pref}(\sigma) }
+    .\end{align*}
+    D'autre part, on a 
+    \begin{align*}
+      \mathrm{cl}: \wp(\Sigma^\star) &\longrightarrow \wp(\Sigma^\omega) \\
+      W &\longmapsto \{\sigma \in \Sigma^\omega  \mid \mathrm{Pref}(\sigma) \subseteq W\} 
+    .\end{align*}
+    Attention, ce n'est pas le $\mathrm{cl}$ vu en TD.
+    On a que
+    \[
+    \mathrm{Pref}(-) \dashv \mathrm{cl}(-)
+    .\] 
+  \end{exm}
+
+  \begin{lem}
+    \begin{itemize}
+      \item Si $g \dashv f$ et $g' \dashv f$ alors $g = g'$.
+      \item Si $g \dashv f$ et $g \dashv f'$ alors $f = f'$.
+      \item Si $g \dashv f$ alors $g$ et $f$ sont monotones.
+    \end{itemize}
+  \end{lem}
+  \begin{prv}
+    Vu en TD.
+  \end{prv}
+
+  Dans $g \dashv f$, on dit que 
+  \begin{itemize}
+    \item $g$ est un \textit{adjoint à gauche} de $f$ ;
+    \item $f$ est un \textit{adjoint à droite} de $g$.
+  \end{itemize}
+
+  \begin{lem}
+    Si $g \dashv f : (A, \le_A) \to (B, \le_B)$ alors 
+    \[
+    f \circ g : A \overset g \longrightarrow B \overset f \longrightarrow A
+    \] 
+    est un opérateur de clôture sur $(A, \le_A)$.\footnote{Attention à ne pas se tromper sur le sens de la composition !}
+  \end{lem}
+  \begin{prv}
+    Vu en TD.
+  \end{prv}
+
+  \begin{exm}
+    Pour $\mathrm{Pref}(-) \dashv \mathrm{cl}(-) : \wp(\Sigma^\omega) \to \wp(\Sigma^\star)$,
+    le lemme précédent nous donne l'opérateur de clôture 
+    \begin{align*}
+      \mathrm{cl} \circ \mathrm{Pref}: \wp(\Sigma^\omega) &\longrightarrow \wp(\Sigma^\omega) \\
+      A &\longmapsto \{\sigma \in \Sigma^\omega  \mid \mathrm{Pref}(\sigma) \subseteq \mathrm{Pref}(A)\} 
+    \end{align*}
+    (c'est le $\mathrm{cl}(-)$ vu en TD)
+    est la clôture topologique pour $(\Sigma^\omega, \Omega \Sigma^\omega)$.
+  \end{exm}
+
+  \begin{rmk}
+    En particulier, $A \subseteq \Sigma^\omega$ est un fermé si et seulement s'il existe un arbre $T \subseteq \Sigma^\star$ tel que \[
+    A = \{\pi \in \Sigma^\omega  \mid \pi \text{ chemin infini dans } T\} 
+    .\]
+    On a que $\mathrm{cl} \circ \mathrm{Pref}(A)$ qui est un arbre sur $\Sigma$.
+  \end{rmk}
+
+  \begin{crlr}
+    \begin{itemize}
+      \item Une propriété $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est de sûreté si et seulement si on a $P = \mathrm{cl}(\mathrm{Pref}(P))$.
+      \item Une propriété $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est de vivacité si et seulement si on a $(\mathbf{2}^\mathrm{AP})^\omega = \mathrm{cl}(\mathrm{Pref}(P))$.
+    \end{itemize} 
+  \end{crlr}
+  \begin{prv}
+    (Déjà) vu en TD.
+    Ceci correspond exactement au fait que 
+    \begin{itemize}
+      \item $P$ est de sûreté ssi $P$ est fermé dans $(\Sigma^\omega, \Omega \Sigma^\omega)$ ;
+      \item $P$ est de vivacité ssi $P$ est dense dans $(\Sigma^\omega, \Omega \Sigma^\omega)$ ;
+      \item $\mathrm{cl} \circ \mathrm{Pref}$ est exactement $\overline{(-)}$ dans $(\Sigma^\omega, \Omega \Sigma^\omega)$.
+    \end{itemize}
+  \end{prv}
+
+  \begin{prop}
+    Une propriété $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est de vivacité si et seulement si $\mathrm{Pref}(P) = (\mathbf{2}^\mathrm{AP})^\star$.
+  \end{prop}
+  \begin{prv}
+    En effet, par adjonction (connexion de Galois),
+    on a 
+    \[
+      (\mathbf{2}^\mathrm{AP})^\star = \mathrm{Pref}((\mathbf{2}^\mathrm{AP})^\omega) \subseteq \mathrm{Pref}(P)
+      \iff (\mathbf{2}^\mathrm{AP})^\omega \subseteq \mathrm{cl}(\mathrm{Pref}(P))
+    .\]
+  \end{prv}
+
+  \subsubsection{Quelques propriétés des connexions de Galois.}
+
+  \begin{lem}
+    Soit $g \dashv f : A \to B$ une connexion de Galois.
+    \begin{enumerate}
+      \item pour tout $S \subseteq A$ tel que $\bigvee S \in A$ alors $g(\bigvee S) = \bigvee g_!(S)$ ;
+      \item pour tout $S \subseteq B$ tel que $\bigwedge S \in B$ alors $f(\bigwedge S) = \bigwedge f_!(S)$.
+    \end{enumerate}
+  \end{lem}
+
+  \begin{rmk}
+    Dans le lemme précédent, il est important de remarquer que l'on a une implication "cachée" :
+    $\bigvee S$ existe dans $A$ implique $\bigvee g_!(S)$ existe dans  $B$ (et idem pour $\bigwedge$ et $f$).
+  \end{rmk}
+
+  \begin{lem}
+    Soient $(A, \le_A)$ et $(B, \le_B)$ deux treillis complets.
+    \begin{enumerate}
+      \item Si $g : A \to B$ préserve les sups (\textit{i.e.} $g(\bigvee S) = \bigvee g_!(S)$) alors il existe une fonction $f : B \to A$ telle que $g \dashv f$.
+        Cette fonction est :
+        \[
+        f(b) := \bigvee \{a \in A  \mid g(a) \le_B b\} 
+        .\]
+      \item Si $f : B \to A$ préserve les infs alors il existe une fonction $g : A \to B$ telle que $g \dashv f$.
+        Cette fonction est :
+        \[
+        g(a) := \bigwedge \{b \in B  \mid a \le_A f(b)\} 
+        .\] 
+    \end{enumerate}
+  \end{lem}
+
+  \begin{exm}[Algèbres de Heyting complètes]
+    Soit $(L, \le)$ un treillis complet.
+    Soit $a \in L$.
+    On a une fonction 
+     \begin{align*}
+      - \wedge a: L &\longrightarrow L \\
+      b &\longmapsto b \wedge a = \bigwedge \{a, b\} 
+    .\end{align*}
+
+    On dit que $(L, \le)$ est une \textit{algèbre de Heyting complète} si, pour tout $a \in A$, la fonction $- \wedge a$ a un adjoint à gauche.
+    Si cet adjoint existe, on le note $a \Rightarrow -$.
+    Ceci nous donne que 
+    \[
+    \forall a, b, c \in L, \quad\quad b \wedge a \le c \iff b \le a \Rightarrow c
+    .\] 
+
+    On a l'équivalence entre :
+    \begin{itemize}
+      \item $(L, \le)$ est une algèbre de Heyting complète ;
+      \item pour tout $a \in L$, $- \wedge a : L \to L$ préserve les sups, autrement dit pour tout $S \subseteq L$, 
+        \[
+          \big(\bigvee S\big) \wedge a = \bigvee \{s \wedge a  \mid s \in S\} 
+        .\] 
+        C'est une sorte de distributivité.
+    \end{itemize}
+    Dans ce cas, on a que 
+    \[
+    a \Rightarrow c = \bigvee \{b  \mid b \wedge a \le c\}
+    .\] 
+  \end{exm}
+
 \end{document}
