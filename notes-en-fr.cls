@@ -43,6 +43,7 @@
 \RequirePackage{nicematrix}
 \RequirePackage{fontspec}
 \RequirePackage{fitbox}
+\RequirePackage{yhmath}
 \RequirePackage{tablefootnote}
 
 \setmainlanguage{english}

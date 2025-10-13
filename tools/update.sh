@@ -17,9 +17,7 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp cs/main.pdf   ../web/public/data/ens2/cs.pdf
   cp cs/chap00.pdf ../web/public/data/ens2/cs-chap00.pdf
   cp cs/chap01.pdf ../web/public/data/ens2/cs-chap01.pdf
-
-  cp cap/main.pdf   ../web/public/data/ens2/cap.pdf
-  # cp cap/chap00.pdf ../web/public/data/ens2/cap-chap00.pdf
+  cp cs/chap02.pdf ../web/public/data/ens2/cs-chap02.pdf
 
   cp pdap/td.pdf ../web/public/data/ens2/pdap-td.pdf
 
@@ -30,15 +28,12 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp sv/chap02.pdf ../web/public/data/ens2/sv-chap02.pdf
   cp sv/chap03.pdf ../web/public/data/ens2/sv-chap03.pdf
   cp sv/chap04.pdf ../web/public/data/ens2/sv-chap04.pdf
+  cp sv/chap05.pdf ../web/public/data/ens2/sv-chap05.pdf
 
   cp opt/td.pdf     ../web/public/data/ens2/opt-td.pdf
   cp opt/main.pdf   ../web/public/data/ens2/opt.pdf
 
   cp qcs/td.pdf     ../web/public/data/ens2/qcs-td.pdf
-  # cp qcs/main.pdf   ../web/public/data/ens2/qcs.pdf
-  # cp qcs/chap00.pdf ../web/public/data/ens2/qcs-chap00.pdf
-  # cp qcs/chap01.pdf ../web/public/data/ens2/qcs-chap01.pdf
-  # cp qcs/chap02.pdf ../web/public/data/ens2/qcs-chap02.pdf
   cp qcs/assignment1.pdf ../web/public/data/ens2/qcs-assignment1.pdf
   cp qcs/assignment2.pdf ../web/public/data/ens2/qcs-assignment2.pdf
   cp qcs/assignment3.pdf ../web/public/data/ens2/qcs-assignment3.pdf

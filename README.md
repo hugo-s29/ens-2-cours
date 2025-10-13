@@ -10,13 +10,13 @@ Bonne lecture !
 
 **_Dept. Informatique_**
 
-- **OPT.** Optimization ▶ [/opt](/opt/)
-- **PDAP.** Parallel and Distributed Algorithms and Programs ▶ [/pdap](/pdap/)
-- **SV.** Semantics and Verification ▶ [/sv](/sv/)
-- **CAP.** Compiler and Program Analysis ▶ [/cap](/cap/)
-- **QCS.** Quantum Computer Science ▶ [/qcs](/qcs/)
-- **CS.** Cryptography and Security ▶ [/cs](/cs/)
-- **IP.** Integrated Project ▶ [/ip](/ip/)
+- **OPT.** Optimization ▶ [/opt](/opt/) (Notes de cours et TDs)
+- **PDAP.** Parallel and Distributed Algorithms and Programs ▶ [/pdap](/pdap/) (TDs uniquement)
+- **SV.** Semantics and Verification ▶ [/sv](/sv/) (Notes de cours et TDs)
+- **CAP.** Compiler and Program Analysis ▶ [/cap](/cap/) (Notes de cours très partielles)
+- **QCS.** Quantum Computer Science ▶ [/qcs](/qcs/) (Notes de cours très partielles)
+- **CS.** Cryptography and Security ▶ [/cs](/cs/) (Quelques notes de cours et quelques TDs)
+- **IP.** Integrated Project ▶ [/ip](/ip/) (Pas grand chose pour l'instant...)
 
 ## Semestre 2.
 

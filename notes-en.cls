@@ -41,6 +41,7 @@
 \RequirePackage{colortbl}
 \RequirePackage{nicematrix}
 \RequirePackage{fontspec}
+\RequirePackage{yhmath}
 \RequirePackage{fitbox}
 \RequirePackage{tablefootnote}
 
@@ -72,31 +73,6 @@
 
 \RequirePackage{algorithm}
 \RequirePackage[rightComments=false,beginComment=$\qquad\triangleright$~]{algpseudocodex}
-\floatname{algorithm}{Algorithme}
-\def\algorithmicrequire{\textbf{Entrée}}
-\def\algorithmicensure{\textbf{Sortie}}
-\def\algorithmicend{\textbf{fin}}
-\def\algorithmicif{\textbf{si}}
-\def\algorithmicthen{\textbf{alors}}
-\def\algorithmicelse{\textbf{sinon}}
-\def\algorithmicelsif{\algorithmicelse\ \algorithmicif}
-\def\algorithmicendif{\algorithmicend\ \algorithmicif}
-\def\algorithmicfor{\textbf{pour}}
-\def\algorithmicprocedure{\textbf{Procédure}}
-\def\algorithmicfunction{\textbf{Fonction}}
-\def\algorithmicforall{\textbf{pour tout}}
-\def\algorithmicdo{\textbf{faire}}
-\def\algorithmicendfor{\algorithmicend\ \algorithmicfor}
-\def\algorithmicwhile{\textbf{tant que}}
-\def\algorithmicendwhile{\algorithmicend\ \algorithmicwhile}
-\def\algorithmicloop{\textbf{répéter indéfiniment}}
-\def\algorithmicendloop{\algorithmicend\ \algorithmicloop}
-\def\algorithmicrepeat{\textbf{répéter}}
-\def\algorithmicuntil{\textbf{jusqu'à que}}
-\def\algorithmicprint{\textbf{afficher}}
-\def\algorithmicreturn{\textbf{retourner}}
-\def\algorithmictrue{\textsc{vrai}}
-\def\algorithmicfalse{\textsc{faux}}
 \RequirePackage{listings}
 
 \lstset{

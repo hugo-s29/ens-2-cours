@@ -41,6 +41,7 @@
 \RequirePackage{colortbl}
 \RequirePackage{nicematrix}
 \RequirePackage{fontspec}
+\RequirePackage{yhmath}
 \RequirePackage{fitbox}
 \RequirePackage{tablefootnote}
 

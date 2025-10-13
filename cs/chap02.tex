@@ -1,0 +1,76 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Message Authentication Codes, MACs}
+
+  The goal of MACs is to provide \textit{integrity} and \textit{authenticity}.
+
+  \begin{defn}
+    A \textit{MAC} is a triple of poly-time algorithms
+    \[
+      (\mathrm{KeyGen}, \mathrm{Sign}, \mathrm{Verif})
+    \]
+    such that:
+    \begin{itemize}
+      \item $\mathrm{KeyGen}(1^\lambda)$ takes as input the security parameter (in unary) and outputs a key $k \in \{0,1\}^s$;
+      \item $\mathrm{Sign}(k, \mu)$ takes as inputs a key $k$, and a message $\mu \in \{0,1\}^n$, and outputs a tag $t \in \{0,1\}^m$;
+      \item $\mathrm{Verify}(k, \mu, t)$ that takes as input a key $k$, a message $\mu$ and a tag $t$, and outputs a bit in $\{0,1\}$.
+    \end{itemize}
+
+    We say that a MAC is \textit{correct} if, for every key $k$ output by $\mathrm{KeyGen}$, for all message $\mu$, 
+    \[
+    \mathrm{Verify}(k, \mu, \mathrm{Sign}(k, \mu)) = 1
+    .\]
+
+    The security is defined with an experiment:
+    \begin{itemize}
+      \item A challenger $\mathcal{C}$ creates a key $k$ with $\mathrm{KeyGen}(\;)$.
+      \item An adversary $\mathcal{A}$ gives a message $\mu_1$ to $\mathcal{C}$.
+      \item Then $\mathcal{C}$ sends back $t_1 := \mathrm{Sign}(k, \mu_1)$.
+      \item After, $\mathcal{A}$ gives a message $\mu_2$ to $\mathcal{C}$.
+      \item And $\mathcal{C}$ sends back $t_2 := \mathrm{Sign}(k, \mu_2)$.
+      \item \textit{etc}.
+      \item Finally, $\mathcal{A}$ sends a pair $(\mu^\star, t^\star)$ to  $\mathcal{C}$.
+    \end{itemize}
+    The goal of $\mathcal{A}$ is to create (forge) a new valid message-tag pair.
+    The adversary $\mathcal{A}$ will win if $\mathrm{Verify}(k, \mu^\star, t^\star) = 1$ and $(\mu^\star, t^\star) \neq (\mu_i, t_i)$ for every $i$.
+
+    The MAC is secure if, for any poly-time adversary $\mathcal{A}$, the probability that $\mathcal{A}$ wins is negligible.
+    We call this \textit{sEU-CMA security} (strong existential unforgeability under chosen message attacks).
+
+    We also define \textit{EU-CMA} security: it is a variant where the success conditions are 
+    \[
+    \mathrm{Verify}(k, \mu^\star, t^\star) = 1 \quad\quad \text{ and } \quad\quad \mu^\star \neq \mu_i \quad \forall i
+    .\] 
+  \end{defn}
+
+  We have that sEU-CMA security implies EU-CMA security.
+
+  \subsubsection{PRF-base MAC for fixed-length messages.}
+  We can proceed like the following:
+  \begin{itemize}
+    \item $\mathrm{KeyGen}(\;)$, it samples $k \gets \mathcal{U}(\{0,1\}^s)$;
+    \item $\mathrm{Sign}(k, \mu)$, it returns $t \gets F(k, \mu)$;
+    \item $\mathrm{Verify}(k, \mu, t)$, it tests if $t \overset ? = F(k, \mu)$.
+  \end{itemize}
+  This way, a PRF is a MAC.
+
+  Why is it a secure MAC ? Let's assume we have a sEU-CMA adversary $\mathcal{A}$ and see if we can use it to break the PRF.
+
+  Consider the experiment $\mathrm{Exp}_0$---the genuine sEU-CMA experiment---where $\mathcal{C}$ samples a key $k \gets \mathcal{U}(\{0,1\}^s)$, then $\mathcal{A}$ makes queries $\mu_i$ (than can depend on results of previous ones) and gets back $t_i \gets F(k, \mu_i)$.
+  Finally $\mathcal{A}$ sends $\mathcal{C}$ a "forged signature" $(\mu^\star, t^\star)$.
+  The adversary will win if  $F(k, \mu^\star) = t^\star$ and  $(\mu_i, t_i) \neq  (\mu^\star, t^\star)$.
+
+  Now, consider experiment $\mathrm{Exp}_1$, where $\mathcal{C}$ (lazily) gets a uniform  $f : \{0,1\}^n \to \{0,1\}^m$. When answering $\mathcal{A}$'s queries, $\mathcal{C}$ will use  $t_i \gets f(\mu_i)$.
+  Finally $\mathcal{A}$ sends $\mathcal{C}$ a "forged signature" $(\mu^\star, t^\star)$.
+  The adversary will win if  $f(\mu^\star) = t^\star$ and  $(\mu_i, t_i) \neq  (\mu^\star, t^\star)$.
+
+
+  \textbf{I will stop taking notes for the Cryptography and Security course, as I will no longer be following it.
+  Some great lecture notes can be found in the AliENS GitLab (ENS students only):
+  \begin{center}
+  \url{https://gitlab.aliens-lyon.fr/di-students/cours-m1/-/tree/2020-2021/s2/CS/2019-2020}
+  \end{center}
+  Farewell everyone!
+  }
+\end{document}
