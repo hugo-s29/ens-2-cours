@@ -80,14 +80,16 @@
 
   \begin{exm}
     Soit $S \subseteq \Omega X$ alors le least upper bound dans ${(\Omega X, \subseteq)}$ est $\bigcup S \in \Omega X$.
-    Le greatest lower bound dans $(\Omega X, \subseteq)$ n'existe pas forcément.
+    Le greatest lower bound dans $(\Omega X, \subseteq)$ n'est pas évident. En effet,
+    \[
+    \{\mathsf{ext}(\mathsf{a}^n)  \mid n \in \mathds{N}\}  \subseteq \Omega \Sigma^\omega
+    ,\]
+    mais $\bigcap_{n \in \mathds{N}} \mathsf{ext}(\mathsf{a}^n) = \{\mathsf{a}^\omega\} \not\in \Omega\Sigma^\omega$.
   \end{exm}
 
   \begin{exm}
     Dans $(\Sigma^\star, \subseteq)$ (la relation "préfixe de"), une partie $S \subseteq \Sigma^\star$ n'a pas forcément de sup.
   \end{exm}
-
-  \textbf{[Il manque une partie du cours ici, je la complèterai plus tard\ldots]}
 
   \begin{defn}
     Un poset $(L, \le)$ est un \textit{treillis complet} si
@@ -96,6 +98,10 @@
       \item tout $S \subseteq L$ a un inf $\bigwedge S \in L$.
     \end{itemize}
   \end{defn}
+
+  \begin{rmk}[Unicité du lub/glb]
+    Par antisymétrie, si $a$ et $b$ sont deux least upper bound (ou greatest lower bound) alors $a = b$.
+  \end{rmk}
 
   En conséquence on a que tout treillis complet a 
   \begin{itemize}
@@ -106,6 +112,39 @@
   \begin{rmk}[Non-exemple]
     Le poset $(\Sigma^\star, \subseteq)$ (avec la relation "préfixe de") n'est \textit{\textbf{pas}} un treillis complet, car il n'a pas de plus grand élément $\top$.
   \end{rmk}
+
+  \begin{exm}
+    Le poset $(\wp(X), \subseteq)$ (avec la relation d'inclusion ensembliste) est un treillis complet.
+  \end{exm}
+
+  \begin{lem}
+    Les conditions suivantes sont équivalentes pour un poset $(L, \le)$ :
+    \begin{enumerate}
+      \item $(L, \le)$ est un treillis complet ;
+      \item tout $S \subseteq L$ a un sup $\bigvee S \in L$ ;
+      \item tout $S \subseteq L$ a un inf $\bigwedge S \in L$ ;
+    \end{enumerate}
+  \end{lem}
+  \begin{prv}
+    Pour montrer l'implication "2. $\implies$ 3.", on peut définir 
+    \[
+    \forall S \subseteq L, \quad \bigwedge S := \bigvee \{b  \mid \forall s \in S, b \le s\}
+    ,\]
+    et montrer que c'est bien un inf.
+  \end{prv}
+
+  \begin{exm}
+    En revenant sur $(\Omega X, \subseteq)$, c'est un treillis complet dont l'inf de $S \subseteq \Omega X$ est 
+    \[
+      \bigwedge S = \bigcup \{V \in \Omega X  \mid V \subseteq {\textstyle \bigcap S} \} 
+    .\]
+    Il s'agit de $\widering {\bigcap S}$ qui est l'\textit{intérieur} de $\bigcap S$.
+
+    Par exemple, dans $(\Omega \Sigma^\omega, \subseteq)$, on a 
+    \[
+      \bigwedge \{\mathsf{ext}(\mathsf{a}^n)  \mid  n\in \mathds{N}\} = \widering{\{\mathsf{a}^\omega\} } = \emptyset
+    .\] 
+  \end{exm}
 
   \section{Opérateur de clôture.}
 
@@ -138,7 +177,7 @@
       L^c := \{a \in L  \mid \underbrace{c(a) = a}_{a \in \operatorname{im} c}\} 
     .\]
     Si $(L, \le )$ est un treillis complet alors $(L^c, \le)$ est un treillis complet avec \[
-    \forall S \subseteq L^C, \quad\quad \bigwedge^{L^c} S = \bigwedge^L S
+    \forall S \subseteq L^c, \quad\quad \bigwedge^{L^c} S = \bigwedge^L S
     .\] 
   \end{lem}
 
