@@ -1,0 +1,187 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \selectlanguage{french}
+  \setquotestyle{french}
+
+  \chapter{Logique temporelle linéaire.}
+
+  \section{La logique $\mathsf{LML}$.}
+
+  \begin{rmk}[Idée]
+    La signification de $\mathsf{LML}$ est \textit{linear-time modal logic}.
+    L'idée est de définir une logique pour une propriété LT $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ telle que, pour $\mathrm{AP}$ fini, les formules correspondent aux clopens.
+  \end{rmk}
+
+  Soit $\mathrm{AP}$ un ensemble de proposition atomiques.
+  
+  \begin{defn}
+    Les formules de $\mathsf{LML}$ sont 
+    \begin{align*}
+      \phi, \psi ::={}&{} \mathsf{a} & \mathsf{a} \in \mathrm{AP}\\
+      {}\mid{}&{} \mathsf{True} & \text{ (parfois notée $\top$)} \\
+      {}\mid{}&{} \mathsf{False} & \text{ (parfois notée $\bot$)} \\
+      {}\mid{}&{} \phi \land \psi \\
+      {}\mid{}&{} \phi \lor \psi \\
+      {}\mid{}&{} \lnot \phi \\
+      {}\mid{}&{} \nxt \phi \\
+    .\end{align*}
+    La \textit{modalité} $\nxt$ est appelée \textit{later} ou \textit{next}.
+  \end{defn}
+
+  \begin{defn}
+    L'\textit{interprétation} $\llbracket \phi\rrbracket \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est définie par :
+    \begin{itemize}
+      \item $\llbracket \mathsf{a}\rrbracket := \{\sigma  \mid \mathsf{a} \in \sigma(0)\}$ ;
+      \item $\llbracket \mathsf{True}\rrbracket := (\mathbf{2}^\mathrm{AP})^\omega$ ;
+      \item $\llbracket \phi \land \psi\rrbracket := \llbracket \varphi\rrbracket \cap \llbracket \psi\rrbracket$ ;
+      \item $\llbracket \mathsf{False}\rrbracket := \emptyset$ ;
+      \item $\llbracket \phi \lor \psi\rrbracket := \llbracket \varphi\rrbracket \cup \llbracket \psi\rrbracket$ ;
+      \item $\llbracket \lnot \phi\rrbracket := (\mathbf{2}^\mathrm{AP})^\omega  \setminus\llbracket \phi\rrbracket$ ;
+      \item $\llbracket \nxt \phi \rrbracket := \{\sigma  \mid \sigma \upharpoonright 1 \in \llbracket \phi\rrbracket \}$ où, pour $\sigma \in (\mathbf{2}^\mathrm{AP})^\omega$, on note
+        \begin{align*}
+          \sigma \upharpoonright i : \mathds{N} &\longrightarrow \mathbf{2}^\mathrm{AP} \\
+          k &\longmapsto \sigma \upharpoonright \sigma(k+i)
+        ,\end{align*}
+        (c'est un décalage d'indices).
+    \end{itemize}
+  \end{defn}
+
+  \begin{exm}
+    Quelques exemples de mots tels que $\sigma \in \llbracket \mathsf{a} \lor \nxt \mathsf{b}\rrbracket$ :
+    \begin{itemize}
+      \item $\sigma = \{\mathsf{a}\} \emptyset^\omega$,
+      \item $\sigma = \{\mathsf{b}\} \{\mathsf{a}, \mathsf{b}\}^\omega$,
+      \item $\sigma = \emptyset \{\mathsf{a}, \mathsf{b}\} \emptyset^\omega$.
+    \end{itemize}
+  \end{exm}
+
+  \begin{prop}
+    Pour $\phi$ une formule de $\mathsf{LML}$, on a que $\llbracket\phi \rrbracket$ est clopen dans $(\mathbf{2}^\mathrm{AP})^\omega$.
+  \end{prop}
+  \begin{prv}
+    Par induction sur $\phi$, on a les cas suivants.
+    \begin{itemize}
+      \item On a que $\llbracket \mathsf{a}\rrbracket = \bigcup_{\mathsf{a} \in A \subseteq \mathrm{AP}} \mathsf{ext}(A)$\footnote{On rappelle que $\mathsf{ext}(A) = \{\sigma  \mid \sigma(0) = A \subseteq \mathrm{AP}\}$.} est un ouvert.
+        De plus, on a que $(\mathbf{2}^\mathrm{AP})^\omega \setminus \llbracket \mathsf{a}\rrbracket = \bigcup_{a \not\in B \subseteq \mathrm{AP}} \mathsf{ext}(B)$ est un ouvert.
+      \item On a que
+        \begin{itemize}
+          \item $\llbracket \nxt \phi\rrbracket = \bigcup_{u \in W, A \subseteq \mathrm{AP}} \mathsf{ext}(Au)$
+          \item $(\mathbf{2}^\mathrm{AP})^\omega \setminus \llbracket \nxt \phi\rrbracket = \bigcup_{v \in V, A \subseteq \mathrm{AP}} \mathsf{ext}(Av)$
+        \end{itemize}
+        où par hypothèse d'induction, il existe $V, W \subseteq \Sigma^\star$ tels que~$\llbracket \phi\rrbracket = \mathsf{ext}(W)$ et $(\mathbf{2}^\mathrm{AP})^\omega \setminus \llbracket \phi\rrbracket = \mathsf{ext}(V)$.
+      \item De même pour les autres cas.
+    \end{itemize}
+  \end{prv}
+
+  \begin{prop}
+    Si $\mathrm{AP}$ est \textit{\textbf{fini}} et $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est clopen alors il existe $\phi$ une formule $\mathsf{LML}$ telle que $P = \llbracket \phi\rrbracket$.
+  \end{prop}
+  \begin{prv}
+    On a que $P = \mathsf{ext}(W)$ où $W \subseteq (\mathbf{2}^\mathrm{AP})^\star$ est \textit{\textbf{fini}}.
+    On a montrer par récurrence sur la taille du mot $u$ que :
+    \[
+    \forall u \in (\mathbf{2}^\mathrm{AP})^\star, \quad \exists \phi_u \text{ une formule } \mathsf{LML}, \quad
+    \llbracket \phi_u\rrbracket  = \mathsf{ext}(u)
+    .\]
+
+    \begin{itemize}
+      \item \textit{Cas de base.}
+        Soit $A \subseteq \mathrm{AP}$, on peut prendre 
+        \[
+        \phi_A := \big(\bigwedge_{\mathsf{a} \in A} \mathsf{a}\big) \land \big(\bigwedge_{\mathsf{b} \not\in A} \lnot \mathsf{b}\big)
+        .\]
+      \item \textit{Récurrence.}
+        Soit $u = A v$ où $A \subseteq \mathrm{AP}$ et $v \in (\mathbf{2}^\mathrm{AP})^\star$.
+        On peut poser 
+        \[
+        \phi_{A v} := \phi_A \land \nxt \phi_v
+        .\]
+    \end{itemize}
+    On peut aussi faire le cas de base pour $\varepsilon$, en posant $\phi_{\varepsilon} := \mathsf{True}$.
+  \end{prv}
+
+  \begin{crlr}
+    Si $\mathrm{AP}$ est \textit{\textbf{fini}} et $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ alors 
+    \[
+    P \text{ clopen} \iff \text{ il existe $\phi$ telle que $\llbracket \phi\rrbracket  = P$}
+    .\]
+    \qed
+  \end{crlr}
+
+  \subsection{Équivalences logiques.}
+
+  \begin{defn}
+    On note $\phi \equiv \psi$ lorsque $\llbracket \phi\rrbracket = \llbracket \psi\rrbracket$.
+    On dit que $\phi$ et $\psi$ sont \textit{(logiquement) équivalentes}.
+  \end{defn}
+
+  On a les équivalences suivantes :
+  \begin{itemize}
+    \item $\phi \equiv \phi \land \phi$
+    \item $\phi \equiv \mathsf{True} \land \phi$
+    \item $\mathsf{True} \equiv \phi \lor \lnot \phi$
+    \item $\mathsf{False} \equiv \phi \land \lnot \phi$
+    \item $\phi \equiv \lnot \lnot \phi$
+    \item $\nxt(\phi \lor \psi) \equiv \nxt \phi \lor \nxt \psi$
+    \item $\nxt \mathsf{False} \equiv \mathsf{False}$
+    \item $\nxt(\phi \land \psi) \equiv \nxt \phi \land \nxt \psi$
+    \item $\nxt \mathsf{True} \equiv \mathsf{True}$
+  \end{itemize}
+  d'autres équivalences sont possibles (\textit{c.f.} figure 6 des notes de cours).
+
+  \subsection{\textit{Homework} : Dualité de Stone.}
+
+  L'idée est de motiver le DM, et de donner quelques bases sur ce que l'on va montrer.
+
+  On se place dans le cas où $\mathrm{AP}$ est un ensemble fini.
+  Considérons un mot $\sigma \in (\mathbf{2}^\mathrm{AP})^\omega$, on pose 
+  \[
+    \mathcal{F}_\sigma := \{[\phi]_\equiv \mid \sigma \in \llbracket \phi\rrbracket \} 
+  ,\] 
+  où $[\phi]_\equiv$ est la classe d'équivalence de $\equiv$.
+  Par les résultats précédents, on a que 
+  \[
+  \mathcal{F}_\sigma \cong \{C  \mid \sigma \in C \text{ clopen}\} 
+  .\]
+  On a $\sigma \neq \beta$ implique $\mathcal{F}_\sigma \neq \mathcal{F}_\beta$.
+  De plus, on a les propriétés suivantes :
+  \begin{enumerate}
+    \item si $C \in \mathcal{F}_\sigma$ et $C \subseteq D$ clopen alors $D \in \mathcal{F}_\sigma$ ;
+    \item si $C, D \in \mathcal{F}_\sigma$ alors $C \cap D \in \mathcal{F}_\sigma$ ;
+    \item $(\mathbf{2}^\mathrm{AP})^\omega \in \mathcal{F}_\sigma$ ;
+    \item si $C, D$ sont clopen tels que $C \cup D \in \mathcal{F}_\sigma$ alors $C \in \mathcal{F}_\sigma$ ou $D \in \mathcal{F}_\sigma$ ;
+    \item $\emptyset \in \mathcal{F}_\sigma$.
+  \end{enumerate}
+
+  Ces cinq propriétés caractérisent totalement les mots infinis, comme le montre le théorème suivant.
+
+  \begin{thm}
+    Si $\mathcal{F}$ est un ensemble de clopens dans $(\mathbf{2}^\mathrm{AP})^\omega$ vérifiant les cinq propriétés, alors il existe $\sigma \in (\mathbf{2}^\mathrm{AP})^\omega$ tel que $\mathcal{F} = \mathcal{F}_\sigma$.
+  \end{thm}
+
+  Ce théorème est une spécialisation de la \textit{dualité de Stone}.
+
+  \begin{defn}
+    On dit que $(X, \Omega X)$ est un \textit{espace de Stone} s'il est compact, Hausdorff et qu'il admet une base de clopens.
+  \end{defn}
+
+  \begin{thm}
+    Si $(X, \Omega X)$ est un espace de Stone alors
+    \[
+      (X, \Omega X) \cong \mathbf{Sp}\big(\!\underbrace{\{C  \mid C \text{ clopen}\}, \subseteq}_{\text{algèbre de Boole}}\!\big)
+    .\]
+  \end{thm}
+
+  On va définir le \textit{spectre} $\mathbf{Sp}(B)$ où $B$ est une algèbre de Boole, à l'aide des ultrafiltres sur $B$ et les filtres premiers (\textit{c.f.} les cinq propriétés ci-dessus).
+
+  \begin{rmk}[Idée]
+    Si $\mathcal{F} \subseteq B$ alors c'est une "théorie consistante et complète" où
+    \begin{itemize}
+      \item \textit{théorie} : stable par implication, \textit{c.f.} 1.--3.
+      \item \textit{consistante} : sans contradiction, 5.
+      \item \textit{complète} : 4., $\forall C \text{ clopen}$, si $C \not\in \mathcal{F}_\sigma$ alors $(\mathbf{2}^\mathrm{AP})^\omega \setminus C \in \mathcal{F}_\sigma$.
+    \end{itemize}
+  \end{rmk}
+
+\end{document}

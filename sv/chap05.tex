@@ -6,7 +6,7 @@
 
   \chapter{Propriétés "observables".}
 
-  La terminologie "propriété observable" n'est pas utilisée, mais c'est en réalité la compacité.
+  La terminologie "propriété observable" n'est pas utilisée dans la littérature, mais c'est en réalité la compacité.
 
   \begin{rmk}[Rappel]
     Si $f : X \to Y$ alors  \[
@@ -70,8 +70,16 @@
 
   \begin{defn}
     Soit $(X, \Omega X)$ un espace topologique.
-    Une partie $P \subseteq X$ est \textit{clopen} (\textit{ouvert fermé} en français) si $P$ et $X \setminus P$ sont ouverts.
+    Une partie~$P \subseteq X$ est \textit{clopen} (\textit{ouvert fermé} en français) si $P$ et $X \setminus P$ sont ouverts.
   \end{defn}
+
+  \begin{rmk}
+    \begin{enumerate}
+      \item On a $\emptyset$ est clopen, et que, si $A$ et $B$ sont clopen alors $A \cup B$ est clopen.
+      \item On a $X$ est clopen, et que, si $A$ et $B$ sont clopen alors $A \cap B$ est clopen (dual du point précédent).
+      \item Si $A$ est clopen alors $X \setminus A$ est clopen.
+    \end{enumerate}
+  \end{rmk}
 
   \begin{exm}
     Soit $u \in \Sigma^\star$, on a que $\mathsf{ext}(u)$ est ouvert.
@@ -82,6 +90,115 @@
   \end{exm}
 
   \begin{rmk}
-    Sur $\Sigma^\omega$, tous les $\mathsf{ext}(W)$ où $W \subseteq \Sigma^\star$ sont clopen.
+    Sur $(\Sigma^\omega, \Omega\Sigma^\omega)$, tous les $\mathsf{ext}(W)$ où $W \subseteq \Sigma^\star$ est \textit{\textbf{fini}} sont clopen.
+    La réciproque est fausse, comme le montre le lemme suivant.
   \end{rmk}
+
+  \begin{lem}
+    Si $\Sigma$ est infini et $a \in \Sigma$, alors
+    \[
+    \Sigma^\omega \setminus \mathsf{ext}(a) = \bigcup_{\Sigma \ni b \neq a}  \mathsf{ext}(b)
+    \]
+    est clopen mais \textit{\textbf{pas}} de la forme $\mathsf{ext}(W)$ avec $W$ fini.
+  \end{lem}
+
+  \section{Compacité.}
+
+  \begin{defn}
+    Soit $(X, \Omega X)$ un espace topologique.
+     \begin{enumerate}
+      \item Une partie $A \subseteq X$ est \textit{compacte} si, pour toute famille $(V_i)_{i \in I} \in \Omega X^I$ telle que $A \subseteq \bigcup_{i \in  I} V_i$, il existe $J \subseteq I$ \textit{\textbf{fini}} tel que $A \subseteq \bigcup_{j \in J} V_j$.
+      \item On dit que $(X, \Omega X)$ est \textit{compact} si $X$ est une partie compacte.
+    \end{enumerate}
+  \end{defn}
+
+  \begin{rmk}[Non-exemple]
+    Si $\Sigma$ est infini alors $\Sigma^\omega$ n'est pas compact :
+    \[
+    \Sigma^\omega = \bigcup_{a \in \Sigma} \mathsf{ext}(a)
+    .\]
+  \end{rmk}
+
+  \begin{prop}
+    Si $\Sigma$ est \textit{\textbf{fini}} alors $\Sigma^\omega$ est compact.
+  \end{prop}
+  \begin{prv}
+    On procède à l'aide du lemme de Kőnig.
+    Supposons que $\Sigma^\omega = \bigcup_{i \in  I} U_i$ où $U_i \in \Omega\Sigma^\omega$.
+    On a que $U_i = \mathsf{ext}(V_i)$ pour un $V_i \subseteq \Sigma^\star$ (en général, $V_i$ est infini).
+    Soit $V = \bigcup_{i \in I} V_i \subseteq \Sigma^\star$, et on vérifie que $\mathsf{ext}(V) = \Sigma^\omega$.
+    Pour chaque $n \in \mathds{N}$, on définit $W_n \subseteq \Sigma^n$ par récurrence :
+    \begin{itemize}
+      \item On pose $W_0 := \{\varepsilon\}$ si  $\varepsilon \in V$ et $W_0 := \emptyset$ sinon.
+      \item On pose
+        \[
+          W_{n+1} := \mleft\{\, u \in V \;\middle|\; u \text{ n'a pas de préfixe dans } {\textstyle \bigcup_{k \le n} W_k} \,\mright\} 
+        .\]
+    \end{itemize}
+    On pose enfin $W = \bigcup_{n \in \mathds{N}} W_n$.
+    On a que $\mathsf{ext}(W) = \mathsf{ext}(V)$ (car, pour tout $v \in V$, il existe $w \in W$ tel que $w \subseteq v$), et $W$ est "prefix-free" (c'est-à-dire que, pour $w, w' \in W$, on a $w \not\subseteq w'$ ssi $w \neq w'$).
+
+    Si $W$ est fini alors on s'arrête.
+
+    Par l'absurde, supposons $W$ infini, et posons $T = \mathrm{Pref}(W)$ qui est un arbre par définition.
+    L'arbre $T$ est à branchement fini (car $\Sigma$ est fini), et $T$ est infini (car $W$ l'est)
+    Par le lemme de Kőnig, il existe un chemin infini $\pi \in \Sigma^\omega$ dans $T$.
+    Comme $\Sigma^\omega = \mathsf{ext}(W)$, il existe $u \in W$ tel que $u \subseteq \pi$.
+    De plus, il existe $a \in \Sigma$ tel que $ua \subseteq \pi$ et donc $ua \in T = \mathrm{Pref}(W)$.
+
+    On arrive à une contradiction car $u \in W$ et $W$ est prefix-free.
+  \end{prv}
+
+  \begin{crlr}
+    On a que $\Sigma^\omega$ est compact ssi $\Sigma$ fini.
+    \qed
+  \end{crlr}
+
+  \begin{lem}
+    Si $(X, \Sigma X)$ est compact et $C \subseteq X$ est fermé alors $C$ est compact.
+  \end{lem}
+  \begin{prv}
+    L'idée est que si $C \subseteq \bigcup_{i \in I} V_i$ alors $X \subseteq (X \setminus C) \cup \bigcup_{i \in I} V_i$.
+  \end{prv}
+
+  \begin{crlr}
+    Si $\Sigma$ est fini alors $A \subseteq \Sigma^\omega$ est clopen ss'il existe $W \subseteq \Sigma^\star$ \textit{\textbf{fini}} tel que $A = \mathsf{ext}(W)$.
+    \qed
+  \end{crlr}
+
+  \section{Espace Hausdorff.}
+
+  \begin{defn}
+    On dit que $(X, \Omega X)$ est \textit{Hausdorff} (ou $\mathrm{T_2}$) lorsque, pour tout $x \neq  y \in X$, alors il existe $U, V \in \Omega X$ tels que 
+    \[
+    U \cap V = \emptyset \quad\quad x \in U \quad\text{et}\quad y \in V
+    .\]
+  \end{defn}
+
+  \begin{exm}
+    L'espace $(\Sigma^\omega, \Omega\Sigma^\omega)$ est Hausdorff.
+    Soient $\alpha \neq \beta$.
+    Il existe $u \subseteq \alpha$ et $v \subseteq \beta$ tels que $\mathsf{ext}(u) \cap \mathsf{ext}(v)$.
+
+    (On peut choisir $u = p \alpha(\mathsf{length}(p))$ et $v = p \beta(\mathsf{length}(p))$ où $p $ est le plus long préfixe commun à $\alpha$ et $\beta$.)
+  \end{exm}
+
+  \begin{prop}
+    Si $(X, \Omega)$ est compact Hausdorff et $C \subseteq X$ est compact alors $C$ est fermé.
+  \end{prop}
+  \begin{prv}
+    Soit $C \subseteq X$ est compact et $x \not\in C$.
+    Pour tout $y \in C$, il existe $U_y, V_y$ tels que $U_y \cap V_y = \emptyset$ et $x \in U_y$ et $y \in V_y$.
+    Donc, on a $C \subseteq \bigcup_{y \in C} V_y$.
+    Comme $C$ est compact, il existe $y_1, \ldots, y_n \in C$ tels que $C \subseteq V_{y_1} \cup V_{y_2} \cup \cdots \cup V_{y_n}$.
+    On a que $x \in U_{y_1} \cup \cdots  \cup U_{y_n} =: U \in \Omega X$.
+    Et, $U \subseteq X \setminus C$ car, $U \cap (V_{y_1} \cup \cdots \cup V_{y_n}) = \emptyset$.
+  \end{prv}
+
+  \begin{crlr}
+    Si $(X, \Omega X)$ est compact Hausdorff et $C \subseteq X$, 
+    \[
+    \text{$C$ compact} \iff \text{$C$ fermé}
+    .\] 
+  \end{crlr}
 \end{document}
