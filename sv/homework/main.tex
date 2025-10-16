@@ -1,0 +1,769 @@
+\documentclass[fontsize=16pt,a4paper,DIV=17,parskip=half]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hyperindex]{hyperref}
+\usepackage{lastpage}
+\usepackage{tikz}
+\usepackage{tikzpagenodes}
+\usepackage{pgfplots}
+\usepackage{enumitem}
+\usepackage{scrlayer-scrpage}
+\usepackage{xspace}
+\usepackage{float}
+\usepackage{amsfonts,amsmath,amsthm,amssymb}
+\usepackage{thmtools}
+\usepackage[english]{babel}
+\usepackage[autostyle, style=english]{csquotes}
+\usepackage{subfigure}
+\usepackage{mleftright}
+%\usepackage{BOONDOX-calo}
+%\usepackage{dsfont}
+\usepackage{tikz-cd}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{soulutf8}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{stmaryrd}
+\usepackage{fvextra}
+\usepackage{adjustbox}
+\usepackage{fontspec}
+\usepackage{etoolbox}
+\usepackage{todonotes}
+\usepackage{verbatim}
+\usepackage{ebproof}
+\usepackage{cancel}
+\usepackage{setspace}
+\usepackage{fourier-otf}
+%\usepackage{pxfonts}
+%\usepackage[scaled=0.92]{mathpazo}
+\usepackage{juliamono}
+\usepackage[osf]{Alegreya}
+\usepackage[osf]{AlegreyaSans}
+\let\mathds\mathbb
+%\DeclareMathAlphabet{\mathsf}{OT1}{cmss}{m}{n}
+
+\renewcommand{\mathsf}[1]{\textup{\textsf{#1}}}
+\newcommand\Agda{\textsf{Agda}\xspace}
+
+\ebproofset{right label template=$\inserttext$, left label template=\tiny$\inserttext$, center=false}
+
+\RedeclareSectionCommand[beforeskip=0.10em, afterskip=0.10em]{section}
+\RedeclareSectionCommand[beforeskip=0.05em, afterskip=0.001em plus 0em]{subsection}
+
+
+\fvset{bgcolor=lightgray!10,backgroundcolorpadding=3pt}
+
+\MakeOuterQuote{"}
+
+\colorlet{deeppurple}{DarkOrchid}
+\colorlet{deepgreen}{ForestGreen!70!black}
+\colorlet{deepblue}{NavyBlue!70!black}
+\colorlet{deepred}{RawSienna!70!black}
+\colorlet{nicered}{BrickRed!70!white}
+
+\makeatletter
+\g@addto@macro\bfseries{\boldmath}
+\makeatother
+
+\hypersetup{
+    colorlinks,
+    citecolor=deepgreen,
+    filecolor=nicered,
+    linkcolor=deepblue,
+    pdfencoding=auto,
+    psdextra,
+    urlcolor=deepred
+}
+
+\usetikzlibrary{positioning,shadings,arrows.meta}
+
+\clearpairofpagestyles
+
+\newcommand\showpage{\itshape\hfill--~\thepage/\pageref*{LastPage}~--\hfill}
+\cofoot[\showpage]{\showpage} \cefoot[\showpage]{\showpage}
+
+\setlist[enumerate]{font={\bfseries\color{deepblue}}}
+\AtBeginDocument{
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+\newcommand\separatorBlock{
+  \raisebox{-0.2em}{
+    \tikz{ \draw[deepblue,ultra thick, line cap=round] (0,0) -- (0,1em); }
+  }
+}
+
+\newcommand\vertical[1]{
+  \rotatebox[origin=c]{270}{\ensuremath{#1}}
+}
+
+\mdfsetup{skipabove=1em,skipbelow=0em,linewidth=0pt,rightline=false, topline=false, bottomline=false}
+
+
+\theoremstyle{definition}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=ForestGreen, % backgroundcolor=ForestGreen!5,
+% },
+]{thmgreenbox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont\sffamily\itshape,
+% mdframed={
+%   linecolor=NavyBlue,% backgroundcolor=NavyBlue!5,
+% },
+]{thmbluebox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
+  mdframed={
+    linecolor=deepblue,
+    linewidth=2pt,
+  },
+  numbered=no,
+]{thmblueline}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!5,
+% },
+]{thmredbox}
+
+\declaretheoremstyle[
+  headfont=\itshape\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!1,
+%   linewidth=0pt,
+% },
+  numbered=no,
+  qed=\qedsymbol,
+]{thmproofbox}
+
+\newcommand\defineMarkerColor[2]{
+  \AtBeginEnvironment{#1}{
+    \setlist[enumerate]{font={\color{#2}}}
+    \renewcommand{\labelitemi}{\color{#2}\small$\triangleright$}
+    \renewcommand{\labelitemii}{\color{#2}–}
+    \renewcommand{\labelitemiii}{\color{#2}•}
+    \renewcommand\emph[1]{{\bfseries\em\color{#2}##1}}
+  }
+}
+
+
+\AtBeginDocument{
+  \setlist[enumerate]{font={\bfseries\color{deepblue}}}
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}\small$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+
+\setlist[enumerate]{font={\color{deepblue}}}
+\renewcommand{\labelitemi}{\color{deepblue}\small$\triangleright$}
+\renewcommand{\labelitemii}{\color{deepblue}–}
+\renewcommand{\labelitemiii}{\color{deepblue}•}
+
+\declaretheorem[style=thmgreenbox, name=Axiom, numbered=no]{axi} \defineMarkerColor{axi}{deepgreen}
+\declaretheorem[style=thmgreenbox, name=Definition]{defn} \defineMarkerColor{defn}{deepgreen}
+\declaretheorem[style=thmbluebox, name=Example]{exm}      \defineMarkerColor{exm}{deepblue}
+\declaretheorem[style=thmbluebox, name=Exercise]{exo}     \defineMarkerColor{exo}{deepblue}
+\declaretheorem[style=thmbluebox, name=Question]{que}     \defineMarkerColor{que}{deepblue}
+\declaretheorem[style=thmredbox, name=Proposition]{prop}  \defineMarkerColor{prop}{deepred}
+\declaretheorem[style=thmredbox, name=Theorem]{thm}      \defineMarkerColor{thm}{deepred}
+\declaretheorem[style=thmredbox, name=Lemma]{lem}         \defineMarkerColor{lem}{deepred}
+\declaretheorem[style=thmredbox, name=Corollary]{crlr}   \defineMarkerColor{crlr}{deepred}
+\declaretheorem[style=thmblueline, name=Remark]{rmk}    \defineMarkerColor{rmk}{deepblue}
+\declaretheorem[style=thmblueline, name=Note]{note}       \defineMarkerColor{note}{deepblue}
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
+\newenvironment{prv}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementproof}}{\end{replacementproof}} \defineMarkerColor{prv}{deepred}
+\declaretheorem[style=thmproofbox, name=Proof idea]{replacementideaproof}
+\newenvironment{prvid}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementideaproof}}{\end{replacementideaproof}} \defineMarkerColor{prvid}{deepred}
+
+\RequirePackage{caption}
+\DeclareCaptionLabelFormat{labelformat}{\textbf{#1~#2}\separatorBlock}
+\captionsetup{labelformat=labelformat,labelsep=none,textfont=sl}
+
+\DeclareMathSizes{11}{9}{7}{5}
+
+\title{Semantics and Verification -- \textit{Homework}}
+\author{Hugo \textsc{Salou}}
+
+\let\emph\relax
+\DeclareTextFontCommand{\emph}{\bfseries\em\color{deepblue}}
+
+\renewcommand{\thefootnote}{\alph{footnote}}
+
+\makeatletter
+\def\moverlay{\mathpalette\mov@rlay}
+\def\mov@rlay#1#2{\leavevmode\vtop{%
+   \baselineskip\z@skip \lineskiplimit-\maxdimen
+   \ialign{\hfil$\m@th#1##$\hfil\cr#2\crcr}}}
+\newcommand{\charfusion}[3][\mathord]{
+    #1{\ifx#1\mathop\vphantom{#2}\fi
+        \mathpalette\mov@rlay{#2\cr#3}
+      }
+    \ifx#1\mathop\expandafter\displaylimits\fi}
+\makeatother
+
+\usepackage{pifont}
+
+
+\tikzcdset{arrow style=math font}
+\tikzset{
+  equiv/.style={-,preaction={draw,double equal sign distance}},
+  >=Straight Barb,
+}
+
+\begin{document}
+  \begin{center}
+    \bfseries
+    \sffamily
+
+    {\large\itshape ---\hspace{1em}Homework\hspace{1em}---}
+
+    {\huge Semantics and Verification}
+
+    {\large \itshape Hugo SALOU}
+  \end{center}
+
+  \section{Toward Stone Duality.}
+
+  \begin{que}
+    Show that every Stone space $(X, \Omega)$ is Hausdorff (if $x, y \in X$ are distinct, there there are disjoint $U, V \in \Omega$ such that $x \in U$ and $y \in V$).
+  \end{que}
+
+  Let $x, y \in X$ be two distinct points of a Stone space $(X, \Omega)$.
+  As, $(X, \Omega)$ is $\mathrm{T_0}$ and without loss of generality, there exists $W \in \Omega$ such that $x \in W$ and $y \not\in W$.
+  As $(X, \Omega)$ is zero-dimensional, we can write $W \eqqcolon \bigcup_{i \in  I} W_i$ where $W_i \in \mathbf{K}\Omega$ for every $i \in I$.
+  Thus, there exists a clopen set $U \coloneqq W_i \in \Omega$ such that ${x \in W_i \subseteq U}$.
+  Define $V \coloneqq X \setminus U \in \Omega$, and we have that $x \in U$, $y \in V$ (as $y \not\in W \supseteq U$) and the open sets $U$ and $V$ are disjoint.
+  We can conclude that every Stone space is Hausdorff.
+
+  \begin{que}
+    \label{q2}
+    Show that $\le$ is a partial order on $\mathfrak L(\mathsf{LML})$.
+  \end{que}
+
+  We start by showing the following lemma.
+  \begin{lem}
+    \label{lem1}
+    We have $\phi \le \psi$ if and only if $\llbracket \phi\rrbracket \subseteq \llbracket \psi\rrbracket$.
+  \end{lem}
+  \begin{prv}
+    We have that $\phi \le \psi$ iff $\phi \equiv \phi \land \psi$ iff $\llbracket \phi\rrbracket = \llbracket \phi \land \psi\rrbracket = \llbracket \phi\rrbracket \cap \llbracket \psi\rrbracket$ (that last equality is by definition of $\llbracket -\rrbracket$) iff $\llbracket \phi\rrbracket \subseteq \llbracket \psi\rrbracket$.
+  \end{prv}
+
+  We can thus easily show that $\le$ is a partial order.
+  \begin{itemize}
+    \item \textit{Reflexivity}. As $\llbracket \phi\rrbracket \subseteq \llbracket \phi\rrbracket$, we have that $\phi \le \phi$ for every $\phi \in \mathfrak L(\mathsf{LML})$.
+    \item \textit{Transitivity}. For any $\phi, \psi, \vartheta \in \mathfrak L(\mathsf{LML})$, if $\phi \le \psi$ and $\psi \le \vartheta$ then, by the lemma, $\llbracket \phi\rrbracket \subseteq \llbracket \psi\rrbracket \subseteq \llbracket \vartheta\rrbracket$, thus we have $\llbracket \phi \rrbracket \subseteq \llbracket \vartheta\rrbracket$, \textit{i.e.}\ $\phi \le \vartheta$.
+    \item \textit{Antisymmetry}.
+      For any $\phi, \psi \in \mathfrak L(\mathsf{LML})$, if $\phi \le \psi$ and $\psi \le \phi$ then, by double inclusion with the above lemma, $\llbracket \phi\rrbracket = \llbracket \psi\rrbracket$ thus $\phi = \psi$ as we consider $\mathsf{LML}$-formulae quotiented by $\equiv$.
+  \end{itemize}
+
+  \section{Lattices and Boolean Algebras.}
+
+  \subsection{Semilattices.}
+
+  \begin{que}
+    \label{q3}
+    Let $(L, \le)$ be a partial order.
+    \begin{enumerate}
+      \item Show that $(L, \le)$ is a meet semilattice if, and only if, $L$ has binary meets $\wedge : {L \times L} \to L$ and greatest element $\top \in L$.
+        \label{q3-1}
+      \item Show that $(L, \le)$ is a join semilattice if, and only if, $L$ has binary joins $\vee : {L \times L} \to L$ and least element $\bot \in L$.
+    \end{enumerate}
+  \end{que}
+
+  \begin{enumerate}
+    \item If $(L, \le)$ is a meet semilattice, then $L$ has binary meets and a greatest element $\top = \bigwedge \emptyset$ (any element is a lower bound of $\emptyset$, thus the greatest lower bound of $\emptyset$ is the greatest element).
+
+      Now, suppose $(L, \le)$ has a binary meet $\wedge$ and a greatest element $\top$.
+      Consider $\{a_i  \mid i \in I\}$ a finite subset of elements of $L$.
+      By induction on~$\# I \in \mathds{N}$, we define $\bigwedge_{i \in I} a_i \in I$ and show that $\bigwedge_{i \in I}a_i$ is a meet of the finite set $\{a_i  \mid  i \in I\}$ (like the notation suggests).
+      \begin{itemize}
+        \item Define $\bigwedge_{i \in \emptyset} a_i \coloneqq \top \in L$; as any element is a lower bound of $\emptyset$, the greatest lower bound of $\emptyset$ is the greatest element.
+        \item Consider $I \coloneqq J \sqcup \{i\}$.
+          By induction hypothesis, we have that $\bigwedge_{j \in J} a_j$ exists in $L$ and is a meet of $\{a_j  \mid j \in J\}$ in $(L, \le)$.
+          Define \[
+          \bigwedge_{k \in I} a_k \coloneqq \big(\bigwedge_{j \in J} a_j \big) \wedge a_i \in I
+          .\]
+
+          We have that $\bigwedge_{k \in I} a_k$ is a lower bound of $\{a_k  \mid k \in I\}$. Consider an element $a_k$ with $k \in I$.
+          If $k \in J$ then $a_k \le \bigwedge_{j \in J}a_j \le \bigwedge_{k' \in I} a_{k'}$.
+          Otherwise~$k = i$ and we immediacy have that $a_i \le \bigwedge_{k' \in I} a_{k'}$.
+
+          Consider a lower bound $b \in L$ of $\{a_k  \mid k \in I\}$, then $b$ is a lower bound of $\{a_j  \mid j \in J\}$ and $b \le a_i$.
+          We have $b \le \bigwedge_{j \in J} a_j$ and $b \le a_i$, therefore $b \le \bigwedge_{k \in I} a_k$.
+
+          We can conclude that $\bigwedge_{k \in I} a_k$ is a meet of $\{a_k  \mid k \in K\}$.
+      \end{itemize}
+      Finally, we have that $(L, \le)$ has finite meets.
+    \item This results follows from~\ref{q3-1} when considering the partial order $(L, \ge)$, by duality.
+      Meets in $(L, \ge)$ are exactly joins in $(L, \le)$, and the greatest element of $(L, \ge)$ is the least element of $(L, \le)$, and \textit{vice versa}.
+  \end{enumerate}
+
+  \begin{note}
+    In the following, when I will be dealing with multiple partial orders on the same set (\textit{e.g.}\ $\le$ and $\ge$), I will write $\bigwedge_\le$ for the meet operator in poset $(I, \le)$, $\bigvee_\le$ for the join operator in poset $(I, \le)$, $\top_{\le}$ for the greatest element in poset $(I, \le)$ and $\bot_{\le}$ for the least element in poset $(I, \le)$.
+  \end{note}
+
+  \begin{que}
+    Prove the following.
+    \begin{enumerate}
+      \item Let $(L, \le)$ be a meet semilattice with binary meets $\wedge : L \times L \to L$ and greatest element $\top \in L$.
+        Then $(L, \wedge, \top)$ is a commutative mooned in which every element is idempotent.
+        Moreover, we have $a \le b$ iff $a = a \wedge b$.
+      \item Let $(L, \le)$ be a join semilattice with binary joins $\vee : L \times L \to L$ and least element~$\bot$.
+        Then $(L, \vee, \bot)$ is a commutative mooned in which every element is idempotent.
+        Moreover, we have $a \le b$ iff $b = a \wedge b$.
+    \end{enumerate}
+  \end{que}
+
+  \begin{enumerate}
+    \item Let $a, b, c \in L$. First, we have that $a \wedge b = \bigwedge \{a,b\} = \bigwedge \{b,a\} = b \wedge a$ thus the binary meet operation $\wedge$ is commutative.
+      Then, as a special case of the previous question, we have that $a$ and $\top \wedge a$ are both meets of $\{a\}$. And, by unicity of meets (\textit{i.e.}\ antisymmetry of $\le$, mainly), they are equals.
+      Also as a special case of the previous question, we have that elements \[
+      a \wedge (b \wedge c) = \top \wedge (a \wedge (b \wedge c))
+      \] and \[
+      (a \wedge b) \wedge c = c \wedge (a \wedge b) = \top \wedge (c \wedge (a \wedge b))
+      \]  are both meets of the set $\{a,b,c\}$, thus are equal.
+      Next, we have that \[
+      a \wedge a = \bigwedge \{a, a\} = \bigwedge \{a\} = \top \wedge a = a
+      \](penultimate equality is from last question), thus~$a \wedge a = a$.
+      Finally, we have that:
+      \begin{itemize}
+        \item if $a = a \wedge b$ then $a$ is a lower bound of $\{a,b\}$ thus $a \le b$;
+        \item if $a \le b$ then $a = a \wedge b$ as $a$ is a lower bound of $\{a,b\}$ and any lower bound $c$ of $\{a,b\}$ must satisfy $c \le a$.
+      \end{itemize}
+    \item Consider the meet semilattice $(L, \ge)$ and apply the results above.
+      Meets in $(L, \ge)$ are exactly joins in $(L, \le)$, and the greatest element of $(L, \ge)$ is the least element of $(L, \le)$, and \textit{vice versa}.
+      The last statement follows from the equivalence:
+      \[
+      a \le b \quad\text{iff}\quad b\ge a\quad\text{iff}\quad b = a \wedge_\ge b\quad\text{iff}\quad b = a \vee_\le b
+      ,\] 
+      where the second "iff" follows from the result above for $(L, \ge)$, and the last one follows from the equality $a \wedge_\ge b = a \vee_\le b$.
+  \end{enumerate}
+
+  \begin{que}
+    Prove the following.
+    \begin{enumerate}
+      \item Given a commutative monoid $(L, \wedge, \top)$ in which every element is idempotent, let ${a \le_\wedge b}$ iff  $a = a \wedge b$.
+        Then $(L, \le_\wedge)$ is a meet semilattice with binary meets given by $\wedge$ and greatest element $\top$.
+      \item Given a commutative monoid $(L, \vee, \bot)$ in which every element is idempotent, let ${a \le_\vee b}$ iff  $b = a \vee b$.
+        Then $(L, \le_\vee)$ is a join semilattice with binary joins given by $\vee$ and least element $\bot$.
+    \end{enumerate}
+  \end{que}
+
+  \begin{enumerate}
+    \item Let us start by showing that $(L, \le_\wedge)$ is a partial order.
+      \begin{itemize}
+        \item \textit{Reflexivity.} As $a \wedge a = a$ by idempotence, we have $a \le_\wedge a$.
+        \item \textit{Antisymmetry.} If $a \le_\wedge b$ and $b \le_\wedge a$ then, by commutativity, we have $a \wedge b = a = b$.
+        \item \textit{Transitivity.} If $a \le_\wedge b$ and $b \le_\wedge c$ then, by associativity,
+          \[
+          a = a \wedge b = a \wedge (b \wedge c) = (a \wedge b) \wedge c = a \wedge c
+          ,\] 
+          thus $a \le_\wedge c$.
+      \end{itemize}
+      By question~\ref{q3}, it suffices to show that $(L, \le_\wedge)$ that binary meets for poset $(L, \le_\wedge)$ are $\wedge$ and that $\top$ is the greatest element of poset $(L, \le_\wedge)$.
+      Consider~$a, b, c$ three arbitrary elements of $L$.
+      \begin{itemize}
+        \item For any $b \in L$, we have $b \wedge \top = b$ (as $\top$ is a neutral element) and thus $b \le_\wedge \top$ for all $b \in L$, so $\top$ is the greatest element of $(L, \le_\wedge)$.
+        \item Firstly, element $a \wedge b$ is a lower bound of $\{a,b\}$ as 
+          \begin{gather*}
+            a \wedge b \le_\wedge a \quad\text{iff}\quad a \wedge b = (a \wedge b) \wedge a\\
+            a \wedge b \le_\wedge b \quad\text{iff}\quad a \wedge b = (a \wedge b) \wedge b\\
+          \end{gather*}
+          and the latter equalities are true by idempotence, associativity, and finally commutativity.
+          Secondly, consider $c \in L$ such that we have $c \le_\wedge a$ and $c \le_\wedge b$, then $c \wedge a = c = c \wedge b$.
+          We therefore have that $c \le_\wedge a \wedge b$, as
+          \[
+          c \wedge (a \wedge b) = (c \wedge a) \wedge b = c \wedge b = c
+          .\] 
+          We can conclude that $\wedge$ is the binary meet operator in  $(L, \le_\wedge)$.
+      \end{itemize}
+    \item Applying the previous result with the commutative monoid $(L, \vee, \bot)$, we obtain that $(L, \ge_\vee)$\footnote{The notation is, in a way, "context-sensitive," as for an arbitrary monoid $(M, \oast, \mathbf{I})$, we can either define $a \le_\oast b$ as $a \oast b = a$ or $a \le_\oast b$ as $a \oast b = b$.} is a meet semilattice where binary meets for $\ge_\vee$ are given by $\vee$ and the greatest element for $\ge_\vee$ is $\bot$.
+      We can thus conclude that $(L, \le_\vee)$ is a join semilattice where binary joins for $\le_\vee$ are given by $\vee$ and the least element for $\le_\vee$ is $\bot$.
+  \end{enumerate}
+
+  \begin{que}
+    \label{q6}
+    Show the following, for the partial order $(\mathfrak{L}(\mathsf{LML}), \le)$:
+    \begin{enumerate}
+      \item $(\mathfrak{L}(\mathsf{LML}), \le)$ is a meet semilattice with greatest element $\top$ and binary joins given by
+        \begin{align*}
+          - \wedge -: \mathfrak{L}(\mathsf{LML}) \times  \mathfrak{L}(\mathsf{LML}) &\longrightarrow  \mathfrak{L}(\mathsf{LML}) \\
+          (\phi, \psi) &\longmapsto \phi \wedge \psi\;
+        ;\end{align*}
+      \item $(\mathfrak{L}(\mathsf{LML}), \le)$ is a join semilattice with least element $\bot$ and binary joins given by
+        \begin{align*}
+          - \vee -: \mathfrak{L}(\mathsf{LML}) \times  \mathfrak{L}(\mathsf{LML}) &\longrightarrow  \mathfrak{L}(\mathsf{LML}) \\
+          (\phi, \psi) &\longmapsto \phi \vee \psi
+        .\end{align*}
+    \end{enumerate}
+  \end{que}
+
+  We will use the lemma proven in question~\ref{q2} (lemma~\ref{lem1}, page~\pageref{lem1}).
+  
+  \begin{enumerate}
+    \item We only need to show that $- \wedge -$ defines a binary meet for $(\mathfrak L(\mathsf{LML}), \le)$ and that $\top$ is a greatest element.
+
+      For any $\phi \in \mathfrak L(\mathsf{LML})$, we have $\phi \le \top$ as $\llbracket \phi\rrbracket \subseteq \llbracket \top\rrbracket = (\mathbf{2}^\mathrm{AP})^\omega$, thus $\top$ is the greatest element.
+
+      For any formulae~$\phi, \psi \in \mathfrak L(\mathsf{LML})$, we have that $\phi \land \psi \le \phi$ and $\phi \land \psi \le \psi$ as both $\llbracket \phi\rrbracket  $ and $\llbracket \psi\rrbracket  $ are supersets of $\llbracket \phi \land \psi\rrbracket = \llbracket \phi\rrbracket  \cap \llbracket \psi\rrbracket$ (by definition of interpretation~$\llbracket -\rrbracket$).
+      Then, if $\vartheta \le \phi$ and $\vartheta \le \psi$, we have that $\llbracket \vartheta\rrbracket \subseteq \llbracket \phi\rrbracket$ and $\llbracket \vartheta\rrbracket \subseteq \llbracket \psi\rrbracket$ thus $\llbracket \vartheta\rrbracket \subseteq \llbracket \phi\rrbracket \cap \llbracket \psi\rrbracket = \llbracket \phi \land \psi\rrbracket$, therefore $\vartheta \le \phi\land\psi$.
+
+      We can conclude that $(\mathfrak L(\mathsf{LML}), \le)$ is a meet semilattice with greatest element $\top$ and binary meets given by $- \wedge -$.
+
+    \item We only need to show that $- \vee -$ defines a binary join for $(\mathfrak L(\mathsf{LML}), \le)$ and that $\bot$ is a least element.
+
+      For any $\phi \in \mathfrak L(\mathsf{LML})$, we have $\bot \le \phi$ as $\emptyset \subseteq \llbracket \bot\rrbracket \subseteq \llbracket \phi\rrbracket$, thus $\bot$ is the least element.
+
+      For any formulae~$\phi, \psi \in \mathfrak L(\mathsf{LML})$, we have that $\phi \le \phi \lor \psi$ and $\psi\le \phi \lor \psi$ as both $\llbracket \phi\rrbracket$ and $\llbracket \psi\rrbracket  $ are subsets of $\llbracket \phi \lor \psi\rrbracket = \llbracket \phi\rrbracket  \cup \llbracket \psi\rrbracket$ (by definition of interpretation~$\llbracket -\rrbracket$).
+      Then, if $\phi \le \vartheta $ and $\psi \le \vartheta $, we have that $\llbracket \phi\rrbracket \subseteq \llbracket \vartheta\rrbracket$ and $\llbracket \psi\rrbracket \subseteq \llbracket \vartheta\rrbracket$ thus $\llbracket \phi \lor \psi \rrbracket = \llbracket \phi\rrbracket \cup \llbracket \psi\rrbracket  \subseteq \llbracket \vartheta\rrbracket$, therefore $\phi \lor \psi \le \vartheta$.
+
+      We can conclude that $(\mathfrak L(\mathsf{LML}), \le)$ is a join semilattice with least element $\bot$ and binary joins given by $- \vee -$.
+  \end{enumerate}
+
+
+  \begin{que}
+    Show that a map of meet (\textup{resp}.\ join) semilattices is monotone.
+  \end{que}
+
+  Let $f : L \to L'$ be an arbitrary function where  $(L, \le)$ and $(L', \le')$ are partial orders.
+
+  \begin{enumerate}
+    \item Suppose $f : (L, \le) \to (L', \le')$ is a map of meet semilattices.
+      Let $a, b \in L$.
+      If $a \le b$, then $a \wedge b = a$ and, as $f$ preserves finite meets, \[
+      f(a) \wedge' f(b) = f(a \wedge b) = f(a)
+      ,\]and thus $f(a) \le' f(b)$.
+      Therefore, $f$ is monotone.
+    \item Suppose $f : (L, \le) \to (L', \le')$ is a map of join semilattices.
+      Let $a, b \in L$.
+      If $a \le b$, then $a \vee b = b$ and, as $f$ preserves finite joins, \[
+      f(a) \vee' f(b) = f(a \vee b) = f(b)
+      ,\]and thus $f(a) \le' f(b)$.
+      Therefore, $f$ is monotone.
+  \end{enumerate}
+
+  \subsection{Lattices.}
+
+  \begin{que}
+    \label{q8}
+    Consider the partial order $(L, \sqsubseteq)$ where
+    \[
+    L \coloneqq \mathds{N} \cup \{\alpha, \beta, \top\} 
+    ,\] 
+    where $\sqsubseteq$ is the reflexive-transitive closure of $\sqsubset$, where 
+    \[
+      a \sqsubset b \quad \text{ iff } \quad \begin{cases}
+        a < b \text{ in } \mathds{N}\\
+        \quad\quad\text{or}\\
+        a \in \mathds{N} \text{ and }b \in \{\alpha, \beta\}\\
+        \quad\quad\text{or}\\
+        a \in \{\alpha, \beta\}  \text{ and } b = \top.
+      \end{cases}
+    \]
+    Show that $(L, \sqsubseteq)$ is a join semilattice but is not a lattice.
+  \end{que}
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[node distance=2.7cm]
+      \node (0) {$0$};
+      \node[right of=0] (1) {$1$};
+      \node[right of=1] (2) {$2$};
+      \node[right of=2] (3) {$3$};
+      \node[right of=3] (d) {$\ldots$};
+      \node[right of=d] (x) {};
+      \node[above=0.5cm of x] (a) {$\alpha$};
+      \node[below=0.5cm of x] (b) {$\beta$};
+      \node[right of=x] (t) {$\top$};
+      \draw (0) to node[midway, fill=white, inner sep=0em] {$\sqsubset$} (1);
+      \draw (1) to node[midway, fill=white, inner sep=0em] {$\sqsubset$} (2);
+      \draw (2) to node[midway, fill=white, inner sep=0em] {$\sqsubset$} (3);
+      \draw (3) to node[midway, fill=white, inner sep=0em] {$\sqsubset$} (d);
+      \draw (d) to[out=0, in=180] node[midway, fill=white, inner sep=0em, sloped, anchor=center] {$\sqsubset$} (a);
+      \draw (d) to[out=0, in=180] node[midway, fill=white, inner sep=0em, sloped, anchor=center] {$\sqsubset$} (b);
+      \draw (a) to[out=0, in=180] node[midway, fill=white, inner sep=0em, sloped, anchor=center] {$\sqsubset$} (t);
+      \draw (b) to[out=0, in=180] node[midway, fill=white, inner sep=0em, sloped, anchor=center] {$\sqsubset$} (t);
+    \end{tikzpicture}
+    \caption{Hasse diagram of $(L, \sqsubseteq)$ from question~\ref{q8}}
+    \vspace{0.6em}
+    \footnotesize\textsf{\textbf{Note:} Hasse diagrams are usually read bottom-to-top,\\ but this one is drawn left-to-right for convenience.}
+  \end{figure}
+
+  The relation $\sqsubseteq$ is a partial order. Reflexivity and transitivity is true by definition of $\sqsubseteq$ as the reflexive and transitive closure of $\sqsubseteq$.
+  For antisymmetry, we have that:
+  \begin{itemize}
+    \item for $n,m \in \mathds{N}$,  $n \sqsubseteq m$ iff $n \le m$;
+    \item for any $n \in \mathds{N}$ and $m \in L \setminus \mathds{N}$, we have $n \sqsubseteq m$ and $m \not\sqsubseteq n$;
+    \item $\alpha \sqsubseteq\top$, $\beta \sqsubseteq \top$, $\top \not\sqsubseteq \alpha$, $\top \not\sqsubseteq \beta$, $\alpha \not\sqsubseteq \beta$ and $\beta \not\sqsubseteq \alpha$;
+  \end{itemize}
+  (this can be shown by induction on the relation $\sqsubseteq$).
+
+  We have that $0$ is the least element in $(L, \sqsubseteq)$: we have that $0 \sqsubseteq a$ for all~$a \in L$.
+  For $a, b \in L$, we can define $a \vee b$ as:
+   \begin{itemize}
+     \item if $a, b \in \mathds{N}$, let $a \vee b \coloneqq \min_{\le_{\mathds{N}}}(a, b)$;
+     \item if $a \in \mathds{N}$ and $b \in L \setminus \mathds{N}$, let $a \vee b, b \vee a \coloneqq b$;
+     \item otherwise let $\alpha \vee \beta \coloneqq \top$, $a \wedge a \coloneqq a$, $a \wedge \top, \top \wedge a \coloneqq \top$ for $a \in \{\alpha,\beta, \top \}$.
+  \end{itemize}
+  Using the previous results on $\sqsubseteq$, we have that $-\vee-$ \textit{really} is a join.
+
+  This concludes the proof that $(L, \sqsubseteq)$ is a join semilattice.
+
+  We also have that $(L, \sqsubseteq)$ is not a lattice.
+  Suppose it is a lattice, and consider the element $a \coloneqq \alpha \wedge \beta$.
+  Necessarily, we have that $a \in \mathds{N}$ (if $a = \alpha$ then we would have $\alpha \sqsubseteq \beta$, which is false).
+  As $a = \alpha \wedge \beta$ and $a + 1 \sqsubseteq \alpha, \beta$ we have, by definition of meet, that $a + 1  \sqsubseteq a$, thus $a + 1 \le a$ (since $a, a+1 \in \mathds{N}$) which is \textit{\textbf{absurd}}.
+  We can conclude that $(L, \sqsubseteq)$ is not a lattice.
+
+
+  \begin{que}
+    Consider a set $L$ equipped with two binary operations $\wedge, \vee : L \times L \to L$ and two constants $\top , \bot  \in L$.
+    Assume that $(L, \wedge, \top)$ and $(L, \vee, \bot)$ are commutative monoids in which every element is idempotent.
+    Show that the following are equivalent.
+    \begin{enumerate}
+      \item The partial order $\le_\vee$  induced by $(L, \vee, \bot)$ coincides with the partial order $\le_\wedge$ induces by $(L, \wedge, \top)$.
+        \label{q9-1}
+      \item $(L, \vee, \wedge, \bot, \top)$ satisfies the two following \textbf{absorptive laws}:
+        \label{q9-2}
+        \begin{align}
+          \tag{\textsf{abs}\textsubscript{1}}
+          \forall a, b \in L, \quad &a \vee (a \wedge b) = a
+          \label{abs1}
+          \\
+          \tag{\textsf{abs}\textsubscript{2}}
+          \forall a, b \in L, \quad &a \wedge (a \vee b) = a
+          \label{abs2}
+        \end{align}
+    \end{enumerate}
+  \end{que}
+
+  \begin{itemize}
+    \item Let us show that \ref{q9-1} implies \ref{q9-2}.
+      Let $a, b \in L$.
+      We have that $a \wedge b \le_\wedge a$ and, assuming $\le_\wedge$ and $\le_\vee$ coincide, $a \wedge b \le_\vee a$, thus $a \vee (a \wedge b) = a$, \textit{i.e.}\ (\ref{abs2}) holds.
+      Similarly,  $a \le_\vee a \vee b$ thus $a \le_\wedge a \vee b$, so $(a \wedge b) \vee a = a$ holds, and we can recover (\ref{abs1}) by using commutativity.
+    \item Let us show that \ref{q9-2} implies \ref{q9-1}.
+      \begin{itemize}
+        \item Suppose $b \le_\wedge a$, then $b \wedge a = b$.
+          By (\ref{abs1}) and commutativity, we have $b \vee a = (b \wedge a) \vee a = a$, thus $b \le_\vee a$.
+        \item Suppose $b \le_\vee a$, then $b \vee a = a$.
+          By (\ref{abs2}), we have
+          \[
+          b \wedge a = b \wedge (b \vee a) = b
+          ,\] thus $b \le_\wedge a$.
+      \end{itemize}
+      Thus the two order coincide.
+  \end{itemize}
+
+  \begin{que}
+    Show that the partial order $(\mathfrak L (\mathsf{LML}), \le )$ is a lattice.
+  \end{que}
+
+  We have shown that $(\mathfrak L (\mathsf{LML}), \le )$ has a greatest element $\top$, a least element $\bot$, binary meets given by $- \wedge -$ and binary joins given by  $- \vee -$ (question~\ref{q6}).
+  Thus it has all finite meets and finite joins (as seen in question~\ref{q3}),  \textit{i.e.}\ $(\mathfrak{L}(\mathsf{LML}), \le)$ is a lattice.
+  \let\nxt\bigcirc
+
+  \begin{que}
+    Show that the function
+    \begin{align*}
+      \nxt: \mathfrak{L}(\mathsf{LML}) &\longrightarrow \mathfrak{L}(\mathsf{LML}) \\
+      \phi &\longmapsto \nxt\phi
+    \end{align*}
+    is a morphism of lattices.
+  \end{que}
+
+  We know $\nxt$ is a map of meet iff $\nxt \top = \top$ and  $\nxt (\phi \land \psi) = \nxt \phi \land \nxt \psi$.
+  Both are true as,
+  \begin{gather*}
+    \llbracket \nxt \top\rrbracket  = \big\{\,\sigma \in (\mathbf{2}^\mathrm{AP})^\omega  \;\big|\; \sigma \upharpoonright 1 \in \llbracket \top\rrbracket = (\mathbf{2}^\mathrm{AP})^\omega\,\big\}  = (\mathbf{2}^\mathrm{AP})^\omega = \llbracket \top\rrbracket  \\
+    \llbracket \nxt (\phi \land \psi)\rrbracket = \big\{\,\sigma \in (\mathbf{2}^\mathrm{AP})^\omega  \;\big|\; \sigma \upharpoonright 1 \in \llbracket \phi\rrbracket \cap \llbracket \psi\rrbracket  \,\big\}  = \llbracket \nxt \phi\rrbracket   \cap \llbracket \nxt \psi\rrbracket  = \llbracket \nxt \phi \land \nxt \psi\rrbracket  .
+  \end{gather*}
+  Very similarly, $\nxt$  is a map of joins iff $\nxt \bot = \bot$ and  $\nxt (\phi \lor \psi) = \nxt \phi \lor \nxt \psi$.
+  One can show that both equalities hold by applying $\llbracket -\rrbracket$ and showing the equality of the sets like above.
+
+  Thus $\nxt : (\mathfrak L(\mathsf{LML}), \le) \to (\mathfrak L(\mathsf{LML}), \le)$ is a morphism of lattices.
+
+  \subsection{Distributive Lattices.}
+
+  \begin{que}
+    Show that the following two \textbf{distributive laws} are equivalent in a lattice $(L, \vee, \wedge, \bot, \top)$:
+    \begin{align}
+      \tag{\textsf{dist}\textsubscript{1}}
+      \forall a, b, c \in L, \quad &a \wedge (b \vee c) = (a \wedge b) \vee (a \wedge c)
+      \label{dist1}
+      \\
+      \tag{\textsf{dist}\textsubscript{2}}
+      \forall a, b, c \in L, \quad &a \vee (b \wedge c) = (a \vee b) \wedge (a \vee c)
+      \label{dist2}
+    \end{align}
+  \end{que}
+
+  Suppose (\ref{dist1}) holds and let us show (\ref{dist2}) is true for $a, b, c \in L$:
+  \begin{align*}
+    (a \vee b) \wedge (a \vee c)
+    &= ((a \vee b) \wedge a) \vee ((a \vee b) \wedge c) && \text{by (\ref{dist1})}\\
+    &= a \vee ((a \vee b) \wedge c) && \text{by (\ref{abs2})} \\
+    &= a \vee (a \wedge b) \vee (b \wedge c) && \text{by (\ref{dist1})} \\
+    &= a \vee (b \wedge c) && \text{by (\ref{abs1})} .
+  \end{align*}
+
+  To prove that (\ref{dist1}) holds when (\ref{dist2}) is true, we can apply the previous result to the lattice $(L, \le)^\mathrm{op} = (L, \ge)$.
+  This gives exactly the implication "(\ref{dist2}) implies (\ref{dist1})," as wanted.
+
+  Thus, the two distributive laws (\ref{dist1}) and (\ref{dist2}) are equivalent.
+
+  \begin{que}
+    Show that the lattice $(\mathfrak L(\mathsf{LML}), \le)$ is distributive.
+  \end{que}
+
+  Let $\phi, \psi, \vartheta \in \mathfrak{L}(\mathsf{LML})$.
+  We have that \[
+    \textstyle
+  \llbracket \phi \land (\psi \lor \vartheta) \rrbracket 
+  = \llbracket \phi\rrbracket \cap (\llbracket \psi\rrbracket \cup \llbracket \vartheta\rrbracket)  
+  = (\llbracket \phi\rrbracket \cap \llbracket \psi\rrbracket) \cup (\llbracket \phi\rrbracket \cap \llbracket \vartheta\rrbracket)  
+  = \llbracket (\phi \land \psi) \lor (\phi \land \vartheta)\rrbracket 
+  ,\] 
+  thus $\phi \land (\psi \lor \vartheta) = (\phi \land \psi) \lor (\phi \land \vartheta)$.
+
+  \begin{que}
+    Consider the following lattice $\mathrm{M}_3$:
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}[node distance=2cm]
+        \node (b) {$b$};
+        \node[above of=b] (T) {$\top$};
+        \node[below of=b] (B) {$\bot$};
+        \node[left of=b] (a) {$a$};
+        \node[right of=b] (c) {$c$};
+        \draw (B) to (a);
+        \draw (B) to (b);
+        \draw (B) to (c);
+        \draw (a) to (T);
+        \draw (b) to (T);
+        \draw (c) to (T);
+      \end{tikzpicture}
+    \end{figure}
+    (\textup{i.e.}\ $\bot \le a, b, c \le \top$ with $a,b,c$ incomparable).
+    Show that $\mathrm{M_3}$ is not distributive.
+  \end{que}
+
+  Suppose $\mathrm{M_3}$ is distributive.
+  As $a, b, c$ are incomparable, we have that 
+   \[
+  a \wedge b = a \wedge c = \bot \quad\quad \text{ and }\quad\quad b \vee c = \top
+  ,\]
+  and thus,
+  \[
+  a = a \wedge \top = a \wedge (b \vee c) = (a \wedge b) \vee (a \wedge c) = \bot \vee \bot = \bot
+  ,\] 
+  which is \textit{\textbf{absurd}}.
+  Thus $\mathrm{M_3}$ is not distributive.
+
+  \subsection{Booleans algebras.}
+
+  \begin{que}
+    Show that if $(L, \le)$ is a distributive lattice then $a \in L$ has at most one complement.
+  \end{que}
+
+  Consider $c, c' \in L$ two complements of $a \in L$.
+  Then, we have that 
+  \[
+    c = c \wedge \top = c \wedge (a \vee c') \overset {\text{(\ref{dist1})}} =
+    (c \wedge a) \vee (c \wedge c') = \bot \vee (c \wedge c') = c \wedge c'
+  ,\]
+  and,
+  \[
+    c' = c' \wedge \top = c' \wedge (a \vee c) \overset {\text{(\ref{dist1})}} =
+    (c' \wedge a) \vee (c' \wedge c) = \bot \vee (c' \wedge c) = c' \wedge c
+  .\] 
+  We can conclude that $c = c'$ by commutativity of meets.
+
+  \begin{que}
+    Show that $(\mathfrak L(\mathsf{LML}), \le)$ is a Boolean algebra.
+  \end{que}
+
+  Let us show that $\lnot \phi$ is a complement for  $\phi \in \mathfrak{L}(\mathsf{LML})$.
+  We have to check that $\phi \wedge \lnot \phi = \bot$ and $\phi \vee \lnot \phi = \top$ hold.
+  Both equalities can be easily checked with interpretations:
+  \[
+  \llbracket \phi \land \lnot \phi\rrbracket  = \llbracket \phi\rrbracket \cap \llbracket \phi\rrbracket^\complement   = \emptyset = \llbracket \bot\rrbracket  
+  ,\] 
+  and
+  \[
+  \llbracket \phi \lor \lnot \phi\rrbracket  = \llbracket \phi\rrbracket \cup \llbracket \phi\rrbracket^\complement = (\mathbf{2}^\mathrm{AP})^\omega = \llbracket \top\rrbracket  
+  .\]
+  Thus, $\lnot \phi$ is \textit{\textbf{the}} complement of $\phi$ in $(\mathfrak{L}(\mathsf{LML}), \le)$, which is, as a consequence, a Boolean algebra.
+
+  \begin{que}
+    Show that the following \textbf{De Morgan Laws} hold in every Boolean algebra $(B, \vee, \wedge, \bot, \top)$:
+    \[
+    a \wedge b = \lnot (\lnot a \vee \lnot b)
+    \quad\quad
+    a \vee b = \lnot (\lnot a \wedge \lnot b)
+    \quad\quad
+    a = \lnot \lnot a
+    .\] 
+  \end{que}
+
+  We start by showing that $\lnot a \lor \lnot b$ is a complement to $(a \land b)$:
+  \begin{gather*}
+    (a \wedge b) \wedge (\lnot a \lor \lnot b)
+    =
+    (a \wedge b \wedge \lnot b) 
+    \lor
+    (a \wedge b \wedge \lnot a) 
+    = \bot  \lor \bot 
+    = \bot\\
+    (a \wedge b) \vee (\lnot a \vee \lnot b)
+    = (a \vee \lnot a \vee \lnot b) \wedge (b \vee \lnot a \vee \lnot b)
+    = \top \wedge \top = \top 
+  ,\end{gather*}
+  by using the Boolean algebra laws.
+  Thus $a \wedge b = \lnot (\lnot a \vee \lnot b)$.
+
+  For  $a \vee b = \lnot (\lnot a \land \lnot b)$, we proceed by duality by applying the previous result to the Boolean algebra $(B, \wedge, \vee, \top, \bot)$, as a complement for $a$ in $(B, \ge)$ is exactly a complement for $a$ in $(B, \le)$.
+
+  We can easily check that $\lnot \top = \bot$, and then
+  \[
+  a = a \wedge \top = \lnot (\lnot a \vee \lnot \top) = \lnot (\lnot a \vee \bot) = \lnot \lnot a
+  .\] 
+
+  \begin{que}
+    Show that if $f$ is a map of Boolean algebras from $(B, \le )$ to $(B', \le')$ then $f$ preserves complements.
+  \end{que}
+
+  We have that 
+  \[
+  \bot ' = f(\bot ) = f(a \wedge \lnot a) = f(a) \wedge' f(\lnot a)
+  ,\] 
+  and
+  \[
+  \top = f(\top) = f(a \vee \lnot a) = f(a) \vee' f(\lnot a)
+  ,\]
+  thus $f(\lnot a)$ is a complement of $f(a)$ and, by unicity, $f(\lnot a) = \lnot f(a)$.
+  We can conclude that a map of Boolean algebras preserves complements.
+
+  \section{Representation of Boolean Algebras.}
+
+  \hfill
+
+  \begin{center}
+    \large\sffamily\itshape\bfseries
+    The rest will be given in the next part.
+  \end{center}
+
+\end{document}
