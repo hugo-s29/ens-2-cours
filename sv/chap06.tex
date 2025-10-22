@@ -184,4 +184,337 @@
     \end{itemize}
   \end{rmk}
 
+  \subsection{Extension de $\mathsf{LML}$ avec $\always$ et $\eventually$.}
+
+  \renewcommand\qedsymbol{\textbf{QED}}
+
+  \begin{rmk}
+    Avec $\mathsf{LML}$, on ne définit que des clopens.
+    Ainsi, les propriétés de sécurité ne sont que "finitaires" et il n'y a que $(\mathbf{2}^\mathrm{AP})^\omega$ comme propriété de vivacité.
+  \end{rmk}
+
+  \begin{defn}
+    On ajoute à $\mathsf{LML}$ les modalités
+    \begin{itemize}
+      \item $\always \phi$ qui signifie "always" (notée parfois $\mathrm{A}\phi$) ;
+      \item $\eventually \phi$ qui signifie "eventually" (notée parfois $\mathrm{E}\phi$) ;
+    \end{itemize}
+    où
+    \begin{itemize}
+      \item $\llbracket \always \phi\rrbracket := \mleft\{\,\sigma \in (\mathbf{2}^\mathrm{AP})^\omega \;\middle|\; \forall n \in \mathds{N}, \sigma \upharpoonright n \in \llbracket \phi\rrbracket \,\mright\}$ ;
+      \item $\llbracket \eventually \phi \rrbracket := \mleft\{\,\sigma \;\middle|\; \exists n \in \mathds{N}, \sigma \upharpoonright n \in \llbracket \phi\rrbracket\,\mright\}$.
+    \end{itemize}
+  \end{defn}
+
+  Dans la suite, les preuves se termineront par "\qedsymbol" au lieu du symbole usuel "$\square$", pour enlever l'ambigüité avec la modalité.
+
+  \begin{nota}
+    On note $\sigma \Vdash \phi$ pour $\sigma \in \llbracket \phi\rrbracket$.
+  \end{nota}
+
+  \begin{exm}
+    On a 
+    \begin{enumerate}
+      \item $\sigma \Vdash \eventually \mathsf{a}$ ssi $\exists n \in \mathds{N}, \mathsf{a} \in \sigma(n)$,
+        l'ensemble $\llbracket \eventually a\rrbracket $ est ouvert mais pas compact, donc pas un clopen car 
+        \[
+        \llbracket \eventually \mathsf{a} \rrbracket   = \bigcup_{u \in (\mathbf{2}^\mathrm{AP})^\star, \mathsf{a} \in A} \mathsf{ext}(u A)
+        ;\] 
+      \item $\sigma \Vdash \always \mathsf{a}$ ssi  $\forall n \in \mathds{N}, \mathsf{a} \in \sigma(n)$ (l'ensemble $\llbracket \always \mathsf{a} \rrbracket$ est un fermé non clopen) ;
+      \item $\sigma \Vdash \always \eventually \mathsf{a}$ ssi $\exists^\infty n, \mathsf{a} \in \sigma(n)$ (c'est une propriété de vivacité) ;
+      \item $\sigma \Vdash \eventually \always \mathsf{a}$ ssi $\forall^\infty n, \mathsf{a} \in \sigma(n)$ (c'est une propriété de vivacité).
+    \end{enumerate}
+  \end{exm}
+
+  \begin{lem}
+    On a que :
+    \begin{enumerate}
+      \item $\always \phi \equiv \lnot \eventually \lnot \phi$ ;
+      \item $\eventually \phi \equiv \lnot \always \lnot \phi$ ;
+      \item $\always \phi \equiv \phi \land \nxt \always \phi$ ;
+      \item $\eventually \phi \equiv \phi \lor \nxt \eventually \phi$.
+    \end{enumerate}
+  \end{lem}
+
+  Avec des $\land$ et des $\lor$ infinis, on aurait :
+  \[
+  \always \phi \equiv \phi \land \nxt \phi \land \nxt\nxt \phi \land \cdots \equiv \bigwedge_{n \in \mathds{N}}\nxt^n \phi
+  \] et \[
+  \eventually \phi \equiv \phi \lor \nxt \phi \lor \nxt\nxt \phi \lor \cdots \equiv \bigvee_{n \in \mathds{N}}\nxt^n \phi
+  .\]
+
+  \begin{defn}
+    On étend ensuite $\mathsf{LML}$ par variables :
+    \[
+    \phi, \psi ::= X  \mid \cdots
+    ,\] 
+    où $X, Y, \ldots \in \mathcal{X}$.
+    Une \textit{valuation} de $\mathcal{X}$ est une fonction \[
+    \rho : \mathcal{X} \to \wp\big((\mathbf{2}^\mathrm{AP})^\omega\big)
+    ,\]
+    où la sémantique $\llbracket \phi\rrbracket_\rho$ est définie de manière très similaire à $\llbracket \phi\rrbracket  $ en ajoutant 
+    \[
+    \llbracket X\rrbracket_\rho := \rho(X) 
+    .\]
+  \end{defn}
+
+  \begin{nota}
+    Soient $\phi, \rho, X$, on pose 
+    \begin{align*}
+      \llbracket \phi\rrbracket_\rho(X) : \wp\big((\mathbf{2}^\mathrm{AP})^\omega\big) &\longrightarrow \wp\big((\mathbf{2}^\mathrm{AP})^\omega\big) \\
+      A &\longmapsto \llbracket \phi\rrbracket_\rho[A / X]
+    ,\end{align*}
+    où $\rho[A / X](X) = A$ et  $\rho[A / X](Y) = \rho(Y)$ si  $Y \neq X$.
+  \end{nota}
+
+  \begin{lem}
+    Soit $\phi$ et $X$ n'apparaissant pas dans $\phi$.
+    On pose
+    \[
+      \phi_{\eventually} (X) := \phi \land \nxt X
+      \quad\quad
+      \phi_{\always} (X) := \phi \land \nxt X
+    .\]
+    Alors, pour tout $\rho$,
+    \begin{itemize}
+      \item $\llbracket \eventually \phi \rrbracket_\rho$ est le plus petit point fixe de $\llbracket \phi_{\eventually} \rrbracket_\rho(X)$ ;
+      \item $\llbracket \always \phi \rrbracket_\rho$ est le plus grand point fixe de $\llbracket \phi_{\always} \rrbracket_\rho(X)$.
+    \end{itemize}
+  \end{lem}
+  \begin{prv}
+    Pour le premier point, on doit montrer les deux propriétés suivantes :
+    \begin{enumerate}
+      \item $\llbracket \eventually \phi\rrbracket_\rho = \llbracket \phi_{\eventually} \rrbracket (\llbracket \eventually \phi\rrbracket)$ ;
+      \item $\forall P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$, $P = \llbracket \phi_{\eventually} \rrbracket_\rho(P) \implies \llbracket \eventually \phi \rrbracket_\rho \subseteq P$.
+    \end{enumerate}
+
+    Pour la première propriété, c'est la loi d'expansion de $\eventually$.
+    Pour la seconde, soit $P$ tel que $P = \llbracket \phi \lor \nxt X\rrbracket (P) $ et $\sigma \in \llbracket \eventually \phi\rrbracket$, et montrons que $\sigma \in P$.
+    Soit $n \in \mathds{N}$ tel que $\sigma \upharpoonright n \in \llbracket \phi\rrbracket$.
+    Alors, on a que $\sigma \upharpoonright n \in \llbracket \phi \lor \nxt X\rrbracket (P)$ et donc $\sigma \upharpoonright n \in P$.
+    Donc $\sigma \upharpoonright (n-1) \in \llbracket \phi \lor \nxt \phi \rrbracket(P) = P$, donc pour tout $i \le n$,  $\sigma \upharpoonright i \in \llbracket \phi \lor \nxt X\rrbracket (P) = P $ et en particulier $\sigma = \sigma \upharpoonright 0 \in P$.
+  \end{prv}
+
+  \begin{defn}
+    On dit qu'une variable $X$ est \textit{positive} dans $\phi$ si toutes les occurrences de $X$ dans $\phi$ sont sous un nombre pair de~$\lnot$.
+    (On peut donner une définition inductive de "$X$ est positive dans $\phi$" et de "$\phi$ est négative dans $\phi$".)
+  \end{defn}
+
+  \begin{exm}
+    Dans les exemples ci-dessous, on a que $X$ est positive dans $\phi$ :
+    \[
+    \mathsf{a} \land \nxt X \quad\quad \mathsf{a} \lor \nxt X \quad\quad \text{ et } \lnot (\lnot \mathsf{a} \land \nxt \lnot X)
+    ,\] 
+    mais, dans les exemples ci-dessous, $X$ n'est pas positive dans $\phi$ :
+    \[
+    \lnot X \quad\quad \text{ et }\quad\quad \lnot X \lor (\mathsf{a} \land \nxt X)
+    .\]
+  \end{exm}
+
+  \begin{lem}
+    Si $X$ est positive dans $\phi$ alors 
+    \[
+    \llbracket \phi\rrbracket(X) : \big(\wp\big((\mathbf{2}^\mathrm{AP})^\omega\big), \subseteq\big) \longrightarrow \big(\wp\big((\mathbf{2}^\mathrm{AP})^\omega\big), \subseteq\big)
+    \]
+    est monotone.
+    \qed
+  \end{lem}
+
+  \subsection{Théorème de Knaster-Tarski.}
+
+  \begin{defn}
+    Soient $(L, \le)$ un poset et $f : L \to L$.
+    \begin{enumerate}
+      \item On dit que $a \in L$ est un \textit{pré-pointfixe} de $f$ si $f(a) \le a$.
+      \item On dit que $a \in L$ est un \textit{post-pointfixe} de $f$ si $a \le f(a)$.
+    \end{enumerate}
+  \end{defn}
+
+  \begin{thm}[Knaster-Tarski]
+    Soit $f : L \to L$ une fonction monotone où $(L, \le)$ est un treillis complet.
+    Alors 
+    \[
+    \mu(f) := \bigwedge \mleft\{\,a \in L \;\middle|\; f(a) \le a\,\mright\}
+    \] 
+    est le plus petit point fixe de $f$, et
+    \[
+    \nu(f) := \bigvee \mleft\{\,a \in L \;\middle|\; a \le f(a)\,\mright\}
+    \] est le plus grand point fixe de $f$.
+  \end{thm}
+  \begin{prv}
+    Vu en TD.
+  \end{prv}
+
+  \begin{lem}
+    Soit $f : (\wp(X), \subseteq) \to (\wp(X), \subseteq)$ monotone. On pose 
+    \begin{align*}
+      g: \wp(X) &\longrightarrow \wp(X) \\
+      A &\longmapsto g(A) = X \setminus f(X \setminus A)
+    .\end{align*}
+    On a alors que 
+    \[
+    \mu(f) = X \setminus \nu(g) \quad\quad \nu(f) = X \setminus \mu(g)
+    .\] 
+  \end{lem}
+  \begin{prv}
+    \begin{align*}
+      X \setminus \nu(g)
+      &= X \setminus \bigcup \mleft\{\,A  \;\middle|\; A \subseteq g(a)\,\mright\}  \\
+      &= \bigcap \mleft\{\,X \setminus A \;\middle|\; A \subseteq g(A)\,\mright\} \\
+      &= \bigcap \mleft\{\,X \setminus A \;\middle|\; A \subseteq X \setminus f(X \setminus A)\,\mright\} \\
+      &= \bigcap \mleft\{\,X \setminus A \;\middle|\; f(X \setminus A) \subseteq X \setminus A\,\mright\} \\
+      &= \bigcap \mleft\{\,B \;\middle|\; f(B) \subseteq B\,\mright\}  \\
+      &= \nu(f)
+    .\end{align*}
+  \end{prv}
+
+  \section{La logique $\mathsf{LTL}$.}
+
+  La logique $\mathsf{LTL}$ est une extension de $\mathsf{LML}$ par certains points fixes.
+  Soit $\theta(X)$ avec  $X$ positive dans $\theta$.
+  On peut écrire 
+  \[
+  \theta(X) \equiv \psi \lor \Big( \bigwedge_{i \in I} \Big( \phi_i \land \bigwedge_{j \in J_i} \nxt^{n_{i,j}} X \Big) \Big)
+  ,\] 
+  où $X$ n'apparait pas dans $\psi$ ni dans $\phi_i$ pour tout $i \in I$.
+
+  Dans $\mathsf{LTL}$, on va avoir les points fixes de $\theta$ si $n_{i,j} = 1$.
+  Dans ce cas, on pourra écrire 
+  \[
+  \theta(X) \equiv \psi \lor (\phi \land \nxt X)
+  ,\] où $X$ n'apparait pas dans $\psi$ ni dans $\phi$.
+
+  \begin{defn}
+    On définit la syntaxe de $\mathsf{LTL}$ par 
+    \begin{align*}
+      \phi, \psi ::= {} & \mathsf{a} & \mathsf{a} \in \mathrm{AP}\\
+      \mid{} & \phi \land \psi  \\
+      \mid{} & \phi \lor \psi  \\
+      \mid{} & \mathsf{False} \\
+      \mid{} & \mathsf{True} \\
+      \mid{} & \lnot \phi \\
+      \mid{} & \nxt \phi \\
+      \mid{} & \phi \until \psi \\
+    .\end{align*}
+    La modalité $\phi \until \psi$ est notée $\phi \mathrel{\mathsf{U}} \psi$ dans les notes de cours.
+
+    La sémantique pour $\mathsf{LTL}$ est définie de manière identique à la sémantique de $\mathsf{LML}$ en ajoutant 
+    \[
+    \textstyle \llbracket \phi \until \psi \rrbracket  
+    = \mleft\{\,\sigma \in (\mathbf{2}^\mathrm{AP})^\omega \;\middle|\; \exists i \in \mathds{N}, 
+    \begin{array}{r}
+      \sigma \upharpoonright i \in \llbracket \psi\rrbracket \\
+      \forall j < i, \sigma \upharpoonright j \in \llbracket \phi\rrbracket  
+    \end{array}\,\mright\} 
+    .\] 
+  \end{defn}
+
+  \subsection{Points fixes dans $\mathsf{LTL}$.}
+
+  On étend, dans cette sous-section uniquement, $\mathsf{LTL}$ avec des variables (comme pour $\mathsf{LML}$).
+
+  \begin{lem}
+    Soit $X$ n'apparaissant pas dans $\phi$ ni $\psi$.
+    Alors, on a que~$\llbracket \phi \until \psi \rrbracket$ est le plus petit point fixe de $\llbracket \theta\rrbracket(X)$.
+  \end{lem}
+  \begin{prv}
+    On a 
+    \[
+    \phi \until \psi \equiv \psi \lor (\phi \land \nxt (\phi \until \psi))
+    .\] 
+    Soit $P$ tel que $P = \llbracket \theta\rrbracket(P)$.
+    Soit $\sigma \in \llbracket \phi \until \psi\rrbracket$.
+    Soit $i \in \mathds{N}$ tel que $\sigma \upharpoonright i \in \llbracket \psi\rrbracket$ et $\sigma \upharpoonright 0, \ldots, \sigma \upharpoonright (i - 1) \in \llbracket \phi\rrbracket$.
+    On a $\sigma \upharpoonright i \in \llbracket \theta\rrbracket(P) = P$, et comme $\sigma \upharpoonright (i-1) \in \llbracket \phi\rrbracket $, on a que $\sigma \upharpoonright (i-1) \in \llbracket \theta \rrbracket (P) = P $.
+    Ainsi, pour tout $k \in \{i-1, \ldots, 0\}$, on a $\sigma \upharpoonright k \in \llbracket \theta\rrbracket (P) = P $, donc $\sigma = \sigma \upharpoonright 0 \in P$.
+  \end{prv}
+
+  \begin{rmk}
+    Si $X$ est (positive et) sous exactement un $\nxt$ dans  $\theta(X)$ alors c'est le cas aussi dans  $\lnot \theta[\lnot X / X]$.
+
+    On a 
+    \begin{align*}
+      \lnot \theta[\lnot X / X] &= \lnot \big(\phi \lor (\psi \land \nxt (\lnot X)) \big)\\
+      &\equiv \lnot \psi \land (\lnot \phi \lor \nxt X)  \\
+      &\equiv(\lnot \psi \land \lnot \phi) \lor (\lnot \psi \land \nxt X) \\
+    ,\end{align*}
+    donc 
+    \[
+      \mu\llbracket \lnot \theta[\lnot X / X] \rrbracket (X) = \llbracket \lnot \psi \until (\lnot \psi \land \lnot \phi\rrbracket  
+    .\]
+  \end{rmk}
+
+  \begin{lem}
+    Soit $X$ n'apparaissant pas dans $\phi, \psi$.
+    Alors
+    \[
+    \llbracket \lnot (\lnot \psi \until (\lnot \psi \land \lnot \phi)) \rrbracket  
+    \] qui est un plus petit point fixe de $\llbracket \theta\rrbracket(X)$ pour $\theta(X) = \psi \lor (\phi \land \nxt X)$.
+  \end{lem}
+
+  \begin{nota}
+    On note 
+    \[
+    \phi \wuntil \psi := \lnot (\lnot \psi \until (\lnot \psi \land \lnot \phi))
+    ,\] 
+    pour \textit{weak until}.
+  \end{nota}
+
+  \begin{nota}
+    On note
+    \[
+    \eventually \phi := \mathsf{True} \until \phi \quad\quad \always \phi := \phi \wuntil \mathsf{False}
+    ,\] 
+    et ont la même sémantique que pour $\mathsf{LML}$.
+  \end{nota}
+
+  \begin{rmk}
+    On peut montrer que le plus grand point fixe de~$\theta(X) = \mathsf{a} \land \nxt \nxt X$ n'est pas définissable dans $\mathsf{LTL}$.
+  \end{rmk}
+
+  \subsection{Équivalences logiques pour $\mathsf{LTL}$.}
+  On note, comme avant, $\phi \equiv \psi$ si $\llbracket \phi\rrbracket = \llbracket \psi\rrbracket$.
+  On a des lois, comme pour $\mathsf{LML}$, \textit{c.f.} figure 8 dans les notes de cours (section 7.3.3).
+
+  \begin{exm}
+    On a 
+    \begin{gather*}
+      \eventually \mathsf{False} \equiv \mathsf{False}\\
+      \eventually (\phi \lor \psi) \equiv \eventually \phi \lor \eventually \psi\\
+      \always \mathsf{True} \equiv \mathsf{True}\\
+      \always (\phi \land \psi) \equiv \always \phi \land \always \psi\\
+      \nxt (\phi \until \psi) \equiv \nxt \phi \until \nxt \psi
+    \end{gather*}
+  \end{exm}
+
+  \begin{lem}
+    On a
+    \begin{enumerate}
+      \item $\lnot (\phi \wuntil \psi) \equiv \lnot \psi \until (\lnot \psi \land \lnot \phi)$ ;
+      \item $\lnot (\phi \until \psi) \equiv \lnot \psi \wuntil (\lnot \psi \land \lnot \phi)$.
+    \end{enumerate}
+    \qed
+  \end{lem}
+
+  \begin{lem}
+    On a 
+    \[
+    \phi \wuntil \psi \equiv (\phi \until \psi) \lor \always \phi
+    .\]
+  \end{lem}
+  \begin{prv}
+    Soit $P = \llbracket (\phi \until \psi) \lor \always \phi \rrbracket$.
+    On va montrer que $P = \nu\big(\llbracket \theta\rrbracket(X) \big)$ où $\theta = \psi \lor (\phi \land \nxt X)$.
+    On a que  $P = \llbracket \theta\rrbracket(P)$ (c'est "facile").
+    Soit $Q$ tel que $Q = \llbracket \theta\rrbracket(Q) $ et on va montrer que $Q \subseteq P$.
+    Soit $\sigma \in Q$.
+    \begin{itemize}
+      \item Si $\sigma \in \llbracket \always \phi\rrbracket $ alors $\sigma \in P$ par définition de $P$.
+      \item Sinon soit $i$ le plus petit tel que $\sigma \upharpoonright i \not\in \llbracket \phi\rrbracket$.
+        Ainsi, par définition, $\sigma \upharpoonright j \in \phi$ pour $j < i$.
+        On montre qu'il existe un certain $k \le i$ tel que $\sigma \upharpoonright k \in \llbracket \psi\rrbracket$.
+        Par l'absurde, supposons que $\sigma \upharpoonright k \not\in \llbracket \psi\rrbracket$ pour tout $k \le i$.
+        On voit que pour tout $k < i$, on a $\sigma \upharpoonright k \in \llbracket \theta\rrbracket(Q) = Q$ donc $\sigma \upharpoonright (i-1) \in \llbracket \theta\rrbracket(Q) = Q$, et donc $\sigma \upharpoonright (i-1) \not\in  \llbracket \psi\rrbracket$, ce qui implique $\sigma \upharpoonright i \in Q$, ce qui contredit la définition de $i$ (car $\sigma \upharpoonright i \not\in \llbracket \psi\rrbracket $ et $\sigma \upharpoonright i \not\in \llbracket \phi\rrbracket$).
+    \end{itemize}
+  \end{prv}
 \end{document}
