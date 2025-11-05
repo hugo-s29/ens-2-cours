@@ -1,0 +1,350 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \selectlanguage{french}
+  \setquotestyle{french}
+
+  \chapter{Expressions $\omega$-régulières.}
+  Cette partie du cours n'est pas dans les notes de cours mais la source est 
+  \begin{center}
+    \textit{Baier, C. and Katoen, J.-P., Principles of Model Checking, MIT Press, 2008}.
+  \end{center}
+
+  L'objet de cette section est l'analogue des expressions régulières pour les $\omega$-mots.
+
+  Soit $\Sigma$ un alphabet non vide et fini.
+
+  \begin{defn}[Quelques opérations]
+    Soit $F$ une expression régulière sur $\Sigma$ telle que $\varepsilon \not\in \mathcal{L}(F)$. On pose
+    \[
+    \mathcal{L}(F)^\omega := \mleft\{\,\sigma \in \Sigma^\omega \;\middle|\; 
+    \begin{array}{l}
+      \sigma = v_1 \cdot v_2 \cdot v_3 \cdot \ldots\\
+      \forall i \ge 1, v_i \in \mathcal{L}(F)
+    \end{array}\,\mright\} 
+    .\]
+    Soit, de plus, $E$ une expression régulière sur $\Sigma$. On pose
+    \[
+    \mathcal{L}(E) \cdot \big(\mathcal{L}(F)\big)^\omega :=
+    \mleft\{\,u \cdot \sigma \in \Sigma^\omega \;\middle|\;
+    \begin{array}{l}
+      u \in \mathcal{L}(E)\\
+      \sigma \in \mathcal{L}(F)^\omega
+    \end{array}\,\mright\} 
+    .\]
+    \textbf{Attention.} On peut avoir $u = \varepsilon \in \mathcal{L}(E)$.
+  \end{defn}
+
+  \begin{defn}
+    Une \textit{expression $\omega$-régulière} sur $\Sigma$ est de la forme 
+    \[
+    G := E_1 \cdot F_1^\omega + \cdots + E_n F_n^\omega
+    ,\] 
+    où les $E_i, F_i$ soin des expressions régulières (classiques) sur $\Sigma$,\footnote{Il y a plusieurs grammaires pour décrire ces expressions mais elles sont toutes (généralement) équivalentes.}
+    avec $\varepsilon \not\in \mathcal{L}(F_i) \subseteq \Sigma^\star$.
+
+    Le \textit{langage} de $G$ est 
+    \[
+    \mathcal{L}_\omega(G) :=
+    \mathcal{L}(E_1) \cdot \big(\mathcal{L}(F_1)\big)^\omega
+    \cup \cdots \cup 
+    \mathcal{L}(E_n) \cdot \big(\mathcal{L}(F_n)\big)^\omega
+    \subseteq \Sigma^\omega
+    .\]
+  \end{defn}
+
+  \begin{exm}
+    Avec $\Sigma = \{a, b\}$, on a
+    \[
+    P := (b^\star a)^\omega (\equiv \{\varepsilon\} \cdot (b^\star a)^\omega \equiv (b^\star a) \cdot (b^\star a)^\omega)
+    ,\]
+    où l'on note $G \equiv G'$ quand $\mathcal{L}_\omega(G) = \mathcal{L}_\omega(G')$.
+
+    On a que \[
+      \mathcal{L}_\omega(P) = \{\sigma \in \Sigma^\omega  \mid \exists^\infty t,  \sigma(t) = a\} 
+    .\]
+  \end{exm}
+
+  \begin{exm}
+    Avec $\Sigma = \{a, b\}$ et $S := (a+b)^\star \cdot b^\omega$,
+    on a 
+    \[
+    \mathcal{L}_\omega(S) = \{\sigma \in \Sigma^\omega  \mid \forall^\infty t, \sigma(t) = b\} 
+    .\]
+  \end{exm}
+
+
+  \section{Automates de Büchi non-déterministes (NBA).}
+
+  Avec ces NBA, on va définir une classe de langages équivalents aux expressions $\omega$-régulières.
+
+  \begin{defn}
+    Un \textit{NBA} est de la forme 
+    \[
+    \mathcal{A} = (Q, \Sigma, \delta, Q_0, F)
+    ,\]
+    où
+    \begin{itemize}
+      \item $Q$ est un ensemble \textit{\textbf{fini}} d'\textit{états} ;
+      \item $\Sigma$ est l'alphabet d'entrée (non vide et fini) ;
+      \item $\delta : Q \times \Sigma \to \wp(Q)$ est la \textit{fonction de transition} (non-déterministe) ;
+      \item $Q_0 \subseteq Q$ est l'ensemble des \textit{états initiaux} ;
+      \item $F \subseteq Q$ est l'ensemble des \textit{états acceptant}.
+    \end{itemize}
+  \end{defn}
+
+  (C'est la même définition que les automates finis non-déterministes (NFA) mais la différence est que l'on va exécuter ces automates sur des $\omega$-mots, et on va donc modifier la définition d'\textit{acception}.)
+
+  \begin{defn}
+    Une \textit{exécution} de $\mathcal{A}$ sur $\sigma \in \Sigma^\omega$ est un $\rho \in Q^\omega$ tel que 
+    \[
+      \rho(0) \in Q_0 \quad\quad\text{et}\quad\quad\forall n \in \mathds{N} \quad \rho(n+1) \in \delta(\rho(n), \sigma(n))
+    .\]
+  \end{defn}
+
+  \begin{rmk}
+    L'ensemble 
+    \[
+    \{\rho \in Q^\omega  \mid \text{$\rho$ est une exécution de $\mathcal{A}$ sur $\sigma$}\} 
+    \] 
+    peut être non-dénombrable (par non déterminisme), et peut être vide.
+  \end{rmk}
+
+  \begin{defn}
+    Une exécution $\rho$ de $\mathcal{A}$ sur $\sigma$ est \textit{acceptante} si
+    \[
+    \exists^\infty t, \quad \rho(t) \in F
+    ,\]
+    on visite infiniment souvent un état acceptant.
+  \end{defn}
+
+  \begin{rmk}
+    Par le principe des tiroirs infinis (l'ensemble $Q$ est fini), une exécution $\rho$ est acceptante ssi il existe un état acceptant~$q \in F$ que l'on visite une infinité de fois :
+    \[
+    \exists q \in F, \quad \exists^\infty t \quad \rho(t) = q
+    .\] 
+  \end{rmk}
+
+  \begin{defn}
+    Le langage $\mathcal{L}_\omega(\mathcal{A})\footnote{L'indice $\omega$ est très important ici.} \subseteq \Sigma^\omega$ est défini par 
+    \[
+    \mathcal{L}_\omega(\mathcal{A}) :=
+    \mleft\{\, \sigma\in \Sigma^\omega \;\middle|\; \exists \rho \in Q^\omega, 
+    \begin{array}{l}
+      \rho \text{ est une exécution}\\
+      \text{acceptante de } \mathcal{A}
+    \end{array}\,\mright\} 
+    .\]
+  \end{defn}
+
+  \begin{rmk}
+    La fonction caractéristique de $\mathcal{L}_\omega(\mathcal{A})$  :
+    \begin{align*}
+      \chi_{\mathcal{L}_\omega(\mathcal{A})}: \Sigma^\omega &\longrightarrow \{0,1\}  \\
+      \sigma &\longmapsto \begin{cases}
+        1 &\text{ si } \sigma \in \mathcal{L}_\omega(\mathcal{A})\\
+        0 &\text{ sinon}.
+      \end{cases}
+    \end{align*}
+  \end{rmk}
+
+  \begin{prop}
+    Étant donné un NBA $\mathcal{A}$, on peut tester si $\mathcal{L}_\omega(\mathcal{A}) = \emptyset$ en temps $\mathrm{O}(|Q| + |\text{transitions}|)$.
+  \end{prop}
+  \begin{prv}
+    Il suffit de faire un DFS (c'est Tarjan-approved).
+  \end{prv}
+
+  \begin{exm}
+    Avec $\Sigma = \{a, b\}$, on considère le NBA $\mathcal{P}$ défini comme
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}
+        \node[state,initial] (0) {};
+        \node[state,right of=0, accepting] (1) {};
+
+        \draw[->] (0) edge[bend left] node{$a$} (1)
+        (1) edge[bend left] node{$b$} (0)
+        (0) edge[loop above] node{$b$} (0)
+        (1) edge[loop above] node{$a$} (1) ;
+      \end{tikzpicture}
+      \caption{Automate de Büchi non-déterministe $\mathcal{P}$}
+    \end{figure}
+    où l'on note avec une flèche entrante les états initiaux et avec un double cercle les états acceptants.
+    On a $\mathcal{L}_\omega(\mathcal{P}) = \mathcal{L}_\omega(P)$.
+  \end{exm}
+
+  \begin{exm}
+    On considère le NBA $\mathcal{S}$ défini comme 
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}
+        \node[state,initial] (0) {};
+        \node[state,right of=0, accepting] (1) {};
+
+        \draw[->] (0) edge node{$b$} (1)
+        (0) edge[loop above] node{$a,b$} (0)
+        (1) edge[loop above] node{$b$} (1) ;
+      \end{tikzpicture}
+      \caption{Automate de Büchi non-déterministe $\mathcal{S}$}
+    \end{figure}
+    On a $\mathcal{L}_\omega(\mathcal{S}) = \mathcal{L}_\omega(S)$.
+  \end{exm}
+
+  \begin{rmk}
+    On note $\Pi^0_2$ l'ensemble des intersections dénombrables d'ouverts.
+    On peut montrer que tout langage dans $\Pi^0_2$ peut s'écrire comme combinaison booléenne (union, intersection, complément) de langages comme $\mathcal{L}_\mathcal{w}(P)$.
+
+    On note $\Sigma^0_2$ l'ensemble des unions dénombrables de fermés.
+    On peut montrer que tout langage dans $\Sigma^0_2$ peut s'écrire comme combinaison booléenne (union, intersection, complément) de langages comme $\mathcal{L}_\mathcal{w}(S)$.
+  \end{rmk}
+
+  \begin{thm}
+    Soit $\Sigma$ un alphabet non vide et fini.
+    \begin{enumerate}
+      \item Pour tout NBA $\mathcal{A}$ sur $\Sigma$, il existe une expression $\omega$-régulière~$G$ sur $\Sigma$ telle que $\mathcal{L}_\omega(G) = \mathcal{L}_\omega(\mathcal{A})$.
+      \item Pour toute expression $\omega$-régulière $G$ sur $\Sigma$, il existe un NBA~$\mathcal{A}$ tel que $\mathcal{L}_\omega(\mathcal{A}) = \mathcal{L}_\omega(G)$.
+    \end{enumerate}
+    De plus, ces deux "il existe" sont \textit{constructifs}.
+  \end{thm}
+  \begin{prv}
+    \begin{enumerate}
+      \item Soit $\mathcal{A} = (Q, \Sigma, \delta, Q_0, F)$ un NBA.
+        Pour tout~$p, q \in Q$, on note $\mathcal{A}_{p, q} = (Q, \Sigma, \delta, \{p\} , \{q\})$, et on a 
+        \[
+        \mathcal{L}_\omega(\mathcal{A}) = \bigcup_{p \in Q_0, q \in F} \mathcal{L}(\mathcal{A}_o, q) \cdot \big(\mathcal{L}(\mathcal{A}_{q, q}) \setminus \{\varepsilon\}\big)^\omega
+        .\]
+      \item On montre que :
+        \begin{enumerate}
+          \item Soient $\mathcal{A}, \mathcal{B}$ deux NBAs sur $\Sigma$. Il existe (constructif) un NBA $\mathcal{C}$ sur $\Sigma$ tel que 
+            \[
+            \mathcal{L}_\omega(\mathcal{C}) = \mathcal{L}_\omega(\mathcal{A}) \cup \mathcal{L}_\omega(\mathcal{B})
+            .\]
+          \item Soit $\mathcal{A}$ un NFA sur $\Sigma$ tel que $\varepsilon \not\in \mathcal{L}(\mathcal{A})$, il existe (constructif) un NBA $\mathcal{B}$ sur $\Sigma$ tel que 
+            \[
+              \mathcal{L}_\omega(\mathcal{B}) =\big(\mathcal{L}(\mathcal{A})\big)^\omega
+            .\] 
+          \item Soit $\mathcal{A}$ un NFA sur $\Sigma$ et $\mathcal{B}$ un NBA sur  $\Sigma$, il existe $\mathcal{C}$ un NBA sur $\Sigma$ tel que $\mathcal{L}_\omega(\mathcal{C}) = \mathcal{L}_\omega(\mathcal{A}) \cdot \mathcal{L}_\omega(\mathcal{B})$.
+        \end{enumerate}
+        On ne détaillera pas toute la preuve.
+        \begin{enumerate}
+          \item Il suffit de mettre les deux automates en parallèle (comme pour l'union disjointe de deux NFAs).
+          \item Soit $\mathcal{A} = (Q, \Sigma, \delta, Q_0, F)$ un NFA tel que $\varepsilon \not\in \mathcal{L}(\mathcal{A})$.
+            On peut supposer qu'il n'y a pas de transition vers $Q_0$ et que $Q_0 \cap F = \emptyset$.\footnote{On peut prendre $\mathcal{A}_\iota := (Q \sqcup \{\iota\}, \Sigma, \delta_\iota, \{\iota\}, F)$ avec $\delta_\iota(\iota, a) = \bigcup_{q \in Q_0} \delta(q, a)$ et $\delta_\iota(q, a) = \delta(q, a)$ pour $q \neq \iota$.
+              On a $\mathcal{L}(\mathcal{A}_\iota) = \mathcal{L}(\mathcal{A})$ car $\varepsilon \not\in \mathcal{A}$.
+            }
+            On définit \[
+            \mathcal{B} := (Q, \Sigma, \delta_\mathcal{B}, Q_0, Q_0)
+            .\] 
+            où 
+            \[
+            \delta_\mathcal{B}(q, a) := \begin{cases}
+              \delta(q, a) & \text{ si } \delta(q, a) \cap F = \emptyset \\
+              \delta(q, a) \cup Q_0 & \text{ sinon}.
+            \end{cases}
+            \]
+            (Ce deuxième cas est important car on ne sais pas toujours le découpage du mot avant d'avoir considéré le mot en entier, ce qui demande de continuer l'exécution dans $\mathcal{A}$.)
+          \item Il suffit de "mettre en série" $\mathcal{A}$ puis  $\mathcal{B}$ en connectant les acceptants de $\mathcal{B}$ avec les finaux de $\mathcal{A}$ (quitte à prendre $\mathcal{B}_\iota$).
+        \end{enumerate}
+    \end{enumerate}
+  \end{prv}
+
+  \begin{defn}
+    Un langage $L \subseteq \Sigma^\omega$ est \textit{$\omega$-régulier} s'il existe un NBA $\mathcal{A}$ tel que  $L = \mathcal{L}_\omega(\mathcal{A})$.
+  \end{defn}
+
+  \begin{crlr}
+    Si $L, K \subseteq \Sigma^\omega$ deux langages $\omega$-réguliers alors $L \cup K$ est $\omega$-régulier.
+  \end{crlr}
+
+  Dans la suite, on va voir la stabilité par intersections finies, mais on ne va pas voir de preuve du théorème ci-dessous.
+
+  \begin{thm}[Büchi]
+    Si $L \subseteq \Sigma^\omega$ est $\omega$-régulier alors $\Sigma^\omega \setminus L$ est $\omega$-régulier.
+  \end{thm}
+  \begin{prv}
+    On l'admet (il n'est pas nécessaire pour le lien avec les formules $\mathsf{LTL}$).
+  \end{prv}
+
+  \section{Automates de Büchi déterministes (DBA).}
+
+  \begin{defn}
+    Un NBA $\mathcal{A} = (Q, \Sigma, \delta, Q_0, F)$ est \textit{déterministe} si
+    \begin{itemize}
+      \item $|Q_0| \le 1$
+      \item $\forall q \in Q, \forall a \in \Sigma, |\delta(q, a)| \le 1$.
+    \end{itemize}
+  \end{defn}
+
+  \begin{prop}
+    Il n'existe pas de DBA $\mathcal{D}$ sur $\Sigma$ tel que 
+    \[
+    \mathcal{L}_\omega(\mathcal{D}) = \mathcal{L}_\omega\big((a+b)^\star \cdot b^\omega\big)
+    .\]
+    (C'est le langage du NBA $\mathcal{S}$ vu précédemment.)
+  \end{prop}
+  \begin{prv}
+    Par l'absurde, soit $\mathcal{D}$ un DBA tel que $\mathcal{L}_\omega(\mathcal{D}) = \mathcal{L}_\omega((a+b)^\star \cdot b^\omega)$.
+    On peut supposer $\mathcal{D}$ \textit{complet} :
+    \[
+    |Q_0| = 1 \quad\text{ et }\quad \forall q \in Q, \forall a \in \Sigma, |\delta(q, a)| = 1
+    .\]
+    (Il suffit d'ajouter un état puits.)
+
+    On notera donc $\delta : Q \times \Sigma \to Q$ et $Q_0 = \{q_\iota\}$.
+    On définit
+    \begin{align*}
+      \delta^\star: \Sigma^\star &\longrightarrow Q \\
+       \varepsilon &\longmapsto q_\iota \\
+       u \cdot a &\longmapsto \delta(\delta^\star(u), a)
+    .\end{align*}
+    On a que $b^\omega \in \mathcal{L}_\omega(\mathcal{D})$, il existe donc $n_0 \ge 0$ tel que $\delta^\star(b^{n_0}) \in F$.
+    Puis, on a que $b^{n_0} a b^\omega \in \mathcal{L}_\omega(\mathcal{D})$,
+    il existe donc $n_1 \ge 0$ tel que~$\delta^\star(b^{n_0} a b^{n_1}) \in F$.
+    En itérant, il existe $(n_i)_{i \in \mathds{N}}$ tel que 
+    \[
+    \forall i \in \mathds{N}, \quad\delta^\star(b^{n_0} a b ^{n_1} a b ^{n_2} a \cdots a b^{n_i}) \in F
+    .\]
+    Considérons $\sigma = b^{n_0} a b^{n_1} a b^{n_2} a \cdots \in \Sigma^\omega$.
+    Comme $\mathcal{D}$ est déterministe, on a que $\sigma \in \mathcal{L}_\omega(\mathcal{D})$, ce qui est absurde.
+  \end{prv}
+
+  On ne peut donc pas déterminiser un automate de Büchi (ce qui explique que le théorème de Büchi n'est pas aussi simple que pour les NFA).
+  
+  Il existe plusieurs familles d'automates déterministes sur les $\omega$-mots équivalents aux NBAs.
+
+  Pour faire un DBA équivalent à $\mathcal{S}$, on doit changer le formalisme.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (0) {0};
+      \node[state,right of=0, accepting] (1) {1};
+
+      \draw[->] (0) edge node{$b$} (1)
+      (0) edge[loop above] node{$a,b$} (0)
+      (1) edge[loop above] node{$b$} (1) ;
+    \end{tikzpicture}
+    \caption{Automate de Büchi non-déterministe $\mathcal{S}$}
+  \end{figure}
+
+  On peut par exemple considérer le DBA suivant et dire que l'on ne peut voire l'état 1 au plus un nombre fini de fois.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \node[state,initial] (0) {0};
+      \node[state,right of=0, accepting] (1) {1};
+
+      \draw[->]
+      (0) edge[bend left] node{$a$} (1)
+      (1) edge[bend left] node{$b$} (0)
+      (0) edge[loop above] node{$b$} (0)
+      (1) edge[loop above] node{$a$} (1) ;
+    \end{tikzpicture}
+    \caption{Automate de Büchi non-déterministe $\bar{\mathcal{S}}$}
+  \end{figure}
+
+  Il existe plusieurs familles de conditions d'acceptation : Muller, Rabin, Street, Parité, \textit{etc}.
+  Par exemple, pour Muller, un DBA est défini comme $(Q, \Sigma, \delta, q_\iota, \mathcal{T})$ où $\delta$ est déterministe et $\mathcal{T} \subseteq \wp(Q)$, et où $\rho \in Q^\omega$ est acceptant ssi $\{q  \mid \exists ^\infty t, \rho(t) = q\} \in \mathcal{T}$.
+\end{document}
