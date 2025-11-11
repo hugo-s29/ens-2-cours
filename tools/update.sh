@@ -49,6 +49,8 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp hott/partie3.pdf ../web/public/data/ens2/hott-partie3.pdf
   cp hott/partie4.pdf ../web/public/data/ens2/hott-partie4.pdf
 
+  cp ip/ip-presentation1.pdf ../web/public/data/ens2/ip-presentation1.pdf
+
 
   # ==========
   # SEMESTRE 2
