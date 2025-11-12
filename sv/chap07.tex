@@ -347,4 +347,244 @@
 
   Il existe plusieurs familles de conditions d'acceptation : Muller, Rabin, Street, Parité, \textit{etc}.
   Par exemple, pour Muller, un DBA est défini comme $(Q, \Sigma, \delta, q_\iota, \mathcal{T})$ où $\delta$ est déterministe et $\mathcal{T} \subseteq \wp(Q)$, et où $\rho \in Q^\omega$ est acceptant ssi $\{q  \mid \exists ^\infty t, \rho(t) = q\} \in \mathcal{T}$.
+
+  \section{Automates de Büchi généralisés (GNBA).}
+
+  L'objectif des GNBAs est pour la stabilité par intersection finies des expression $\omega$-régulières, et seront utiles pour passer de $\mathsf{LTL}$ à un NBA.
+
+  \begin{defn}
+    Un \textit{GNBA} est de la forme
+    \[
+    \mathcal{G} = (Q, \Sigma, \delta, Q_0, \mathcal{F})
+    ,\]
+    où $Q, \Sigma, \delta, Q_0$ sont définis comme pour les NBAs et où $\mathcal{F} \subseteq \wp(Q)$.
+
+    Une exécution de $\mathcal{G}$ sur $\sigma \in \Sigma^\omega$ est \textit{acceptante} si
+    \[
+    \forall F \in \mathcal{F}, \quad \exists^\infty t \quad \rho(t) \in F
+    .\]
+    Le langage $\mathcal{L}_\omega(\mathcal{G})$ est 
+    \[
+    \mleft\{\,
+    \sigma \in \Sigma^\omega\;\middle|\;
+    \begin{array}{l}
+      \text{il existe une exécution}\\
+      \text{acceptante de $\mathcal{G}$ sur $\sigma$}
+    \end{array}\,\mright\} 
+    .\] 
+  \end{defn}
+
+  \begin{rmk}
+    Soit $\mathcal{A} = (Q, \Sigma, \delta, Q_0, F)$ un NBA alors $\mathcal{G} = (Q, \Sigma, \delta, Q_0, \{F\})$ est un GNBA tel que $\mathcal{L}_\omega(\mathcal{G}) = \mathcal{L}_\omega(\mathcal{A})$.
+  \end{rmk}
+
+  \begin{lem}
+    Soient $\mathcal{G}_1, \mathcal{G}_2$ deux GNBAs avec $\mathcal{G}_i = (Q_i, \Sigma, \delta_i, Q_{0,i}, \mathcal{F}_i)$.
+    Alors, $\mathcal{L}_\omega(\mathcal{G}_1) \cap \mathcal{L}_\omega(\mathcal{G}_2) = \mathcal{L}_\omega(\mathcal{G})$ où 
+    \[
+    \mathcal{G} = (Q_1 \times Q_2, \delta, Q_{0,1} \times Q_{0,2}, \mathcal{F})
+    \] 
+    avec
+    \begin{itemize}
+      \item $\delta((q_1, q_2), a) = \mleft\{\,(q_1', q_2') \;\middle|\; 
+        \begin{array}{l}
+          q_1' \in \delta_1(q_1, a)\\
+          q_2' \in \delta_2(q_2, a)\\
+        \end{array}\,\mright\} $ ;
+      \item $\mathcal{F} = \{F \times Q_2  \mid F \in \mathcal{F}_1\} \cup \{Q_1 \times F  \mid F \in \mathcal{F}_2\}$.
+    \end{itemize}
+    \qed
+  \end{lem}
+
+  \begin{thm}
+    Soit $\mathcal{G} = (Q, \Sigma, \delta, Q_0, \mathcal{F})$ où $\mathcal{F} = \{F_0, \ldots, F_{k-1}\}$.
+    Alors $\mathcal{L}_\omega(\mathcal{G}) = \mathcal{L}_\omega(\mathcal{A})$ où
+    \[
+    \mathcal{A} = (Q \times \{0,\ldots,k-1\}, \Sigma, \delta_\mathcal{A}, Q_0 \times \{0\}, F_0 \times \{0\})
+    ,\] 
+    avec
+    \[
+    \delta_\mathcal{A}((q, i), a) = \begin{cases}
+      \{(q', i)  \mid q' \in \delta(q, a)\} & \text{ si }q \not\in F_i \\
+      \{(q', i+1 \mod k)  \mid \delta' \in \delta(q, a)\}  & \text{ sinon}
+    \end{cases}
+    .\] 
+  \end{thm}
+  \begin{prv}
+    \begin{itemize}
+      \item Montrons $\mathcal{L}_\omega(\mathcal{A}) \subseteq \mathcal{L}_\omega(\mathcal{G})$.
+        Soit $\sigma \in \mathcal{L}_\omega(\mathcal{A})$ et $\rho$ une exécution acceptante de $\sigma$ par $\mathcal{A}$.
+        Soit $\rho \in Q^\omega$ une exécution de $\mathcal{G}$ sur $\sigma$ telle que $\rho = \pi_1 \circ \rho'$.
+        Soit $t <t'$ tels que $\rho'(t) = \rho'(t') \in F_0 \times \{0\}$.
+        Alors, $\rho'(t+1) \in Q \times \{1\}$ donc, il existe $t_1, \ldots, t_{k-1}$ tels que $\rho'(t_i) \in F_i \times \{i\}$ et $t < t_1 < t_2 < \cdots < t_{k-1} < t'$.
+        Comme il existe une infinité de $t$ tels que $\rho(t) \in F_0 \times \{0\}$, on voit que $\rho$ est acceptante.
+      \item Montrons $\mathcal{L}_\omega(\mathcal{G}) \subseteq \mathcal{L}_\omega(\mathcal{A})$.
+        Soit $\sigma \in \mathcal{L}_\omega(\mathcal{G})$ et $\rho \in Q^\omega$ une exécution de $\sigma$ acceptante.
+        Soit $\rho'$ une exécution de $\mathcal{A}$ sur~$\sigma$ telle que $\pi_1 \circ \rho' = \rho$.
+        Supposons, par l'absurde, que pour un $i \in \{0, \ldots, k-1\}$ tel que $\forall^\infty t, \pi_2(\rho(t)) = i$.
+        Alors $\forall^\infty t, \pi_2(\rho'(t)) \not\in F_i$.
+        C'est impossible car $\exists ^\infty t, \rho(t) \in F_i$.
+        Il s'en suit que $\rho'$ est acceptante.
+    \end{itemize}
+  \end{prv}
+
+  \begin{crlr}
+    Si $L$ et $K$ sont deux langages $\omega$-réguliers alors $L \cap K$ est $\omega$-régulier.
+  \end{crlr}
+
+  \section{Traduction de $\mathsf{LTL}$ en (G)NBA.}
+
+  Soit $\mathrm{AP}$ \textit{\textbf{fini}} et $\phi$ une formule $\mathsf{LTL}$ sur $\mathrm{AP}$.
+  On veut montrer que~$\llbracket \phi\rrbracket \subseteq (\mathbf{2}^\mathrm{AP})^\omega$ est $\omega$-régulier.
+  Pour cela, on va construire un GNBA $\mathcal{G}$ tel que~$\mathcal{L}_\omega(\mathcal{G}) = \llbracket \phi\rrbracket$.
+
+  \begin{rmk}[Idée]
+    Soit $\sigma \in (\mathbf{2}^\mathrm{AP})^\omega$.
+    On "voudrait" $\mathcal{G}$ tel que les exécutions $\rho$ de $\mathcal{G}$ sur $\sigma$ sont de la forme 
+    \[
+    i \mapsto \mleft\{\, \psi \;\middle|\; \sigma \upharpoonright i \in \llbracket \psi\rrbracket \,\mright\} 
+    .\]
+    Ceci n'est pas possible car on aurait une infinité d'états pour $\mathcal{G}$, ce que l'on ne peut pas avoir.
+  \end{rmk}
+
+  On suppose que $\mathsf{LTL}$ est défini par 
+  \[
+  \psi ::= \mathsf{a}  \mid \mathsf{True}  \mid \psi \land \psi  \mid \lnot \psi  \mid \nxt \psi  \mid \psi \until \psi
+  \]
+  (on retire les redondances du $\mathsf{LTL}$ "habituel").
+
+  \begin{defn}
+    On pose 
+    \[
+      \mathrm{cl}(\phi) = {}^{\displaystyle \{\psi, \lnot \psi  \mid \psi \text{ sous formule de } \phi\}}\big/_{\displaystyle\psi \text{ identifié avec } \lnot\lnot \psi}
+    .\]
+  \end{defn}
+
+  Les états de $\mathcal{G}$ vont être certains $B \subseteq \mathrm{cl}(\phi)$.
+
+  \begin{defn}
+    On dit que $B \subseteq \mathrm{cl}(\phi)$ est \textit{maximal-consistant} si :
+    \begin{itemize}
+      \item  Si $\psi_1 \land \psi_2 \in \mathrm{cl}(\phi)$ alors $\psi_1 \land \psi_2 \in B$ ssi $\psi_1, \psi_2 \in B$.
+      \item Si $\mathsf{True} \in \mathrm{cl}(\phi)$ alors $\mathsf{True} \in B$.
+      \item Si $\psi \in \mathrm{cl}(\phi)$, alors $\lnot \psi \in B$ ssi $\psi \not\in B$.
+    \end{itemize}
+
+    On dit que $B \subseteq \mathrm{cl}(\phi)$ est \textit{localement consistant pour $\until$} si
+    \begin{itemize}
+      \item $\psi_2 \in B$ implique $\psi_1 \until \psi_2 \in B$ ;
+      \item $\psi_1 \until \psi_2 \in B$ et $\psi_2 \not\in  B$ implique $\psi_1 \in B$.
+    \end{itemize}
+  \end{defn}
+
+  \begin{defn}
+    On pose \[
+      \mathcal{G} = (Q, \mathbf{2}^\mathrm{AP}, \delta, Q_0, \mathcal{F})
+    ,\] 
+    où
+    \begin{itemize}
+      \item $Q = \mleft\{\,B \subseteq \mathrm{cl}(\phi) \;\middle|\;
+        \begin{array}{l}
+          \text{$B$ maximal-consistant}\\
+          \text{$B$ localement consistant pour $\until$}
+        \end{array}\,\mright\}$ ;
+      \item $Q_0 = \{B \in Q  \mid \phi \in B\}$ ;
+      \item $\delta : Q \times \mathbf{2}^\mathrm{AP} \to \wp(Q)$ est tel que $B' \in \delta(B, a)$ avec
+        \begin{enumerate}
+          \item $B \cap \mathrm{AP} = A \cap \mathrm{cl}(\phi)$,
+          \item si $\nxt \psi \in \mathrm{cl}(\phi)$ alors $\nxt\psi \in B \iff\psi \in B'$,
+          \item si $\psi_1 \until \psi_2 \in \mathrm{cl}(\phi)$ alors
+            \[
+              \psi_1 \until \psi_2 \in B \iff
+              \begin{pmatrix} \psi_2 \in B \\
+              \text{ou}\\
+            \psi_1 \in B \text{ et } \psi_1 \until \psi_2 \in B'\end{pmatrix} 
+            \;;\]
+        \end{enumerate}
+      \item $\mathcal{F} = \{F_{\psi_1 \until \psi_2}  \mid \psi_1 \until \psi_2 \in \mathrm{cl}(\phi)\}$
+        où
+        \[
+        F_{\psi_1 \until \psi_2} = \big\{ B \in Q \:\big|\: \psi_1 \until \psi_2 \in B \implies \psi_2 \in B \big\} 
+        .\]
+    \end{itemize}
+  \end{defn}
+
+  \begin{thm}
+    Avec cette définition, on a $\mathcal{L}_\omega(\mathcal{G}) = \llbracket \phi\rrbracket$.
+  \end{thm}
+  \begin{prv}
+    \begin{itemize}
+      \item Montrons que $\llbracket \phi\rrbracket  \subseteq \mathcal{L}_\omega(\mathcal{G})$.
+        Soit $\sigma \in \llbracket \phi\rrbracket$ un mot.
+        On définit~$\rho \in \wp(\mathrm{cl}(\phi))^\omega$ telle que 
+        \[
+        \rho(i) = \mleft\{\,\psi \in \mathrm{cl}(\phi) \;\middle|\; \sigma \upharpoonright i \in \llbracket \psi\rrbracket \,\mright\} 
+        .\] 
+        On voit que, pour tout $i \in \mathds{N}$, $\rho(i) \in Q$.
+        On a que $\rho(0) \in Q_0$ car $\sigma \upharpoonright 0 = \sigma \in \llbracket \phi\rrbracket$.
+        De plus, on a que $\rho(i+1) \in \delta(\rho(i), \sigma(i))$ (on vérifie aisément les trois propriétés sur $\delta$).
+        On montre que $\rho \in Q^\omega$ est acceptante.
+        Soit $\psi_1 \until \psi_2 \in \mathrm{cl}(\phi)$.
+        Si $\forall^\infty t, \sigma \upharpoonright t \not\in \llbracket \psi_1 \until \psi_2\rrbracket$, alors $\forall^\infty t, (\psi_1 \until \psi_2) \not\in  \rho(t)$.
+        Sinon, $\exists^\infty t, \sigma \upharpoonright t \in \llbracket \psi_1 \until \psi_2\rrbracket$.
+        Soit $N \in \mathds{N}$. Il existe un certain $t \ge N$ tel que $\sigma \upharpoonright t \in \llbracket \psi_1 \until \psi_2\rrbracket$.
+        Ainsi, il existe  $i$ tel que $\sigma \upharpoonright (t+i) \in \llbracket \psi_2\rrbracket$ et pour tout $j \in \{0, \ldots, i-1\}$, $\sigma \upharpoonright (t+j) \in \llbracket \psi_1\rrbracket$.
+        Donc $\psi_2, \psi_1 \until \psi_2 \in \rho(t+i)$ et donc $\rho(t+i) \in F_{\psi_1 \until \psi_2}$.
+        On en conclut que $\rho$ est acceptante.
+      \item Montrons que $\mathcal{L}_\omega(\mathcal{G}) \subseteq \llbracket \phi\rrbracket$.
+        Soit $\sigma \in \mathcal{L}_\omega(\mathcal{G})$ et $\rho$ une exécution acceptante de $\mathcal{G}$ sur $\sigma$.
+        (On ne donne que l'idée pour cette partie de la preuve.)
+        On va montrer que, pour tout $i \in \mathds{N}$,
+        \[
+        \rho(i) = \{\psi \in \mathrm{cl}(\phi)  \mid \sigma \upharpoonright i \in \llbracket \phi\rrbracket  \} 
+        .\]
+        On peut montrer par induction sur $\psi \in \mathrm{cl}(\phi)$ que, pour tout $\rho \in Q^\omega$ et pour tout $\sigma \in (\mathbf{2}^\mathrm{AP})^\omega$ tel que
+        \begin{itemize}
+          \item $\forall i, \rho(i+1) \in \delta(\rho(i), \sigma(i))$ ;
+          \item $\forall F \in \mathcal{F}, \exists^\infty t, \rho(t) \in F$ ;
+        \end{itemize}
+        alors $\psi \in \rho(0) \iff \sigma \in \llbracket \psi\rrbracket$.
+    \end{itemize}
+  \end{prv}
+
+  \begin{rmk}
+    Le GNFA $\mathcal{G}$ a $\mathrm{O}(2^{|\phi|})$ états et $|\mathcal{F}| = \mathrm{O}(|\phi|)$.
+    Donc, on a un NBA $\mathcal{A}$ tel que $\mathcal{L}_\omega(\mathcal{A}) = \llbracket \phi\rrbracket$ et $|Q_{\mathcal{A}}| = \mathrm{O}(2^{|\phi| + \log|\phi|})$.
+  \end{rmk}
+
+  \begin{rmk}
+    Supposons que $|\mathrm{AP}| \ge 1$.
+    Pour $n \in \mathds{N}$, le langage 
+    \[
+    L_n := \mleft\{\,A_1 \ldots A_n A_1 \ldots A_n \sigma \;\middle|\; \sigma \in (\mathbf{2}^\mathrm{AP})^\omega \,\mright\} 
+    \] est la sémantique de la formule 
+    \[
+    \phi_n = \bigwedge_{\mathsf{a} \in \mathrm{AP}}
+    \bigwedge_{1 \le i \le n} (\nxt^i \mathsf{a} \leftrightarrow \nxt^{n+i} \mathsf{a})
+    ,\] et on a que $|\phi_n| = \mathrm{O}(n^2)$.
+    Or, tout NBA $\mathcal{A}$ pour $L_n$ a ${|Q_{\mathcal{A}}| = \mathrm{O}(2^n)}$.
+  \end{rmk}
+
+  \begin{rmk}
+    Soit $|\mathrm{AP}| \ge 1$ et $\mathsf{a} \in \mathrm{AP}$.
+    Soit  \[
+    L := \{\sigma \in (\mathbf{2}^\mathrm{AP})^\omega  \mid \forall i , a \in \sigma(2i)\} 
+    .\] 
+    On peut construire un NFA $\mathcal{A}$ tel que $L = \mathcal{L}_\omega(\mathcal{A})$.
+
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}
+        \node[state,initial, accepting] (0) {};
+        \node[state,right of=0] (1) {};
+
+        \draw[->] (0) edge[bend left] node{$\mathsf{a}$} (1)
+        (1) edge[bend left] node{$\mathsf{True}$} (0) ;
+      \end{tikzpicture}
+      \caption{NBA sur l'alphabet $\mathbf{2}^\mathrm{AP}$}
+    \end{figure}
+
+    Le langage $L$ est le plus grand point fixe de $X = \mathsf{a} \land \nxt\nxt X$ qui n'est pas définissable en $\mathsf{LTL}$ (le $X$ doit être sous exactement un~$\nxt$ pour être définissable dans  $\mathsf{LTL}$ ).
+    Il n'existe donc pas de formule~$\phi$ $\mathsf{LTL}$ telle que $\llbracket \phi\rrbracket = L$.
+  \end{rmk}
 \end{document}
