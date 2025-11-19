@@ -1,0 +1,124 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \selectlanguage{french}
+  \setquotestyle{french}
+
+  \chapter{Bisimulation.}
+
+  L'idée de ce chapitre est d'identifier les systèmes de transitions avec une "même structure de branchement".
+  Par exemple, on identifie les deux systèmes suivants (le premier est un "dépliement" du second).
+
+  \begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[node distance=0.5cm]
+      \node (b0) {};
+      \foreach \x [remember=\x as \lastx (initially 0)] in {1, 2, 3, 4} {
+        \node[right=0.5cm of b\lastx] (b\x) {$\bullet$};
+        \draw[->] (b\lastx) to (b\x);
+      }
+      \node[right=0.5cm of b4] (b5) {$\cdots$};
+      \draw[->] (b4) to (b5);
+
+      \node[below=of b0] (a) {};
+      \node[left=of b0] {$TS_1$};
+      \node[left=of a] {$TS_2$};
+      \node[right=0.5cm of a] (b) {$\bullet$};
+      \draw[->] (a) to (b);
+      \draw[->] (b) to[loop below] (b);
+    \end{tikzpicture}
+    \caption{Deux systèmes de transitions identifiés par bisimulation}
+  \end{figure}
+
+  \begin{defn}
+    Soient $TS_0$ et $TS_1$ où
+    \[
+    TS_i = (S_i, \mathrm{Act}, \to_i, I_i, \mathrm{AP}, L_i)
+    ,\] 
+    où l'on note $s_i \xrightarrow \alpha s_i'$ où  $\alpha \in \mathrm{Act}$ et $s_i, s_i' \in S_i$, et $L_i : S_i \to \wp(\mathrm{AP})$.
+
+    Une \textit{bisimulation} entre $TS_0$ et $TS_1$ est une relation $\mathcal{R} \subseteq S_0 \times S_1$ telle que
+    \begin{enumerate}
+      \item si $s_0 \mathrel{\mathcal{R}} s_1$ alors $L_0(s_0) = L_1(s_1)$ ;
+      \item si $s_0 \mathrel{\mathcal{R}} s_1$ et $s_0 \xrightarrow \alpha s_0'$, alors il existe $s_1' \in S_1$ tel que $s_1 \xrightarrow \alpha s_1'$ et $s_0' \mathrel{\mathcal{R}} s_1'$.
+      \item de même symétriquement.
+    \end{enumerate}
+
+    Ces deux dernières conditions peuvent être visualisées comme les deux diagrammes ci-dessous.
+    \[
+    \begin{tikzcd}
+      s_0 \arrow{d}{\alpha} \arrow[dash]{r}{\mathcal{R}} & s_1 \arrow[dashed]{d}{\alpha}\\
+      s_0' \arrow[dashed,dash]{r}{\mathcal{R}} & s_1'
+    \end{tikzcd}
+    \quad\quad
+    \begin{tikzcd}
+      s_0 \arrow[dashed]{d}{\alpha} \arrow[dash]{r}{\mathcal{R}} & s_1 \arrow{d}{\alpha}\\
+      s_0' \arrow[dash, dashed]{r}{\mathcal{R}} & s_1'
+    \end{tikzcd}
+    .\]
+  \end{defn}
+
+  \begin{exm}
+    Avec les deux systèmes de transitions suivants, on peut construire une bisimulation $\mathcal{R}$ avec
+    \[
+    \mathcal{R} = \mleft\{\,
+      \begin{array}{l}
+        (\mathsf{coin}_0, \mathsf{coin}_1),
+        (\mathsf{select}_0, \mathsf{select}_1),
+        (\mathsf{beer}_0, \mathsf{beer}_1),\\
+        (\mathsf{beer}_0, \mathsf{beer}_1'),
+        (\mathsf{soda}_0, \mathsf{soda}_1)
+      \end{array}
+     \,\mright\} 
+    .\]
+
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}
+        \node[state, initial,initial where=above] (coin) {$\mathsf{coin}_0$} ;
+        \node[state, below of=coin] (select) {$\mathsf{select}_0$} ;
+        \node[state, right of=select] (soda) {$\mathsf{soda}_0$} ;
+        \node[state, left of=select] (beer) {$\mathsf{beer}_0$} ;
+        \node[below=0.1cm of beer] {$\{\mathsf{b}\}$};
+        \node[below=0.1cm of soda] {$\{\mathsf{s}\}$};
+        \node[right=0.1cm of coin] {$\{\mathsf{pay}\}$};
+        \node[below=0.1cm of select] {$\emptyset$};
+        \draw[->] (soda) edge node[swap] {$\mathtt{gs}$} (coin);
+        \draw[->] (beer) edge node {$\mathtt{gb}$} (coin);
+        \draw[->] (select) edge node[swap] {$\tau$} (soda);
+        \draw[->] (coin) edge node {$\mathtt{ic}$} (select);
+        \draw[->] (select) edge node {$\tau$} (beer);
+      \end{tikzpicture}
+      \begin{tikzpicture}
+        \node[state, initial,initial where=above] (coin) {$\mathsf{coin}_1$} ;
+        \node[state, below of=coin] (select) {$\mathsf{select}_1$} ;
+        \node[state, right of=select] (soda) {$\mathsf{soda}_1$} ;
+        \node[state, left of=select] (beer) {$\mathsf{beer}_1$} ;
+        \node[state, below of=select] (beer2) {$\mathsf{beer}'_1$} ;
+        \node[below=0.1cm of beer] {$\{\mathsf{b}\}$};
+        \node[right=0.1cm of beer2] {$\{\mathsf{b}\}$};
+        \node[below=0.1cm of soda] {$\{\mathsf{s}\}$};
+        \node[right=0.1cm of coin] {$\{\mathsf{pay}\}$};
+        \node[below left=0.1cm of select] {$\emptyset$};
+        \draw[->] (soda) edge node[swap] {$\mathtt{gs}$} (coin);
+        \draw[->] (beer) edge node {$\mathtt{gb}$} (coin);
+        \draw[->] (select) edge node[swap] {$\tau$} (soda);
+        \draw[->] (coin) edge node {$\mathtt{ic}$} (select);
+        \draw[->] (select) edge node {$\tau$} (beer);
+        \draw[->] (select) edge node {$\tau$} (beer2);
+        \node[left=0.4cm of beer,inner sep=0,outer sep=0] (temp) {};
+        \node[left=0.1cm of temp] {$\mathtt{gb}$};
+        \draw[rounded corners, straight-left] (beer2) edge (temp.center);
+        \draw[->, rounded corners, straight-right] (temp.center) to (coin);
+      \end{tikzpicture}
+    \end{figure}
+  \end{exm}
+
+  \begin{defn}
+    Soient $TS_0$ et $TS_1$ deux systèmes de transitions.
+    La relation de \textit{bisimilarité} entre $TS_0$ et $TS_1$ est donnée par 
+    \[
+      s_0 \sim s_1 \iff \exists \mathcal{R} \text{ une bisimulation}, \: s_0 \mathrel{\mathcal{R}} s_1
+    .\]
+  \end{defn}
+\end{document}

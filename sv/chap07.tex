@@ -4,11 +4,14 @@
   \selectlanguage{french}
   \setquotestyle{french}
 
-  \chapter{Expressions $\omega$-régulières.}
+  \chapter{Langages $\omega$-réguliers.}
+
   Cette partie du cours n'est pas dans les notes de cours mais la source est 
   \begin{center}
     \textit{Baier, C. and Katoen, J.-P., Principles of Model Checking, MIT Press, 2008}.
   \end{center}
+
+  \section{Expressions $\omega$-régulières.}
 
   L'objet de cette section est l'analogue des expressions régulières pour les $\omega$-mots.
 
@@ -132,7 +135,7 @@
     \mleft\{\, \sigma\in \Sigma^\omega \;\middle|\; \exists \rho \in Q^\omega, 
     \begin{array}{l}
       \rho \text{ est une exécution}\\
-      \text{acceptante de } \mathcal{A}
+      \text{acceptante de } \mathcal{A} \text{ sur } \sigma
     \end{array}\,\mright\} 
     .\]
   \end{defn}
@@ -260,6 +263,7 @@
   Dans la suite, on va voir la stabilité par intersections finies, mais on ne va pas voir de preuve du théorème ci-dessous.
 
   \begin{thm}[Büchi]
+    \label{thm:buchi-compl}
     Si $L \subseteq \Sigma^\omega$ est $\omega$-régulier alors $\Sigma^\omega \setminus L$ est $\omega$-régulier.
   \end{thm}
   \begin{prv}
@@ -570,7 +574,7 @@
     Soit  \[
     L := \{\sigma \in (\mathbf{2}^\mathrm{AP})^\omega  \mid \forall i , a \in \sigma(2i)\} 
     .\] 
-    On peut construire un NFA $\mathcal{A}$ tel que $L = \mathcal{L}_\omega(\mathcal{A})$.
+    On peut construire un NBA $\mathcal{A}$ tel que $L = \mathcal{L}_\omega(\mathcal{A})$.
 
     \begin{figure}[H]
       \centering
@@ -584,7 +588,245 @@
       \caption{NBA sur l'alphabet $\mathbf{2}^\mathrm{AP}$}
     \end{figure}
 
-    Le langage $L$ est le plus grand point fixe de $X = \mathsf{a} \land \nxt\nxt X$ qui n'est pas définissable en $\mathsf{LTL}$ (le $X$ doit être sous exactement un~$\nxt$ pour être définissable dans  $\mathsf{LTL}$ ).
+    Le langage $L$ est le plus grand point fixe de $X = \mathsf{a} \land \nxt\nxt X$ qui n'est pas définissable en $\mathsf{LTL}$ (le $X$ doit être sous exactement un~$\nxt$ pour être définissable dans  $\mathsf{LTL}$).
     Il n'existe donc pas de formule~$\phi$ $\mathsf{LTL}$ telle que $\llbracket \phi\rrbracket = L$.
   \end{rmk}
+
+  \section{Théorème de Büchi : complémentation pour les langages $\omega$-réguliers.}
+
+  Soit $\Sigma$ un alphabet fini. L'objectif de cette section est de montrer le théorème suivant.
+
+  \begingroup
+  \def\thethm{\ref{thm:buchi-compl}}
+  \begin{thm}[Büchi]
+    Si $L \subseteq \Sigma^\omega$ est $\omega$-régulier alors $\Sigma^\omega \setminus L$ est $\omega$-régulier.
+  \end{thm}
+  \addtocounter{thm}{-1}
+  \endgroup
+
+  \begin{nota}
+    Pour $\sigma \in \Sigma^\omega$ et $n \le k$, on note $\sigma[n : k] = \sigma(n) \cdots \sigma(k-1)$ avec la convention $\sigma[n : n] = \varepsilon$.
+  \end{nota}
+
+  \begin{nota}
+    Pour $\mathcal{V} \in \Sigma^\star$, on note $\mathcal{V}^\omega$ est l'ensemble ds $\sigma \in \Sigma^\omega$ tels qu'il existe $(k_n)_{n \in \mathds{N}}$ strictement  croissante avec $\sigma[k_n : k_{n+1}] \in \mathcal{V}$ pour tout $n \in \mathds{N}$.
+  \end{nota}
+
+  Soit $\mathcal{A} = (Q, \Sigma, \delta, Q_0, F)$ un NBA. On va construire une expression $\omega$-régulière dont le langage est $\Sigma^\omega \setminus \mathcal{L}_\omega(\mathcal{A})$.
+
+
+  \begin{nota}
+    Soient $q, q' \in Q$ $\omega \in \Sigma^\star$. On note
+    \begin{itemize}
+      \item $q \xrightarrow{w} q'$ si $w \in \mathcal{L}(\mathcal{A}_{q, q'})$ ;
+      \item $q \xrightarrow{w}_F q'$ si $q \xrightarrow{w} q'$ en passant par $F$ (possiblement en $q$ et/ou en $q'$).
+    \end{itemize}
+  \end{nota}
+
+  \begin{defn}
+    On définit la relation $\sim_\mathcal{A}$ sur $\Sigma^\star$ par :
+     \[
+    u \sim_\mathcal{A} v \quad \iff \quad \forall q, q' \in Q,
+    \begin{cases}
+      q \xrightarrow u q'\hspace{-1em} &\iff q \xrightarrow v q' \\
+      &\ \text{ET}\\
+      q \xrightarrow u_F q'\hspace{-1em} &\iff q \xrightarrow v_F q' \\
+    \end{cases}
+    .\]
+  \end{defn}
+
+  \begin{lem}
+    La relation $\sim_\mathcal{A}$ est une \textit{congruence}.
+    C'est-à-dire, une relation d'équivalence qui vérifie 
+    \[
+    u \sim_\mathcal{A} u' \implies v u w \sim_\mathcal{A} v u' w
+    .\] 
+  \end{lem}
+
+  \begin{lem}
+    La congruence $\sim_\mathcal{A}$ est d'\textit{index fini} (\textit{i.e.}\ a un nombre fini de classes d'équivalences).
+    Ses classes d'équivalences $\mathcal{V} \subseteq \Sigma^\star$ sont des langages réguliers.
+  \end{lem}
+  \begin{prv}
+    (Idée)
+    La classe d'équivalence de $u \in \Sigma^\star$ est exactement 
+    \begin{align*}
+      & \bigcap_{q, q' \in Q} \{S(q, q')  \mid u \in S(q, q')\} \\
+      \cap & \bigcap_{q, q' \in Q} \{S^F(q, q')  \mid u \in S^F(q, q')\} \\
+      \cap & \bigcap_{q, q' \not\in  Q} \{S(q, q')  \mid u \not\in S(q, q')\} \\
+      \cap & \bigcap_{q, q' \not\in Q} \{S^F(q, q')  \mid u \not\in S^F(q, q')\} \\
+    ,\end{align*}
+    où l'on note
+    \begin{itemize}
+      \item $S(q, q') = \{w \in \Sigma^\star  \mid q \xrightarrow w q'\}$ ;
+      \item $S^F(q, q') = \{w \in \Sigma^\star  \mid q \xrightarrow w_F q'\}$ ;
+    \end{itemize}
+  \end{prv}
+
+  \begin{lem}
+    La congruence $\sim_\mathcal{A}$ \textit{sature} $\mathcal{L}_\omega(\mathcal{A})$ :
+    si $U, V \subseteq \Sigma^\star$ sont des classes d'équivalences telles que $U V^\omega \cap \mathcal{L}_\omega(\mathcal{A}) \neq \emptyset$  alors $U V^\omega \subseteq \mathcal{L}_\omega(\mathcal{A})$.
+    \label{lem:simA-sature-lang}
+  \end{lem}
+  \begin{prv}
+    (Idée)
+    Soit $\sigma \in U V^\omega \cap \mathcal{L}_\omega(\mathcal{A})$.
+    Soit $\rho$ une exécution acceptante de $\mathcal{A}$ sur $\sigma$.
+    Soit  $(k_n)_{n \in \mathds{N}}$ strictement croissante telle que $\sigma[0 : k_0] \in U$ et $\sigma[k_n : k_{n+1}] \in V$ pour tout $n \ge 0$.
+
+    On remarque que $\sigma[k_n : k_{n+1}] \in S(\rho(k_n), \rho(k_{n+1}))$ et il existe une infinité de $n$ tels que  $\sigma[k_n : k_{n+1}] \in  S^F(\rho(k_n), \rho(k_{n+1}))$.
+
+    Soit $\beta \in U V^\omega$ et soit $(\ell_n)_{n \in \mathds{N}}$ strictement croissante telle que $\beta{[0 : \ell_0]} \in U$ et $\beta[\ell_n : \ell_{n+1}] \in V$ pour tout $n \in \mathds{N}$.
+    Donc $\beta{[0 : \ell_0]} \sim_\mathcal{A} \sigma[0 : k_0] \in S(\rho(0), \rho(k_0))$ et $\beta[\ell_n : \ell_{n+1}] \sim_\mathcal{A} \sigma{[k_n : k_{n+1}]}$.
+    En particulier, on a $\beta[\ell_n : \ell_{n+1}] \in S(\rho(k_n), \rho(k_{n+1})$ et il existe une infinité de $n$ tels que $\beta[\ell_n : \ell_{n+1}] \in S^F(\rho(k_n), \rho(k_{n+1})$.
+  \end{prv}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}[inner sep = 0pt]
+      \node (s0) {};
+      \node[right=of s0] (s1) {};
+      \node[right=of s1] (s2) {};
+      \node[right=of s2, inner sep=10pt] (s3) {$\cdots$};
+      \node[above=0.5cm of s0] {$\sigma$};
+      \draw[deepgreen,|-{Parenthesis[]}] (s0) -- node[midway] (sm0) {} (s1);
+      \draw[deepblue,|-{Parenthesis[]}] (s1) -- node[midway] (sm1) {} (s2);
+      \draw[deepblue,|-{Parenthesis[]}] (s2) -- node[midway] (sm2) {} (s3);
+      \node[below=2cm of s0] (b0) {};
+      \node[right=of b0] (b1) {};
+      \node[right=of b1] (b2) {};
+      \node[right=of b2, inner sep=10pt] (b3) {$\cdots$};
+      \node[above=0.5cm of b0] {$\beta$};
+      \draw[deepgreen,|-{Parenthesis[]}] (b0) -- node[midway] (bm0) {} (b1);
+      \draw[deepblue,|-{Parenthesis[]}] (b1) -- node[midway] (bm1) {} (b2);
+      \draw[deepblue,|-{Parenthesis[]}] (b2) -- node[midway] (bm2) {} (b3);
+      \draw[deepgreen,dashed, shorten >=0.2cm,shorten <=0.2cm] (sm0) to node[fill=white] {$\sim_\mathcal{A}$} (bm0);
+      \draw[deepblue,dashed, shorten >=0.2cm,shorten <=0.2cm] (sm1) to node[fill=white] {$\sim_\mathcal{A}$} (bm1);
+      \draw[deepblue,dashed, shorten >=0.2cm,shorten <=0.2cm] (sm2) to node[fill=white] {$\sim_\mathcal{A}$} (bm2);
+    \end{tikzpicture}
+    \caption{Visuel de la preuve du lemme~\ref{lem:simA-sature-lang}}
+  \end{figure}
+
+  \begin{prop}
+    Soit $\sim$ une congruence d'index fini sur $\Sigma^\star$.
+    Si $\sigma \in \Sigma^\omega$ alors il existe $U, V \subseteq \Sigma^\star$ des classes d'équivalences telles que $\sigma \in UV^\omega$.
+  \end{prop}
+  \begin{prv}
+    Fixons $\sim$ et $\sigma \in \Sigma^\omega$.
+    Pour $k, \ell \in \mathds{N}$ et $n > k,\ell$, on note~$k \equiv_\sigma^n \ell$ ssi $\sigma[k : n] \sim \sigma[\ell : n]$.
+    Puis, on note $k \equiv_\sigma \ell$ s'il existe un certain $n > k,\ell$ tel que $k \equiv_\sigma^n \ell$.
+
+    \begin{lem}
+      La relation $\equiv_\sigma$ est une relation d'équivalence d'index fini.
+    \end{lem}
+    \begin{prv}
+      Pour la transitivité, si $k_1 \equiv_\sigma k_2$ et $k_2 \equiv_\sigma k_3$, on peut regarder la figure ci-dessous.
+      \begin{figure}[H]
+        \centering
+        \begin{tikzpicture}[inner sep = 0pt, node distance=1.5cm]
+          \node (s0) {};
+          \node[right=of s0] (s1) {};
+          \node[right=of s1] (s2) {};
+          \node[right=of s2] (s3) {};
+          \node[right=of s3] (s4) {};
+          \node[right=of s4] (s5) {};
+          \node[right=of s5, inner sep=10pt] (s6) {$\cdots$};
+          \node[above=0.5cm of s0] {$\sigma$};
+          \node[below=0.1cm of s1, text height=6pt] {$k_1$};
+          \node[below=0.1cm of s2, text height=6pt] {$k_2$};
+          \node[below=0.1cm of s3, text height=6pt] {$n$};
+          \node[below=0.1cm of s4, text height=6pt] {$k_3$};
+          \node[below=0.1cm of s5, text height=6pt] {$m$};
+          \draw[|-] (s0.center) -- (s1.center);
+          \draw[-] (s1.center) -- (s2.center);
+          \draw[-] (s2.center) -- (s3.center);
+          \draw[-] (s3.center) -- (s4.center);
+          \draw[-] (s4.center) -- (s5.center);
+          \draw[-] (s5.center) -- (s6);
+          \draw[deepgreen] (s1) to[bend left] (s3);
+          \draw[deepgreen] (s2) to[bend left] (s3);
+          \draw[deepblue] (s1) to[bend left] (s5);
+          \draw[deepblue] (s2) to[bend right] (s5);
+          \draw[deepblue] (s4) to[bend left] (s5);
+        \end{tikzpicture}
+      \end{figure}
+    \end{prv}
+
+    La relation $\equiv_\sigma$ est d'index fini donc par le principe des tiroirs infinis, il existe $(k_n)_{n \in \mathds{N}}$ strictement croissante telle que $k_n \equiv_\sigma k_m$ pour toute paire $n,m$.
+    Quitte à prendre une sous séquence, 
+    on peut supposer que, pour $n \ge 1$, on a $\sigma[k_0 : k_n] \sim_\mathcal{A} \sigma[k_n : k_{n+1}]$.
+
+
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}[inner sep = 0pt, node distance=1.5cm, outer sep=0pt]
+        \node (s0) {};
+        \node[right=of s0] (s1) {};
+        \node[right=of s1] (s2) {};
+        \node[right=of s2] (s3) {};
+        \node[right=of s3] (s4) {};
+        \node[right=of s4, inner sep=10pt] (s5) {$\cdots$};
+        \node[above=0.5cm of s0] {$\sigma$};
+        \node[below=0.1cm of s1, text height=6pt] {$k_0$};
+        \node[below=0.1cm of s2, text height=6pt] {$k_n$};
+        \node[below=0.1cm of s3, text height=6pt] {$m$};
+        \node[below=0.1cm of s4, text height=6pt] {$k_{n+1}$};
+        \draw[|-] (s0.center) -- (s1.center);
+        \draw[-] (s1.center) -- (s2.center);
+        \draw[-] (s2.center) -- (s3.center);
+        \draw[-] (s3.center) -- (s4.center);
+        \draw[-] (s4.center) -- (s5);
+        \draw[deepgreen] (s1) to[bend right] (s3);
+        \draw[deepgreen] (s2) to[bend right] (s3);
+        \draw[deepblue] (s1) to[bend right] (s4);
+        \draw[deepblue] (s2) to[bend left] (s4);
+      \end{tikzpicture}
+    \end{figure}
+
+    Par le principe des tiroirs infinis, on peut supposer, pour tout~$n,m \ge 1$ que $\sigma[k_0 : k_n] \sim \sigma[k_0, k_m]$ et on a donc, pour tout $n,m \ge 0$, on ait $\sigma[k_n : k_{n+1}] \sim \sigma[k_m : k_{m+1}]$.
+
+    Il suffit donc de prendre $U$ la classe d'équivalence de $\sigma[0 : k_0]$ et $V$ la classe des $\sigma[k_n : k_{n+1}]$.
+  \end{prv}
+
+  \begin{rmk}
+    Dans la preuve, on a $V V \subseteq V$, \textit{i.e.}\ si $u, v \in V$ alors $uv \in V$.
+  \end{rmk}
+
+  \begin{crlr}
+    Soit $\sim$ une congruence d'index fini sur $\Sigma^\star$ et soit~$L \subseteq \Sigma^\omega$ saturé par $\sim$.
+    Alors
+    \[
+    L = \bigcup \mleft\{\, U V^\omega \;\middle|\;
+    \begin{array}{l}
+      UV^\omega \cap L \neq \emptyset\\
+      U, V \text{ classes pour } \sim
+    \end{array}\,\mright\} 
+    .\]
+  \end{crlr}
+
+  \begingroup
+  \def\thethm{\ref{thm:buchi-compl}}
+  \begin{thm}[Büchi]
+    Si $L \subseteq \Sigma^\omega$ est $\omega$-régulier alors $\Sigma^\omega \setminus L$ est $\omega$-régulier.
+  \end{thm}
+  \addtocounter{thm}{-1}
+  \endgroup
+  \begin{prv}
+    Avec $L = \mathcal{L}_\omega(\mathcal{A})$, on a que $\Sigma^\omega \setminus L$ est saturé par $\sim_\mathcal{A}$. Si $U$ et $V$ sont des classes d'équivalences pour $\sim_\mathcal{A}$, alors
+    $U V^\omega \cap (\Sigma^\omega \setminus L) \neq \emptyset$ et donc $U V^\omega \cap L = \emptyset$ donc $U, V^\omega \subseteq \Sigma^\omega \setminus L$.
+    Donc, 
+    \[
+    \Sigma^\omega \setminus L = \bigcup \mleft\{\,U V^\omega \;\middle|\;
+    \begin{array}{l}
+      UV^\omega \cap L = \emptyset\\
+      U, V \text{ classes pour } \sim
+    \end{array}\,\mright\}  
+    ,\]
+    et donc $\Sigma^\omega \setminus L$ est $\omega$-régulier car
+    \begin{itemize}
+      \item $U, V \subseteq \Sigma^\omega$ sont des $\sim_\mathcal{A}$-classes donc réguliers ;
+      \item $\sim_\mathcal{A}$ est d'index fini.
+    \end{itemize}
+    De plus, on peut décider si $U V^\omega \cap L = \emptyset$ donc on peut \textit{construire} une expression $\omega$-régulière.
+  \end{prv}
 \end{document}
