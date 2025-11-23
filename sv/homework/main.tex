@@ -759,6 +759,21 @@
   thus $f(\lnot a)$ is a complement of $f(a)$ and, by unicity, $f(\lnot a) = \lnot f(a)$.
   We can conclude that a map of Boolean algebras preserves complements.
 
+  \begin{comment}
+  \pagebreak
+
+  \begin{center}
+    \bfseries
+    \sffamily
+
+    {\large\itshape ---\hspace{1em}Homework\hspace{1em}---}
+
+    {\huge Semantics and Verification}
+
+    {\large \itshape Hugo SALOU}
+  \end{center}
+  \end{comment}
+
   \section{Representation of Boolean Algebras.}
   \subsection{Filters and Ultrafilters.}
 
@@ -852,10 +867,10 @@
 
   To prove that \ref{q22b} implies \ref{q22c}, consider some $a \in B$: we have $a \vee \lnot a = \top \in \mathcal{F}$, so either $a \in \mathcal{F}$ or $\lnot a \in \mathcal{F}$ $(\star)$.
   If $a \in \mathcal{F}$ then  $\lnot a \not\in \mathcal{F}$ since, if $\lnot a \in \mathcal{F}$ then~$a \wedge \lnot a = \bot \in \mathcal{F}$, a contradiction since $\mathcal{F}$ is supposed prime.
-  On the other hand, if $\lnot a \in \mathcal{F}$ then necessarily $a \in \mathcal{F}$ by $(\star)$.
+  On the other hand, if $\lnot a \not\in \mathcal{F}$ then necessarily $a \in \mathcal{F}$ by $(\star)$.
 
   To prove \ref{q22c} implies \ref{q22a}, consider some proper filter $\mathcal{H} \supsetneq \mathcal{F}$, then there exists some $a \in \mathcal{H} \setminus \mathcal{F}$, and so $\lnot a \in \mathcal{F} \subseteq \mathcal{H}$ (applying \ref{q22c} to $\lnot a$ with $\lnot\lnot a = a$).
-  Thus $a, \lnot a \in \mathcal{H}$ and so $a \wedge \lnot a = \bot  \in \mathcal{H}$, a contradiction since $\mathcal{H}$ is a proper filer.
+  Thus $a, \lnot a \in \mathcal{H}$ and so $a \wedge \lnot a = \bot  \in \mathcal{H}$, a contradiction since $\mathcal{H}$ is a proper filter.
 
   \begin{que}
     Let $(A, \le )$ be a partial order and consider some $\mathcal{F} \subseteq A$.
@@ -883,7 +898,7 @@
     \item Suppose $\chi_{\mathcal{F}}$ is a morphism of meet semilattices.
       Let us show that $\mathcal{F}$ is a filter.
       Take $a, b \in \mathcal{F}$, then $\chi_{\mathcal{F}}(a \wedge b) = \chi_{\mathcal{F}}(a) \wedge \chi_{\mathcal{F}}(b) = 1 \wedge 1 = 1$ thus $a \wedge b \in \mathcal{F}$.
-      Also, $\chi_{\mathcal{F}}(\top) = \top_{\mathbf{2}} = 1$, thus $\top_{\mathcal{F}} \in \mathcal{F}$.
+      Also, $\chi_{\mathcal{F}}(\top) = \top_{\mathbf{2}} = 1$, thus $\top \in \mathcal{F}$.
 
       Conversely suppose $\mathcal{F}$ is a filter, then $\chi_{\mathcal{F}}(\top) = \top_{\mathbf{2}} = 1$ as $\top  \in \mathcal{F}$.
       And, for $a, b \in L$,
@@ -914,7 +929,7 @@
     For $a, b \in L$, and $\mathcal{F} \subseteq L$,
     \begin{itemize}
       \item if $\mathcal{F}$ is a filter, then $a \wedge b \in \mathcal{F}$ iff $a, b \in \mathcal{F}$ ;
-      \item if $\mathcal{F}$ is a proper filter, then $a \vee b \not\in \mathcal{F}$ iff $a, b \not\in \mathcal{F}$.
+      \item if $\mathcal{F}$ is a prime filter, then $a \vee b \not\in \mathcal{F}$ iff $a, b \not\in \mathcal{F}$.
     \qed
     \end{itemize}
   \end{lem}
