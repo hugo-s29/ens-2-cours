@@ -1,0 +1,1374 @@
+\documentclass[fontsize=16pt,a4paper,DIV=17,parskip=half]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hyperindex]{hyperref}
+\usepackage{lastpage}
+\usepackage{tikz}
+\usepackage{tikzpagenodes}
+\usepackage{pgfplots}
+\usepackage{enumitem}
+\usepackage{scrlayer-scrpage}
+\usepackage{xspace}
+\usepackage{float}
+\usepackage{amsfonts,amsmath,amsthm}
+\usepackage{thmtools}
+\usepackage[english]{babel}
+\usepackage[autostyle, style=english]{csquotes}
+\usepackage{subfigure}
+\usepackage{mleftright}
+%\usepackage{BOONDOX-calo}
+%\usepackage{dsfont}
+\usepackage{tikz-cd}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{soulutf8}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{nameref}
+\usepackage{stmaryrd}
+\usepackage{fvextra}
+\usepackage{adjustbox}
+\usepackage{fontspec}
+\usepackage{mathpartir}
+\usepackage{etoolbox}
+\usepackage{todonotes}
+\usepackage{verbatim}
+\usepackage{ebproof}
+\usepackage[makeroom, thicklines]{cancel}
+\renewcommand{\CancelColor}{\color{nicered}}
+\usepackage{setspace}
+\usepackage{fourier-otf}
+\setmathfont{Erewhon-Math.otf}[CharacterVariant={20}]
+%\usepackage{pxfonts}
+%\usepackage[scaled=0.92]{mathpazo}
+\usepackage{juliamono}
+\usepackage[osf]{Alegreya}
+\usepackage[osf]{AlegreyaSans}
+\let\mathds\mathbb
+%\DeclareMathAlphabet{\mathsf}{OT1}{cmss}{m}{n}
+
+\renewcommand{\mathsf}[1]{\textup{\textsf{#1}}}
+\let\oldtexttt\texttt
+\renewcommand{\texttt}[1]{\textup{\oldtexttt{#1}}}
+\newcommand\Agda{\textsf{Agda}\xspace}
+
+\ebproofset{right label template=$\inserttext$, left label template=\tiny$\inserttext$, center=false}
+
+\RedeclareSectionCommand[beforeskip=0.10em, afterskip=0.10em]{section}
+\RedeclareSectionCommand[beforeskip=0.05em, afterskip=0.001em plus 0em]{subsection}
+
+
+\fvset{bgcolor=lightgray!10,backgroundcolorpadding=3pt}
+
+\MakeOuterQuote{"}
+
+\newcommand\redQuestionBox{
+  \tikz[baseline]{
+    \node[rectangle,fill=nicered,anchor=base,rounded corners=2pt] (A) {\color{white}\textsf{\textbf{?}}\ensuremath{\,}};
+  }
+}
+
+\colorlet{deeppurple}{DarkOrchid}
+\colorlet{deepgreen}{ForestGreen!70!black}
+\colorlet{deepblue}{NavyBlue!70!black}
+\colorlet{deepred}{RawSienna!70!black}
+\colorlet{nicered}{BrickRed!70!white}
+
+\makeatletter
+\g@addto@macro\bfseries{\boldmath}
+\makeatother
+
+\hypersetup{
+    colorlinks,
+    citecolor=deepgreen,
+    filecolor=nicered,
+    linkcolor=deepblue,
+    pdfencoding=auto,
+    psdextra,
+    urlcolor=deepred
+}
+
+\usetikzlibrary{positioning,shadings,arrows.meta,fit}
+
+\clearpairofpagestyles
+
+\newcommand\showpage{\itshape\hfill--~\thepage/\pageref*{LastPage}~--\hfill}
+\cofoot[\showpage]{\showpage} \cefoot[\showpage]{\showpage}
+
+\setlist[enumerate]{font={\bfseries\color{deepblue}}}
+\AtBeginDocument{
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+\newcommand\separatorBlock{
+  \raisebox{-0.2em}{
+    \tikz{ \draw[deepblue,ultra thick, line cap=round] (0,0) -- (0,1em); }
+  }
+}
+
+\newcommand\vertical[1]{
+  \rotatebox[origin=c]{270}{\ensuremath{#1}}
+}
+
+\mdfsetup{skipabove=1em,skipbelow=0em,linewidth=0pt,rightline=false, topline=false, bottomline=false}
+
+
+\theoremstyle{definition}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=ForestGreen, % backgroundcolor=ForestGreen!5,
+% },
+]{thmgreenbox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont\sffamily\itshape,
+% mdframed={
+%   linecolor=NavyBlue,% backgroundcolor=NavyBlue!5,
+% },
+]{thmbluebox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
+  mdframed={
+    linecolor=deepblue,
+    linewidth=2pt,
+  },
+  numbered=no,
+]{thmblueline}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!5,
+% },
+]{thmredbox}
+
+\declaretheoremstyle[
+  headfont=\itshape\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!1,
+%   linewidth=0pt,
+% },
+  numbered=no,
+  qed=\qedsymbol,
+]{thmproofbox}
+
+\newcommand\defineMarkerColor[2]{
+  \AtBeginEnvironment{#1}{
+    \setlist[enumerate]{font={\color{#2}}}
+    \renewcommand{\labelitemi}{\color{#2}\small$\triangleright$}
+    \renewcommand{\labelitemii}{\color{#2}–}
+    \renewcommand{\labelitemiii}{\color{#2}•}
+    \renewcommand\emph[1]{{\bfseries\em\color{#2}##1}}
+  }
+}
+
+
+\AtBeginDocument{
+  \setlist[enumerate]{font={\bfseries\color{deepblue}}}
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}\small$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+
+\setlist[enumerate]{font={\color{deepblue}}}
+\renewcommand{\labelitemi}{\color{deepblue}\small$\triangleright$}
+\renewcommand{\labelitemii}{\color{deepblue}–}
+\renewcommand{\labelitemiii}{\color{deepblue}•}
+
+\declaretheorem[style=thmgreenbox, name=Axiom, numbered=no]{axi} \defineMarkerColor{axi}{deepgreen}
+\declaretheorem[style=thmgreenbox, name=Definition]{defn} \defineMarkerColor{defn}{deepgreen}
+\declaretheorem[style=thmbluebox, name=Example]{exm}      \defineMarkerColor{exm}{deepblue}
+\declaretheorem[style=thmbluebox, name=Exercise]{exo}     \defineMarkerColor{exo}{deepblue}
+\declaretheorem[style=thmbluebox, name=Question]{que}     \defineMarkerColor{que}{deepblue}
+\declaretheorem[style=thmredbox, name=Proposition]{prop}  \defineMarkerColor{prop}{deepred}
+\declaretheorem[style=thmredbox, name=Theorem]{thm}      \defineMarkerColor{thm}{deepred}
+\declaretheorem[style=thmredbox, name=Lemma]{lem}         \defineMarkerColor{lem}{deepred}
+\declaretheorem[style=thmredbox, name=Corollary]{crlr}   \defineMarkerColor{crlr}{deepred}
+\declaretheorem[style=thmblueline, name=Remark]{rmk}    \defineMarkerColor{rmk}{deepblue}
+\declaretheorem[style=thmblueline, name=Note]{note}       \defineMarkerColor{note}{deepblue}
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
+\newenvironment{prv}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementproof}}{\end{replacementproof}} \defineMarkerColor{prv}{deepred}
+\declaretheorem[style=thmproofbox, name=Proof idea]{replacementideaproof}
+\newenvironment{prvid}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementideaproof}}{\end{replacementideaproof}} \defineMarkerColor{prvid}{deepred}
+
+\RequirePackage{caption}
+\DeclareCaptionLabelFormat{labelformat}{\textbf{#1~#2}\separatorBlock}
+\captionsetup{labelformat=labelformat,labelsep=none,textfont=sl}
+
+\DeclareMathSizes{11}{9}{7}{5}
+
+\title{Compilation and Program Analysis -- \textit{Homework}}
+\author{Hugo \textsc{Salou}}
+
+\let\emph\relax
+\DeclareTextFontCommand{\emph}{\bfseries\em\color{deepblue}}
+
+\renewcommand{\thefootnote}{\alph{footnote}}
+
+\makeatletter
+\def\moverlay{\mathpalette\mov@rlay}
+\def\mov@rlay#1#2{\leavevmode\vtop{%
+   \baselineskip\z@skip \lineskiplimit-\maxdimen
+   \ialign{\hfil$\m@th#1##$\hfil\cr#2\crcr}}}
+\newcommand{\charfusion}[3][\mathord]{
+    #1{\ifx#1\mathop\vphantom{#2}\fi
+        \mathpalette\mov@rlay{#2\cr#3}
+      }
+    \ifx#1\mathop\expandafter\displaylimits\fi}
+\makeatother
+
+\usepackage{pifont}
+
+
+\tikzcdset{arrow style=math font}
+\tikzset{
+  equiv/.style={-,preaction={draw,double equal sign distance}},
+  >=Straight Barb,
+}
+
+
+\newcounter{inferrulecounter}
+\makeatletter
+\let\originferrule\inferrule
+\DeclareDocumentCommand \inferrule { s O {} m m }{%
+  \IfBooleanTF{#1}%
+  {%
+    \mpr@inferstar*[#2]{#3}{#4}%
+  }{%
+    \mpr@inferrule[#2]{#3}{#4}%
+  }%
+  \refstepcounter{inferrulecounter}%
+  \my@name@inferrule{#2}%
+}
+\NewDocumentCommand \my@name@inferrule { m }{%
+  \def\@currentlabelname{\scshape #1}%
+}
+\makeatother
+
+\begin{document}
+  \begin{center}
+    \bfseries
+    \sffamily
+
+    {\large\itshape ---\hspace{1em}Homework\hspace{1em}---}
+
+    {\huge Compilation and Program Analysis}
+
+    {\large \itshape Hugo SALOU}
+  \end{center}
+
+  \section{AssembLISP: an imperative lambda calculus with asynchronous computations.}
+
+  \subsection{Local semantics.}
+
+  \begin{que}
+    Explain the difference between the store we used in the $\mathsf{while}$ language during the course and this one.
+  \end{que}
+
+  Stores $\sigma : \mathbf{Vars} \rightharpoonup \mathds{Z} = \mathbf{Values}$ for the $\mathsf{while}$ language were used to store the values associated with variables.
+  Here, we do not use these as we rely on substitution in the expression, as variables are immutable.
+  Instead, stores~$\sigma : \mathds L \rightharpoonup \mathds V$ are used for references as they are needed to handle the mutability of the heap.
+
+  \begin{que}
+    Add a \texttt{while} construct to the language: Extend the syntax and define its small step semantics with a dedicated rule. You may need to extend other intermediate constructs, explain.
+  \end{que}
+
+  We update the AssembLISP syntax by adding:
+  \[
+    e \in \mathrm{Expr} ::= \cdots  \mid \texttt{while} \llbracket b, e, e'\rrbracket\ e''
+  ,\]
+  with $b \in \{0,1\}$, and we define the "regular" \texttt{while} loop like the \texttt{let} as:
+  \[
+    \texttt{while}\ e\ \texttt{\{}\ e'\ \texttt{\}} \triangleq \texttt{while}\llbracket 0, e, e'\rrbracket \ e
+  ,\]
+  and we enforce that we only write the "regular" while construct when writing programs.
+  The idea is that the $\texttt{while}\llbracket \ldots\rrbracket$ construct is used in the small-steps as, if we do not save the original condition and loop body, they may get reduced during evaluation.
+  The $b$ parameter tells us if we are currently evaluating the condition or the body of the loop, and the right part ($e''$ in the grammar) is the current expression being evaluated (either the condition or the body depending on $b$).
+
+  Then we update the contexts to add
+  \[
+  C::=\cdots  \mid \texttt{while}\llbracket b, e, e'\rrbracket \ C
+  ,\] as the only part we can update during the reduction is the rightmost part, except for $b$ which is handled by the following inference rules
+
+  \begin{gather*}
+    \inferrule[WhileTrue]{ }{
+      (\texttt{while}\llbracket 0, e, e'\rrbracket\ \mathit{tt}, \sigma)
+      \to
+      (\texttt{while}\llbracket 1, e, e'\rrbracket\ e', \sigma)
+    }\\[1em]
+    \inferrule[WhileFalse]{ }{
+      (\texttt{while}\llbracket 0, e, e'\rrbracket\ \mathit{ff}, \sigma)
+      \to
+      ((\:), \sigma)
+    }\\[1em]
+    \inferrule[WhileLoop]{ }{
+      (\texttt{while}\llbracket 1, e, e'\rrbracket\ v, \sigma)
+      \to
+      (\texttt{while}\llbracket 0, e, e'\rrbracket\ e, \sigma)
+    }
+  \end{gather*}
+
+  Instead of relying on a "shortcut" for the regular while loop, we could have added it directly to the syntax and use one step of reduction to transform from the "regular" to the other one. We can also add that this "immediate transformation" does one step of reduction too, but this requires complex rules (as we have to consider the case $\texttt{while}\ \textit{ff}\ \texttt{\{} \cdots \texttt{\}}$ for example).
+  And, in the end, we get an equivalent semantics to the one given above.
+
+  \begin{que}
+    Add the sequence \texttt{;} to the language: extend the syntax. Give a translation rule that exploit the call-by-value semantics to transform the sequence into a term of the original language
+  \end{que}
+
+  We can easily define a predicate "$\mathbf{x}$ does not freely occur in $e$", written $\mathbf{x} \not\in e$ by induction on expression $e$:
+  \[
+    \inferrule{\mathbf{x} \not\in e_1\\ \mathbf{x} \not\in e_2}{\mathbf{x} \not\in e_1\ e_2}
+    \quad\quad
+    \inferrule{\mathbf{x} \not\in e_1\\ \mathbf{x} \not\in e_2\\ \mathbf{x} \not\in e_3 }{\mathbf{x} \not\in \texttt{if}\ e_1\ \texttt{\{}\ e_2\ \texttt{\}}\ \texttt{else}\ \texttt{\{}\ e_3\ \texttt{\}}}
+  \] 
+  \[
+    \inferrule{ }{\mathbf{x}\not\in \lambda \mathbf{x}. e}
+    \quad\quad
+    \inferrule{ \mathbf{x} \not\in e\\ \mathbf{x} \neq  \mathbf{y}}{\mathbf{x} \not\in \lambda \mathbf{y}. e}
+    \quad\quad
+    \inferrule{ }{\mathbf{x} \not\in (\:)}
+    \quad\quad
+    \inferrule{ }{\mathbf{x} \not\in \ell}
+  \] 
+  and the rest of the induction rules follow this pattern.
+
+  Then, we can define the translation rule of the "\texttt{;}" operation:
+  \[
+    \inferrule[SeqTranslation]{\mathbf{x} \not\in e_2}{\mathcal{T}(e_1\ \texttt{;}\ e_2) = \underbrace{\texttt{let}\ \mathbf{x}\ \texttt{=}\ e_1\ \texttt{in}\ e_2}_{(\lambda \mathbf{x}. e_2)\ e_1}}
+  .\]
+  The rest of the translation function is done in the expected way, where we translate every sub expression, \textit{e.g.}
+  \[
+    \inferrule{ }{
+      \mathcal{T}(\texttt{if}\ e\ \texttt{\{}\ e_1\ \texttt{\}}\ \texttt{else}\ \texttt{\{}\ e_2\ \texttt{\}}) = \texttt{if}\ \mathcal{T}(e)\ \texttt{\{}\ \mathcal{T}(e_1)\ \texttt{\}}\ \texttt{else}\ \texttt{\{}\ \mathcal{T}(e_2)\ \texttt{\}}
+    }
+  .\] 
+
+  \begin{que}
+    Write a lambda expression \texttt{SUM} that takes an integer $n$ as parameter and sums the $n$ first integers with a while loop. You will need to use an accumulator inside the loop. What construct do you use for it?
+  \end{que}
+
+  We can define:
+  \[
+  \texttt{SUM}(n) \triangleq {}
+  \begin{array}{|l}
+    \texttt{let}\ \mathbf{s}\ \texttt{=}\ \texttt{new}\ 0\ \texttt{in}\\
+    \texttt{let}\ \mathbf{i}\ \texttt{=}\ \texttt{new}\ 1\ \texttt{in}\\
+    \texttt{while}\ \texttt{!}\mathbf{i}\le n\ \texttt{\{}\\
+      \quad \mathbf{s} \coloneqq \texttt{!}\mathbf{s} + \texttt{!}\mathbf{i}\ \texttt{;}\\
+      \quad \mathbf{i} \coloneqq \texttt{!}\mathbf{i} + 1\\
+    \texttt{\}}\ \texttt{;}\\
+    \texttt{!}\mathbf{s}
+  \end{array}
+  \]
+  Here, I assumed that we wanted the first $n$ non-zero integers (if we want the first $n$ integers including the zero, we can change the while condition to a strict inequality).
+  Here, I use the reference-related constructs (creation, dereference and affectation), as well as the while loop, sequence and binary operations.
+
+  \begin{que}
+    We wish to add tuples to our language. We add the syntax $(e_0, \ldots, e_{n-1})$ to create a tuple of size $n$ and $e{.}k$ to access the $k$\textsuperscript{th} field. Give a definition by translation for tuples of three elements (construction and access).
+  \end{que}
+
+  When considering the "introduction rule of the triple", we start by evaluating the elements, and then we create a function that'll allow us to access the values of each element:
+  \[
+    \inferrule[TripleIntroTranslation]{
+      \mathbf{x} \not\in b\\
+      \mathbf{x} \not\in a\\
+      \mathbf{y} \not\in a
+    }{\mathcal{T}((a, b, c)) =
+      {
+      \begin{array}{|l}
+        \texttt{let}\ \mathbf{x}\ \texttt{=}\ \mathcal{T}(c)\ \texttt{in}\\
+        \texttt{let}\ \mathbf{y}\ \texttt{=}\ \mathcal{T}(b)\ \texttt{in}\\
+        \texttt{let}\ \mathbf{z}\ \texttt{=}\ \mathcal{T}(a)\ \texttt{in}\\
+        (\lambda \mathbf{k}.\\
+        \quad \texttt{if}\ \mathbf{k} = 1\ \texttt{then}\ \texttt{\{}\ \mathbf{z}\ \texttt{\}}\ \texttt{else}\ \texttt{\{}\\
+        \quad\quad\texttt{if}\ \mathbf{k} = 2\ \texttt{then}\ \texttt{\{}\ \mathbf{y}\ \texttt{\}}\ \texttt{else}\ \texttt{\{}\\
+        \quad\quad\quad\texttt{if}\ \mathbf{k} = 3\ \texttt{then}\ \texttt{\{}\ \mathbf{x}\ \texttt{\}}\ \texttt{else}\ \texttt{\{}\ (\:)\ \texttt{\}}\\
+        \quad\quad\texttt{\}}\\
+        \quad\texttt{\}}\\
+        )
+      \end{array}
+    }
+    }
+  .\]
+  We have to use \texttt{let}s as we only need to compute once the value of $a$, $b$ and $c$, and then we simply get it directly (with no recomputation needed).
+  (The order used to evaluate is OCaml's, but we may want to reorder them if we want a different semantics for \textbf{AssembLISP}.)
+
+  To access the $k$\textsuperscript{th} element of the triple, we simply evaluate it at $k$:
+  \[
+    \inferrule[TripleElimTranslation]{
+      k \in \{0, 1, 2\} 
+    }{\mathcal{T}(e.k) = \mathcal{T}(e)\ k }
+  .\]
+  For this rule, it was ambiguous if $k$ could be allowed to be \textit{any} expression (like in Python, for example), or it'd necessarily be either $0, 1, 2$ ("like" in OCaml, for example).
+
+  For the rest of the translation function $\mathcal{T}$ we extend as expected: translating every subexpression not covered by the two previous cases.
+
+  \subsection{Concurrent AssembLISP.}
+
+  \begin{que}
+    What is a final configuration if all computations are finished?
+    \label{q6}
+  \end{que}
+
+  The final configuration is $(\Theta, \sigma, \Phi)$ with:
+  \begin{itemize}
+    \item $\mathrm{dom}(\Theta)$ is non-empty (and can contain more than one thread if other threads were \texttt{spawn}ed) ;
+    \item for all $t \in \mathrm{dom}(\Theta)$, we have $\Theta(t) = [\:]$ (all tasks have been completed) ;
+    \item for all $f \in \mathrm{dom}(\Phi)$, we have $\Phi(f) \neq \emptyset$ (all tasks have been completed) ;
+    \item $\mathrm{dom}(\Phi)$ is non-empty (and can contain more than one future if other tasks were \texttt{launch}ed).
+  \end{itemize}
+
+  \begin{note}
+    I do not consider that a program execution has finished where there is an irreducible task.
+    This "all computations are finished" is ambiguous so I emailed Gabriel Radanne on~11/14 about this (and about question~\ref{q11}), but did not get any reply.
+  \end{note}
+
+  \begin{que}
+    We define a program \texttt{CONC} as follows:
+    \[
+    \texttt{CONC} \triangleq {}
+    \begin{array}{|l}
+      \texttt{let}\ \mathbf{x}\ \texttt{=}\ \texttt{new}\ 0\ \texttt{in}\\
+      \texttt{let}\ \mathbf{t_1}\ \texttt{=}\ \texttt{spawn}\ \texttt{in}\\
+      \texttt{let}\ \mathbf{t_2}\ \texttt{=}\ \texttt{spawn}\ \texttt{in}\\
+      \texttt{launch}\ \mathbf{t_1}\ \texttt{\{} \ \mathbf{x}\ \texttt{:=}\ \texttt{!} \mathbf{x}\ \texttt{+}\ 1\ \texttt{\}}\ \texttt{;}\\
+      \texttt{launch}\ \mathbf{t_1}\ \texttt{\{} \ \mathbf{x}\ \texttt{:=}\ \texttt{!} \mathbf{x}\ \texttt{+}\ 2\ \texttt{\}}\ \texttt{;}\\
+      \texttt{launch}\ \mathbf{t_2}\ \texttt{\{} \ \mathbf{x}\ \texttt{:=}\ \texttt{!} \mathbf{x}\ \texttt{+}\ 1\ \texttt{\}}.
+    \end{array}
+    \] 
+    What are the possible outcomes of this computation? Sketch the derivation of the semantics for one of these outcomes. Explain what can happen in a couple of lines.
+  \end{que}
+
+  The possible outcomes are $4$, $3$, $2$ or $1$ depending on the ordering of the steps done in each thread.
+  Let $t_1$ and $t_2$ be the thread identifiers "contained" in variables $\mathbf{t_1}$ and $\mathbf{t_2}$ respectively.
+  Let also $\ell$ be the location "contained" in variable $x$.
+  Then, one execution is shown in figure~\ref{fig:conc} (page~\pageref{fig:conc}).
+
+  To get a value of $1, 2, 3$ in  $\sigma(\ell)$, we need to execute tasks in a way that splits the dereferencing and the affecting, as updating the value of $\sigma(\ell)$ can (and in that case, will) be based on an "outdated" value of $\sigma(\ell)$.
+
+  \begin{figure}
+    \centering
+    \scalebox{0.85}{
+    \begin{tikzpicture}
+      \begin{scope}[local bounding box=step1]
+        \node (mid) {};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, left=0.25cm of mid] (t1a) {$\ell\ \texttt{:=}\ \texttt{!}\ell + 1$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, below=0.3cm of t1a] (t1b) {$\ell\ \texttt{:=}\ \texttt{!}\ell + 2$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ \texttt{!}\ell + 1$};
+        \node[text width=3cm, below=0.3cm of t2a] (t2b) {\phantom{$\ell\ \texttt{:=}\ \texttt{!}\ell + 1$}};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \draw[->] (t1a) -- (t1b);
+        \node[fit=(t1-label)(t1b),rectangle,draw] {};
+        \node[fit=(t2-label)(t2b),rectangle,draw] {};
+        \node[below=1.5cm of mid]{$\ell \mapsto 0$};
+      \end{scope}
+      \begin{scope}[local bounding box=step2, xshift=10cm]
+        \node (mid) {};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, left=0.25cm of mid] (t1a) {$\ell\ \texttt{:=}\ \texttt{!}\ell + 1$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, below=0.3cm of t1a] (t1b) {$\ell\ \texttt{:=}\ \texttt{!}\ell + 2$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[text width=3cm, below=0.3cm of t2a] (t2b) {\phantom{$\ell\ \texttt{:=}\ \texttt{!}\ell + 1$}};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \draw[->] (t1a) -- (t1b);
+        \node[fit=(t1-label)(t1b),rectangle,draw] {};
+        \node[fit=(t2-label)(t2b),rectangle,draw] {};
+        \node[below=1.5cm of mid]{$\ell \mapsto 0$};
+      \end{scope}
+      \begin{scope}[local bounding box=step3, xshift=10cm, yshift=-5cm]
+        \node (mid) {};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, left=0.25cm of mid] (t1a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, below=0.3cm of t1a] (t1b) {$\ell\ \texttt{:=}\ \texttt{!}\ell + 2$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[text width=3cm, below=0.3cm of t2a] (t2b) {\phantom{$\ell\ \texttt{:=}\ \texttt{!}\ell + 1$}};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \draw[->] (t1a) -- (t1b);
+        \node[fit=(t1-label)(t1b),rectangle,draw] {};
+        \node[fit=(t2-label)(t2b),rectangle,draw] {};
+        \node[below=1.5cm of mid]{$\ell \mapsto 0$};
+      \end{scope}
+      \begin{scope}[local bounding box=step4, xshift=0cm, yshift=-5cm]
+        \node (mid) {};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, left=0.25cm of mid] (t1a) {$\ell\ \texttt{:=}\ 1$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, below=0.3cm of t1a] (t1b) {$\ell\ \texttt{:=}\ \texttt{!}\ell + 2$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[text width=3cm, below=0.3cm of t2a] (t2b) {\phantom{$\ell\ \texttt{:=}\ \texttt{!}\ell + 1$}};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \draw[->] (t1a) -- (t1b);
+        \node[fit=(t1-label)(t1b),rectangle,draw] {};
+        \node[fit=(t2-label)(t2b),rectangle,draw] {};
+        \node[below=1.5cm of mid]{$\ell \mapsto 0$};
+      \end{scope}
+      \begin{scope}[local bounding box=step5, xshift=0cm, yshift=-10cm]
+        \node (mid) {};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, left=0.25cm of mid] (t1a) {$(\:)$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, below=0.3cm of t1a] (t1b) {$\ell\ \texttt{:=}\ \texttt{!}\ell + 2$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[text width=3cm, below=0.3cm of t2a] (t2b) {\phantom{$\ell\ \texttt{:=}\ \texttt{!}\ell + 1$}};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \draw[->] (t1a) -- (t1b);
+        \node[fit=(t1-label)(t1b),rectangle,draw] {};
+        \node[fit=(t2-label)(t2b),rectangle,draw] {};
+        \node[below=1.5cm of mid]{$\ell \mapsto 1$};
+      \end{scope}
+      \begin{scope}[local bounding box=step6, xshift=10cm, yshift=-10cm]
+        \node (mid) {};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, left=0.25cm of mid] (t1a) {$\ell\ \texttt{:=}\ \texttt{!}\ell + 2$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \node[fit=(t1-label)(t1a),rectangle,draw] {};
+        \node[fit=(t2-label)(t2a),rectangle,draw] {};
+        \node[below=0.5cm of mid]{$\ell \mapsto 1$};
+      \end{scope}
+      \begin{scope}[local bounding box=step7, xshift=10cm, yshift=-15cm]
+        \node (mid) {};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, left=0.25cm of mid] (t1a) {$\ell\ \texttt{:=}\ 1 + 2$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \node[fit=(t1-label)(t1a),rectangle,draw] {};
+        \node[fit=(t2-label)(t2a),rectangle,draw] {};
+        \node[below=0.5cm of mid]{$\ell \mapsto 1$};
+      \end{scope}
+      \begin{scope}[local bounding box=step8, xshift=0cm, yshift=-15cm]
+        \node (mid) {};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, left=0.25cm of mid] (t1a) {$\ell\ \texttt{:=}\ 3$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \node[fit=(t1-label)(t1a),rectangle,draw] {};
+        \node[fit=(t2-label)(t2a),rectangle,draw] {};
+        \node[below=0.5cm of mid]{$\ell \mapsto 1$};
+      \end{scope}
+      \begin{scope}[local bounding box=step9, xshift=0cm, yshift=-19cm]
+        \node (mid) {};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, left=0.25cm of mid] (t1a) {$(\:)$};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \node[fit=(t1-label)(t1a),rectangle,draw] {};
+        \node[fit=(t2-label)(t2a),rectangle,draw] {};
+        \node[below=0.5cm of mid]{$\ell \mapsto 3$};
+      \end{scope}
+      \begin{scope}[local bounding box=step10, xshift=10cm, yshift=-19cm]
+        \node (mid) {};
+        \node[text width=3cm, left=0.25cm of mid] (t1a) {\phantom{$(\:)$}};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 0 + 1$};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \node[fit=(t1-label)(t1a),rectangle,draw] {};
+        \node[fit=(t2-label)(t2a),rectangle,draw] {};
+        \node[below=0.5cm of mid]{$\ell \mapsto 3$};
+      \end{scope}
+      \begin{scope}[local bounding box=step11, xshift=10cm, yshift=-23cm]
+        \node (mid) {};
+        \node[text width=3cm, left=0.25cm of mid] (t1a) {\phantom{$(\:)$}};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$\ell\ \texttt{:=}\ 1$};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \node[fit=(t1-label)(t1a),rectangle,draw] {};
+        \node[fit=(t2-label)(t2a),rectangle,draw] {};
+        \node[below=0.5cm of mid]{$\ell \mapsto 3$};
+      \end{scope}
+      \begin{scope}[local bounding box=step12, xshift=0cm, yshift=-23cm]
+        \node (mid) {};
+        \node[text width=3cm, left=0.25cm of mid] (t1a) {\phantom{$(\:)$}};
+        \node[rectangle, fill=gray!10, align=left, text width=3cm, right=0.25cm of mid] (t2a) {$(\:)$};
+        \node[above of=t1a] (t1-label) {$t_1$};
+        \node[above of=t2a] (t2-label) {$t_2$};
+        \node[fit=(t1-label)(t1a),rectangle,draw] {};
+        \node[fit=(t2-label)(t2a),rectangle,draw] {};
+        \node[below=0.5cm of mid]{$\ell \mapsto 1$};
+      \end{scope}
+      \begin{scope}[local bounding box=step13, xshift=0cm, yshift=-26cm]
+        \node (mid) {};
+        \node[text width=3cm, left=0.25cm of mid] (t1a) {};
+        \node[text width=3cm, right=0.25cm of mid] (t2a) {};
+        \node[above=-0.5cm of t1a] (t1-label) {$t_1$};
+        \node[above=-0.5cm of t2a] (t2-label) {$t_2$};
+        \node[fit=(t1-label)(t1a),rectangle,draw] {};
+        \node[fit=(t2-label)(t2a),rectangle,draw] {};
+        \node[below=0.4cm of mid]{$\ell \mapsto 1$};
+      \end{scope}
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step1) to node[near end, below] {$||$} (step2);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step2) to node[near end, left] {$||$} (step3);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step3) to node[near end, below] {$||$} (step4);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step4) to node[near end, left] {$||$} (step5);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step5) to node[near end, below] {$||$} (step6);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step6) to node[near end, left] {$||$} (step7);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step7) to node[near end, below] {$||$} (step8);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step8) to node[near end, left] {$||$} (step9);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step9) to node[near end, below] {$||$} (step10);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step10) to node[near end, left] {$||$} (step11);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step11) to node[near end, below] {$||$} (step12);
+      \draw[->, shorten >=0.2cm,shorten <=0.2cm] (step12) to node[near end, left] {$||$} (step13);
+    \end{tikzpicture}
+    }
+    \caption{One execution of $\texttt{CONC}$}
+    \label{fig:conc}
+  \end{figure}
+
+  \begin{que}
+    Here is a simple program that also uses futures:
+    \[
+      \texttt{FUTEX}\triangleq (\texttt{get}\ (\texttt{launch}\ \texttt{spawn}\ \texttt{\{}\ 1+1 \ \texttt{\}})) + 1
+    .\]
+    Derive the semantics for this simple example (you can omit trivial steps).
+  \end{que}
+
+  We have the following reductions
+  \[
+    \begin{array}{c}
+      ([t_0 \mapsto (f, (\texttt{get}\ (\texttt{launch}\ \texttt{spawn}\ \texttt{\{}\ 1+1 \ \texttt{\}})) + 1) :: [\:]], [f \mapsto \emptyset], \emptyset) \\
+      {}_{||}\downarrow\\
+      ([t_0 \mapsto (f, (\texttt{get}\ (\texttt{launch}\ t_1\ \texttt{\{}\ 1+1 \ \texttt{\}})) + 1) :: [\:]] \uplus [t_1 \mapsto [\:]], [f \mapsto \emptyset], \emptyset)\\
+      {}_{||}\downarrow\\
+      ([t_0 \mapsto (f, (\texttt{get}\ f') + 1) :: [\:]] \uplus [t_1 \mapsto (f', 1+1) :: [\:]], [f \mapsto \emptyset] \uplus [f' \mapsto \emptyset], \emptyset)\\
+      {}_{||}\downarrow\\
+      ([t_0 \mapsto (f, (\texttt{get}\ f') + 1) :: [\:]] \uplus [t_1 \mapsto (f', 2) :: [\:]], [f \mapsto \emptyset] \uplus [f' \mapsto \emptyset], \emptyset)\\
+      {}_{||}\downarrow\\
+      ([t_0 \mapsto (f, (\texttt{get}\ f') + 1) :: [\:]] \uplus [t_1 \mapsto [\:]], [f \mapsto \emptyset] \uplus [f' \mapsto 2], \emptyset)\\
+      {}_{||}\downarrow\\
+      ([t_0 \mapsto (f, 2 + 1) :: [\:]] \uplus [t_1 \mapsto [\:]], [f \mapsto \emptyset] \uplus [f' \mapsto 2], \emptyset)\\
+      {}_{||}\downarrow\\
+      ([t_0 \mapsto (f, 3) :: [\:]] \uplus [t_1 \mapsto [\:]], [f \mapsto \emptyset] \uplus [f' \mapsto 2], \emptyset)\\
+      {}_{||}\downarrow\\
+      ([t_0 \mapsto [\:]] \uplus [t_1 \mapsto [\:]], [f \mapsto 3] \uplus [f' \mapsto 2], \emptyset).
+    \end{array}
+  \] 
+
+  \begin{que}
+    Write a term that spawns two threads, launches two tasks that compute $\texttt{SUM}(5)$ and $\texttt{SUM}(4)$ on the two threads, and retrieves the two results to compute and return $\texttt{SUM}(5)+\texttt{SUM}(4)$
+  \end{que}
+
+  One such term is the following.
+  \[
+  \begin{array}{|l}
+    \texttt{let}\ \mathbf{f_1}\ \texttt{=}\ \texttt{launch}\ \texttt{spawn}\ \texttt{\{}\ \texttt{SUM}(5)\ \texttt{\}}\ \texttt{in}\\
+    \texttt{let}\ \mathbf{f_2}\ \texttt{=}\ \texttt{launch}\ \texttt{spawn}\ \texttt{\{}\ \texttt{SUM}(4)\ \texttt{\}}\ \texttt{in}\\
+    (\texttt{get}\ \mathbf{f_1}) + (\texttt{get}\ \mathbf{f_2})
+  \end{array}
+  \] 
+
+  \begin{que}
+    Write an invariant relating the value of a future in $\Phi$ and its occurrences in the rest of the configuration. There are in fact be three invariants: one corresponding to the thread that
+    computes the value of the future, another one for the expressions that can refer to this future, for this one we use $e \in e'$ to state that the expression $e$ is a sub-expression of $e'$, finally there is one for future identifiers appearing in the store, or in other future values.
+    We give the structure of the invariant, fill the blanks \redQuestionBox\ as precisely as possible:
+    \begin{quote}
+      for all runtime configurations $(\Theta, \sigma, \Phi)$:
+      \begin{align*}
+        (f, e) \in \Theta(t) &\implies \Phi(f) = \redQuestionBox\\
+        (f, e) \in \Theta(t) \land f' \in e &\implies \redQuestionBox\\
+        \sigma(\ell) = f \lor \Phi(f') = f &\implies\redQuestionBox
+      .\end{align*}
+    \end{quote}
+  \end{que}
+
+  We have the following invariants:
+  \begin{align}
+    (f, e) \in \Theta(t) &\implies \Phi(f) = \emptyset
+      \tag{\textsf{inv}\textsubscript{1}}
+      \label{inv1}\\
+    (f, e) \in \Theta(t) \land f' \in e &\implies f' \in \mathrm{dom}(\Phi) \land (\Phi(f') = \emptyset \implies \exists t', e', (f', e') \in \Theta(t')
+      \tag{\textsf{inv}\textsubscript{2}}
+      \label{inv2}\\
+    \sigma(\ell) = f \lor \Phi(f') = f &\implies f \in \mathrm{dom}(\Phi) \land (\Phi(f) = \emptyset \implies \exists t, e, (f, e) \in \Theta(t)
+      \tag{\textsf{inv}\textsubscript{3}}
+      \label{inv3}
+  .\end{align}
+
+  The first one says that a thread is always associated with an element in the future map $\Phi$.
+  The second one says that if there is  $f'$ occurs inside of an expression $e$ in a task of some thread, then this future corresponds to some value in $\Phi$ (or maybe $\emptyset$).
+  Furthermore, if it is $\emptyset$ then there is some task associated with $f'$ waiting to be computed.
+  The last one is exactly the same as the one before, except that the future occurs in some reference or in some other future's result.
+
+  To prove this, we have to check the $cc\to_{||}cc'$ rules as they are the one dealing \textit{directly} with the futures.
+
+  \begin{description}
+    \item[\textsc{Local in $t$}.]
+      We only need to check (\ref{inv2}) and (\ref{inv3}).
+      No matter the "local" reduction applied, the invariant remains true (for \textsc{RefWrite} and \textsc{RefNew}, we apply the (\ref{inv2}), and for \textsc{RefRead} we apply (\ref{inv3})).
+    \item[\textsc{Spawn in $t$}.]
+      For (\ref{inv1}), (\ref{inv2}) and (\ref{inv3}), nothing changes as $\Theta(t') = [\:]$ and $\sigma, \Phi$ are not changed.
+    \item[\textsc{Launch in $t$}.]
+      For (\ref{inv1}), we add the new task $(f', e)$ to  $\Theta(t')$ and we have that $\Phi(t') = \emptyset$.
+      For (\ref{inv2}) for $t'$, we use (\ref{inv2}) for $t$ and get the required result (some future $f' \in e$ can be passed to the new task).
+      For the last one, nothing changes.
+    \item[\textsc{Resolve in $t$}.]
+      For (\ref{inv1}) and (\ref{inv2}), we have $(f, v) \not\in \Theta(t)$ so not much to prove here.
+      For (\ref{inv3}), we apply (\ref{inv2}) to task $(f, v)$.
+    \item[\textsc{Get in $t$}.]
+      For (\ref{inv1}), nothing changes. For (\ref{inv2}), we apply (\ref{inv3}) to $f'$.
+      For (\ref{inv3}), nothing changes here.
+  \end{description}
+
+  We also need to check that (\ref{inv1}), (\ref{inv2}) and (\ref{inv3}) hold initially.
+  They do hold as futures cannot appear in the "source code", but only at execution.
+
+  \begin{que}[Difficult]
+    We define a program \texttt{LOOP} as follows:
+    \[
+    \texttt{LOOP} \triangleq 
+    \begin{array}{|l}
+      \texttt{let}\ \mathbf{n}\ \texttt{=}\ \texttt{new}\ 1\ \texttt{in}\\
+      \texttt{let}\ \mathbf{t}\ \texttt{=}\ \texttt{spawn}\ \texttt{in}\\
+      \texttt{let}\ \mathbf{run}\ \texttt{=}\ 
+      \lambda \mathbf{f}.(\texttt{!}\mathbf{n}\ \texttt{:=}\ 2 \times \texttt{!}\mathbf{n}\ \texttt{;}\ \texttt{launch}\ \mathbf{t}\ \texttt{\{}\ \mathbf{f}\ \mathbf{t}\ \texttt{\}}) \ \texttt{in}\\
+      \texttt{launch}\ \mathbf{t}\ \texttt{\{}\ \mathbf{run}\ \mathbf{run}\ \texttt{\}}\ \texttt{;}\\
+      \texttt{!}\mathbf{n}
+    \end{array}
+    \]
+    During the execution of this program, the thread \textbf{t} \texttt{launch}es a task to itself. Why is this not possible given the current reduction rules?
+
+    Propose a new reduction rule which allows this program to run fully.
+
+    What does the program do with your rule?
+    \label{q11}
+  \end{que}
+
+  Recall the inference rule responsible for handling \texttt{launch}es:
+  \[
+    \inferrule[Launch in $t$]{t \neq t'\\ f' \not\in \mathrm{dom}(\Phi)}{
+      {
+      \begin{array}{c}
+        \Big(\big[t \mapsto (f, C[\texttt{launch}\ t'\ \texttt{\{}\ e\ \texttt{\}}]) :: e\ell\big] \uplus \big[t' \mapsto e\ell'\big] \uplus \Theta,\quad \sigma,\quad \Phi\Big)\\
+        {}_{||}\downarrow\\
+        \Big(\big[t \mapsto (f, C[f']) :: e\ell\big] \uplus \big[t' \mapsto e\ell' :: (f', e)\big] \uplus \Theta, \quad \sigma,\quad \Phi[f' \mapsto \emptyset]\Big)\\
+      \end{array}
+      }
+    }
+  .\]
+  If we have, in a thread $t$ (in the first task of $t$), an expression $\texttt{launch}\ t\ \texttt{\{}\ e\ \texttt{\}}$, then we cannot apply this rule, and thus it is irreducible.
+  Thus, we add a new rule:
+
+  \[
+    \inferrule[Launch self in $t$]{
+      f' \not\in \mathrm{dom}(\Phi)
+    }{
+      {
+      \begin{array}{c}
+        \Big(\big[t \mapsto (f, C[\texttt{launch}\ t\ \texttt{\{}\ e\ \texttt{\}}]) :: e\ell\big] \uplus \Theta, \quad \sigma,\quad \Phi\Big)\\
+        {}_{||}\downarrow\\
+        \Big(\big[t \mapsto (f, C[f']) :: e\ell :: (f', e)\big] \uplus \Theta, \quad \sigma, \quad \Phi[f' \mapsto \emptyset]\Big)\\
+      \end{array}
+      }
+    }
+  .\]
+  This rules allows that, when a thread $t$ executes $\texttt{launch}\ t\ \texttt{\{}\ e\ \texttt{\}}$, then it adds this task at the end of the list of tasks to execute.
+
+  \begin{note}
+    I do not consider that a program execution has ran fully where there is an irreducible task like $t\ t$. 
+    This is even more ambiguous as "runs fully" could be interpreted as "run and terminates"  (that's what I imagined at first).
+    So, I emailed Gabriel Radanne on~11/14 about this (and about question~\ref{q6}), but did not get any reply.
+
+    I'm thus updating the program $\texttt{LOOP}$ to be the following.
+    \[
+    \texttt{LOOP} \triangleq 
+    \begin{array}{|l}
+      \texttt{let}\ \mathbf{n}\ \texttt{=}\ \texttt{new}\ 1\ \texttt{in}\\
+      \texttt{let}\ \mathbf{t}\ \texttt{=}\ \texttt{spawn}\ \texttt{in}\\
+      \texttt{let}\ \mathbf{run}\ \texttt{=}\ 
+      \lambda \mathbf{f}.(\xcancel{\texttt{!}}\mathbf{n}\ \texttt{:=}\ 2 \times \texttt{!}\mathbf{n}\ \texttt{;}\ \texttt{launch}\ \mathbf{t}\ \texttt{\{}\ \mathbf{f}\ \xcancel{\mathbf{t}}\ {\color{deepblue} \mathbf{f}}\ \texttt{\}}) \ \texttt{in}\\
+      \texttt{launch}\ \mathbf{t}\ \texttt{\{}\ \mathbf{run}\ \mathbf{run}\ \texttt{\}}\ \texttt{;}\\
+      \texttt{!}\mathbf{n}
+    \end{array}
+    \]
+    It runs fully (at each step there is a reduction) but does not terminate.
+  \end{note}
+
+  With the new \texttt{LOOP} program, and the added rule, this program runs fully and will return $2^{k+1}$ where $k$ is the number of tasks completed in the thread contained in variable $\mathbf{t}$ (sometimes $2^{k+2}$ if the thread already executed  $\mathbf{n}\ \texttt{:=}\ 2 \times \texttt{!}\mathbf{n}$ (modulo replacing the variables with the locations)).
+  Indeed, this program starts by launching a thread $t$, and then, for each task, it'll doubles $\mathbf{n}$'s content and spawn one of itself (\textit{i.e.}\ another task $\mathbf{run}\ \mathbf{run}$), and repeating the doubling step over and over.
+
+  \section{Erlisp: An object oriented language for distributed computing.}
+
+
+  \begin{que}
+    Complete the rules \nameref{rule:let} and \nameref{rule:attrwrite}.
+  \end{que}
+
+  We can write:
+  \[
+    \inferrule[Let]{\mathbf{x} \neq \mathbf{a}}{\mathcal{E}_\mathbf{a}(\texttt{let}\ \mathbf{x}\ \texttt{=}\ e\ \texttt{in}\ e') = \texttt{let}\ \mathbf{x}\ \texttt{=}\ \mathcal{E}_\mathbf{a}(e)\ \texttt{in}\ \mathcal{E}_\mathbf{a}(e')}
+    \label{rule:let}
+  ,\] and
+  \[
+    \inferrule[AttrWrite]{ }{\mathcal{E}_\mathbf{a}(\mathbf{z} \gets e) = \mathbf{z}\ \texttt{:=}\ \mathcal{E}_\mathbf{a}(e)}
+    \label{rule:attrwrite}
+  .\]
+  Personally, I'd also require that $\mathbf{z} = \mathbf{a}$ (by directly substituting in the rule) as, that way, referencing an undefined attribute would lead to a compilation error, and not an evaluation error.
+
+
+  \begin{que}
+    Consider the following program.
+    \[
+    \begin{array}{|l}
+      \mathbf{Counter}\ \texttt{=}\ \texttt{\{}\\
+      \quad \mathbf{state}\ \texttt{=}\ 0\\
+      \quad \mathrm{add}(\mathbf{x})\ \texttt{=}\ \mathbf{state} \gets \mathbf{state} + \mathbf{x}\ \texttt{;}\ \mathbf{state}\\
+      \texttt{\}}\ \texttt{;}\\
+      \texttt{let}\ \mathbf{x}\ \texttt{=}\ \mathbf{Counter}.\mathrm{add}(10)\ \texttt{in}\\
+      \texttt{let}\ \mathbf{y}\ \texttt{=}\ \mathbf{Counter}.\mathrm{add}(15)\ \texttt{in}\\
+      (\texttt{get}\ \mathbf{x}) + (\texttt{get}\ \mathbf{y})
+    \end{array}
+    \]
+    Compile this program and execute it (you can skip trivial steps).
+    \label{q13}
+  \end{que}
+
+  After compiling, we end up with the following \textbf{AssembLISP} program:
+  \[
+  \begin{array}{|l}
+    \texttt{let}\ \mathbf{Counter}\ \texttt{=}\\
+    \quad \texttt{let}\ \mathbf{state}\ \texttt{=}\ \texttt{new}\ 0\ \texttt{in}\\
+    \quad (\texttt{spawn}, \lambda \mathbf{self}. \lambda \mathbf{x}. \mathbf{state}\ \texttt{:=}\ \texttt{!}\mathbf{state} + \mathbf{x}\ \texttt{;}\ \texttt{!}\mathbf{state})\\
+    \texttt{in}\\
+    \texttt{let}\ \mathbf{x}\ \texttt{=}\\
+    \quad \texttt{let}\ \mathbf{x_{self}}\ \texttt{=}\ \mathbf{Counter}\ \texttt{in}\\
+    \quad \texttt{let}\ \mathbf{x_{arg}}\ \texttt{=}\ 10\ \texttt{in}\\
+    \quad \texttt{launch}\ {\mathbf{x_{self}}.0}\ \texttt{\{}\ \mathbf{x_{self}}.1\ \mathbf{x_{self}}\ \mathbf{x_{arg}}\ \texttt{\}}\\
+    \texttt{in}\\
+    \texttt{let}\ \mathbf{y}\ \texttt{=}\\
+    \quad \texttt{let}\ \mathbf{x_{self}}\ \texttt{=}\ \mathbf{Counter}\ \texttt{in}\\
+    \quad \texttt{let}\ \mathbf{x_{arg}}\ \texttt{=}\ 15\ \texttt{in}\\
+    \quad \texttt{launch}\ {\mathbf{x_{self}}.0}\ \texttt{\{}\ \mathbf{x_{self}}.1\ \mathbf{x_{self}}\ \mathbf{x_{arg}}\ \texttt{\}}\\
+    \texttt{in}\\
+    (\texttt{get}\ \mathbf{x}) + (\texttt{get}\ \mathbf{y}).
+  \end{array}
+  \]
+
+  After some steps of concurrent reduction (starting with $\sigma = \emptyset$ and $\Phi = [f \mapsto \emptyset]$), we get 
+
+  \[
+    t_0 : f,\begin{array}{|lr}
+    \texttt{let}\ \mathbf{Counter}\ \texttt{=} & \sigma = [\ell \mapsto 0]\\
+    \quad (t, \lambda \mathbf{self}. \lambda \mathbf{x}. \ell\ \texttt{:=}\ \texttt{!}\ell + \mathbf{x}\ \texttt{;}\ \texttt{!}\ell) & \Phi = [f \mapsto \emptyset ]\\
+    \texttt{in}\\
+    \texttt{let}\ \mathbf{x}\ \texttt{=}\\
+    \quad \texttt{let}\ \mathbf{x_{self}}\ \texttt{=}\ \mathbf{Counter}\ \texttt{in}\\
+    \quad \texttt{let}\ \mathbf{x_{arg}}\ \texttt{=}\ 10\ \texttt{in}\\
+    \quad \texttt{launch}\ {\mathbf{x_{self}}.0}\ \texttt{\{}\ \mathbf{x_{self}}.1\ \mathbf{x_{self}}\ \mathbf{x_{arg}}\ \texttt{\}}\\
+    \texttt{in}\\
+    \texttt{let}\ \mathbf{y}\ \texttt{=}\\
+    \quad \texttt{let}\ \mathbf{x_{self}}\ \texttt{=}\ \mathbf{Counter}\ \texttt{in}\\
+    \quad \texttt{let}\ \mathbf{x_{arg}}\ \texttt{=}\ 15\ \texttt{in}\\
+    \quad \texttt{launch}\ {\mathbf{x_{self}}.0}\ \texttt{\{}\ \mathbf{x_{self}}.1\ \mathbf{x_{self}}\ \mathbf{x_{arg}}\ \texttt{\}}\\
+    \texttt{in}\\
+    (\texttt{get}\ \mathbf{x}) + (\texttt{get}\ \mathbf{y}).
+  \end{array}
+  \]
+  then
+  \[
+    t_0 : f,\begin{array}{|lr}
+      \texttt{let}\ \mathbf{x}\ \texttt{=} & \sigma = [\ell \mapsto 0] \\
+      \quad \texttt{let}\ \mathbf{x_{self}}\ \texttt{=}\ (t, \lambda \mathbf{self}. \lambda \mathbf{x}. \ell\ \texttt{:=}\ \texttt{!}\ell + \mathbf{x}\ \texttt{;}\ \texttt{!}\ell)\ \texttt{in} & \Phi = [f \mapsto \emptyset]\\
+    \quad \texttt{let}\ \mathbf{x_{arg}}\ \texttt{=}\ 10\ \texttt{in}\\
+    \quad \texttt{launch}\ {\mathbf{x_{self}}.0}\ \texttt{\{}\ \mathbf{x_{self}}.1\ \mathbf{x_{self}}\ \mathbf{x_{arg}}\ \texttt{\}}\\
+    \texttt{in}\\
+    \texttt{let}\ \mathbf{y}\ \texttt{=}\\
+    \quad \texttt{let}\ \mathbf{x_{self}}\ \texttt{=}\ (t, \lambda \mathbf{self}. \lambda \mathbf{x}. \ell\ \texttt{:=}\ \texttt{!}\ell + \mathbf{x}\ \texttt{;}\ \texttt{!}\ell)\ \texttt{in}\\
+    \quad \texttt{let}\ \mathbf{x_{arg}}\ \texttt{=}\ 15\ \texttt{in}\\
+    \quad \texttt{launch}\ {\mathbf{x_{self}}.0}\ \texttt{\{}\ \mathbf{x_{self}}.1\ \mathbf{x_{self}}\ \mathbf{x_{arg}}\ \texttt{\}}\\
+    \texttt{in}\\
+    (\texttt{get}\ \mathbf{x}) + (\texttt{get}\ \mathbf{y}).
+  \end{array}
+  \]
+  and then
+  \begin{align*}
+    &t_0 : f,\begin{array}{|lr}
+      \texttt{let}\ \mathbf{x}\ \texttt{=}\ f'\ \texttt{in} & \sigma = [\ell \mapsto 0]\\
+      \texttt{let}\ \mathbf{y}\ \texttt{=} & \Phi = [f \mapsto \emptyset, f' \mapsto \emptyset]\\
+    \quad \texttt{let}\ \mathbf{x_{self}}\ \texttt{=}\ (t, \lambda \mathbf{self}. \lambda \mathbf{x}. \ell\ \texttt{:=}\ \texttt{!}\ell + \mathbf{x}\ \texttt{;}\ \texttt{!}\ell)\ \texttt{in}\\
+    \quad \texttt{let}\ \mathbf{x_{arg}}\ \texttt{=}\ 15\ \texttt{in}\\
+    \quad \texttt{launch}\ {\mathbf{x_{self}}.0}\ \texttt{\{}\ \mathbf{x_{self}}.1\ \mathbf{x_{self}}\ \mathbf{x_{arg}}\ \texttt{\}}\\
+    \texttt{in}\\
+    (\texttt{get}\ \mathbf{x}) + (\texttt{get}\ \mathbf{y}),
+  \end{array}\\
+    &t : f', \begin{array}{|l}
+    \ell\ \texttt{:=}\ \texttt{!}\ell + 10\ \texttt{;}\ \texttt{!}\ell
+  \end{array}
+  \end{align*}
+  and then
+  \begin{align*}
+    &t_0 : f,\begin{array}{|lr}
+      \texttt{let}\ \mathbf{y}\ \texttt{=}\ f''\ \texttt{in} & \sigma = [\ell \mapsto 0]\\
+      (\texttt{get}\ f') + (\texttt{get}\ \mathbf{y})&\quad\quad\quad \Phi = [f \mapsto \emptyset, f' \mapsto \emptyset, f'' \mapsto \emptyset]
+  \end{array}\\
+    &t : f', \begin{array}{|l}
+    \ell\ \texttt{:=}\ \texttt{!}\ell + 10\ \texttt{;}\ \texttt{!}\ell
+  \end{array}
+    \quad::\quad f'', \begin{array}{|l}
+    \ell\ \texttt{:=}\ \texttt{!}\ell + 15\ \texttt{;}\ \texttt{!}\ell
+  \end{array}
+  \end{align*}
+  after that we can reduce the two "$\mathrm{add}$" tasks
+  \begin{align*}
+    &t_0 : f,\begin{array}{|lr}
+      (\texttt{get}\ f') + (\texttt{get}\ f'') & \sigma =[\ell \mapsto 10]\\
+      &\quad\quad\quad \Phi = [f \mapsto \emptyset, f' \mapsto 10, f'' \mapsto \emptyset]
+  \end{array}\\
+    &t : f'', \begin{array}{|l}
+    \ell\ \texttt{:=}\ \texttt{!}\ell + 15\ \texttt{;}\ \texttt{!}\ell
+  \end{array}
+  \end{align*}
+  then
+  \begin{align*}
+    &t_0 : f,\begin{array}{|lr}
+      (\texttt{get}\ f') + (\texttt{get}\ f'') & \sigma = [\ell \mapsto 25]\\
+      &\quad\quad\quad \Phi = [f \mapsto \emptyset, f' \mapsto 10, f'' \mapsto 25]
+  \end{array}\\
+    &t : [\:]
+  \end{align*}
+  and we can finally conclude with the last four reductions
+  \begin{align*}
+    &t_0 : f,\begin{array}{|lr}
+      10 + 25 & \sigma = [\ell \mapsto 25]\\
+      &\quad\quad\quad \Phi = [f \mapsto \emptyset, f' \mapsto 10, f'' \mapsto 25]
+  \end{array}\\
+    &t : [\:]
+  \end{align*}
+  and get to the last configuration
+  \[
+    \begin{array}{lr}
+      t_0 : [\:] & \sigma = [\ell \mapsto 25] \\
+      t : [\:] &\quad\quad\quad \Phi = [f \mapsto 35, f' \mapsto 10, f'' \mapsto 25]
+    \end{array}
+  .\] 
+
+  \begin{que}
+    Here is an alternative rule for \nameref{rule:meth}. Why is it incorrect?
+    Illustrate with examples.
+    \[
+      \inferrule[meth-incorrect]{e_0' = \mathcal{E}_\mathbf{a}(e_0)\\ e_1' = \mathcal{E}_\mathbf{a}(e_1)}{
+        \mathcal{E}_\mathbf{a}(e_0.\mathrm{meth}(e_1)) = \texttt{launch}\ e_0'.0\ \texttt{\{}\ e_0'.1\ e_0'\ e_1'\ \texttt{\}}
+      }
+      \label{rule:meth-incorrect}
+    \] 
+  \end{que}
+
+  The rule~\nameref{rule:meth-incorrect} is incorrect as, during a reduction, the expression $e_0'$ will be evaluated three times instead of once.
+  For example, the result of this \textbf{Erlisp} program 
+  \[
+  \begin{array}{|l}
+    \mathbf{Counter}\ \texttt{=}\ \text{\textsf{\textit{\texttt{(*} seen in question~\ref{q13} \texttt{*)}}}} \ \texttt{;}\\
+    \mathbf{test}\ \texttt{=}\ \texttt{\{}\\
+    \quad\mathbf{a}\ \texttt{=}\ 0\\
+    \quad\mathrm{meth}(\mathbf{x}) = (\:)\\
+    \texttt{\}}\ \texttt{;}\\
+    (\mathbf{Counter}.\mathrm{add}(10)\ \texttt{;}\ \mathbf{test}).\mathrm{meth}(1)\ \texttt{;}\\
+    \texttt{get}\ (\mathbf{Counter}.\mathrm{add}(0))
+  \end{array}
+  .\]
+  We would expect to have a result of $10$ but we end up with a result of $30$ as the $\mathbf{Counter}.\mathrm{add}(10)$ method evaluated three times, once in the original thread, and then twice in $\mathbf{test}$'s thread.
+
+  \begin{que}
+    We now wish to support an arbitrary number of attributes.
+    Expand the rules~\nameref{rule:newobj}, \nameref{rule:attrread}, \nameref{rule:attrwrite2} for this purpose.
+  \end{que}
+
+  We will write $\mathcal{E}_{\mathbf{a} ; \mathbf{a_1}, \ldots, \mathbf{a_n}}(-)$ for this extended function.
+  The idea is to say that variable $\mathbf{a}$ (in \textbf{AssembLISP}) will contain the data of \textbf{Erlisp} attributes $\mathbf{a_1}, \ldots, \mathbf{a_n}$.
+  With this in mind, we edit the translation rules:
+  \[
+    \inferrule[NewObj]{
+      \mathbf{a} \not\in e_m\\
+    }{
+      \mathcal{P}
+      \left( 
+        {
+        \begin{array}{l}
+        \mathbf{o}\ \texttt{=}\ \texttt{\{}\\
+          \quad \mathbf{a_1}\ \texttt{=}\ e_1\\
+          \quad \mathbf{a_2}\ \texttt{=}\ e_2\\
+          \quad\quad \vdots\\
+          \quad \mathbf{a_n}\ \texttt{=}\ e_n\\
+          \quad\mathrm{meth}(\mathbf{x})\ \texttt{=}\ e_m\\
+        \texttt{\}}\ \texttt{;}\\
+        p
+        \end{array}
+        }
+      \right) =
+      {
+      \begin{array}{|l}
+        \texttt{let}\ \mathbf{o}\ \texttt{=}\\
+        \quad \texttt{let}\ \mathbf{a}\ \texttt{=}\ (\\
+        \quad\quad\quad \texttt{new}\ \mathcal{E}_\emptyset(e_1),\\
+        \quad\quad\quad\texttt{new}\ \mathcal{E}_\emptyset(e_2),\\
+        \quad\quad\quad\vdots\\
+        \quad\quad\quad\texttt{new}\ \mathcal{E}_\emptyset(e_n)\\
+        \quad)\ \texttt{in}\\
+        \quad(\texttt{spawn}, \lambda \mathbf{self}. \lambda \mathbf{x}. \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(e_m))\\
+        \texttt{in}\ \mathcal{P}(p)
+      \end{array}
+      }
+    }
+    \label{rule:newobj}
+  \]
+
+  \[
+    \inferrule[AttrRead]{ }{
+      \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(\mathbf{a_i}) = \texttt{!}(\mathbf{a}.i)
+    }
+    \label{rule:attrread}
+  \]and finally\[
+    \inferrule[AttrWrite]{ }{
+      \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(\mathbf{a_i} \gets e) = (\mathbf{a}.i)\ \texttt{:=}\ \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(e)
+    }.
+    \label{rule:attrwrite2}
+  \]
+  For all the other rules, we extend them in the obvious way: writing $\mathcal{E}_{\mathbf{a};\mathbf{a_1}, \ldots, \mathbf{a_n}}$ instead of $\mathcal{E}_{\mathbf{a}}$. (For rule \textsc{Var}, we use \textbf{AssembLISP}'s variable $\mathbf{a}$ and not \textbf{Erlisp}'s variable $\mathbf{a_1}, \ldots, \mathbf{a_n}$ in the precondition $\mathbf{a} \neq  \mathbf{x}$.
+
+  \subsection{Multiple methods with dynamic dispatch.}
+
+  \begin{que}
+    Write an \textbf{Erlisp} object with a counter attribute and three methods with unit arguments: $\mathbf{incr}$, which increments the counter and returns the new value, $\mathbf{decr}$, which decrements the counter and returns the new value, and $\mathbf{reset}$, which resets the counter to zero and returns unit.
+  \end{que}
+
+  We use the following \textbf{Erlisp} object:
+  \[
+  \begin{array}{|l}
+    \mathbf{Counter}\ \texttt{=}\ \texttt{\{}\\
+    \quad \mathbf{counter}\ \texttt{=}\ 0\\
+    \quad \mathrm{incr}(\mathbf{x})\ \texttt{=}\ (\mathbf{counter} \gets \mathbf{counter} + 1\ \texttt{;}\ \mathbf{state}) \\ 
+    \quad \mathrm{decr}(\mathbf{x})\ \texttt{=}\ (\mathbf{counter} \gets \mathbf{counter} - 1\ \texttt{;}\ \mathbf{state}) \\ 
+    \quad \mathrm{reset}(\mathbf{x})\ \texttt{=}\ (\mathbf{counter} \gets 0\ \texttt{;}\ (\:)) \\ 
+    \texttt{\}}.
+  \end{array}
+  \] 
+
+  \begin{que}
+    Write an \textbf{AssembLISP} program with a function $\mathbf{counter\_method}$ taking as argument a label among $\mathbf{'incr}$, $\mathbf{'decr}$ and $\mathbf{'reset}$ and implementing the same counter semantics as the previous question.
+  \end{que}
+
+  We use the following \textbf{AssembLISP} partial program:
+  \[
+  \begin{array}{|l}
+    \texttt{let}\ \mathbf{counter\_method}\ \texttt{=}\\
+    \quad \texttt{let}\ \mathbf{t}\ \texttt{=}\ \texttt{spawn}\ \texttt{in}\\
+    \quad \texttt{let}\ \mathbf{counter}\ \texttt{=}\ \texttt{new}\ 0\ \texttt{in}\\
+    \quad\lambda \mathbf{l}. (\\
+    \quad\quad \texttt{if}\ \mathbf{l}\ \texttt{=}\ \mathbf{'incr}\ \texttt{then}\ \texttt{spawn}\ \mathbf{t}\ \texttt{\{}\ \mathbf{counter}\ \texttt{:=}\ \mathbf{counter}+1\ \texttt{;}\ \texttt{!}\mathbf{counter}\ \texttt{\}}\\
+    \quad\quad \texttt{else}\ \texttt{if}\ \mathbf{l}\ \texttt{=}\ \mathbf{'decr}\ \texttt{then}\ \texttt{spawn}\ \mathbf{t}\ \texttt{\{}\ \mathbf{counter}\ \texttt{:=}\ \mathbf{counter}-1\ \texttt{;}\ \texttt{!}\mathbf{counter}\ \texttt{\}}\\
+    \quad\quad \texttt{else}\ \texttt{if}\ \mathbf{l}\ \texttt{=}\ \mathbf{'reset}\ \texttt{then}\ \texttt{spawn}\ \mathbf{t}\ \texttt{\{}\ \mathbf{counter}\ \texttt{:=}\ 0\ \texttt{;}\ (\:)\ \texttt{\}}\\
+    \quad\quad \texttt{else}\ (\:)\\
+    \quad)
+  \end{array}
+  .\] 
+
+  In this program, we omitted curly braces around the content's of the \texttt{if} and \texttt{else} expressions, to simplify the syntax (where there is no ambiguity).
+
+  \begin{que}
+    Extend \nameref{rule:newobj2} and \nameref{rule:meth} to support multiple methods in an object. You can use "$\ldots$" for part of the rules that are identical to previous answers.
+  \end{que}
+
+  For this question, we suppose having a "predicable" way of transforming a method's (\textit{e.g.}\ $\mathrm{incr}$) name into a symbol (\textit{e.g.}\ $\mathbf{'incr}$).
+  We also suppose that no two different methods (inside the same object) lead to the same symbol.
+  Here, we will only change the font's weight to bold with the added uptick.
+
+
+  \begin{figure}
+  \[
+    \inferrule[Meth]{
+      \mathbf{x_{self}} \not\in e\\
+      \mathbf{x_{arg}} \not\in e\\
+      \mathbf{x_{self}} \neq \mathbf{a}\\
+      \mathbf{x_{arg}} \neq \mathbf{a}\\
+    }{
+      \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(e.\mathrm{meth}(e')) =
+      {
+      \begin{array}{|l}
+        \texttt{let}\ \mathbf{x_{self}}\ \texttt{=}\ \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(e)\ \texttt{in}\\
+        \texttt{let}\ \mathbf{x_{arg}}\ \texttt{=}\ \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(e')\ \texttt{in}\\
+        \texttt{launch}\ \mathbf{x_{self}}.0\ \texttt{\{}\\
+          \quad\mathbf{x_{self}}.1\ \mathbf{x_{self}}\ \mathbf{'meth}\ \mathbf{x_{arg}}\\
+        \texttt{\}}
+      \end{array}
+      }
+    }
+    \label{rule:meth}
+  \] 
+  \end{figure}
+
+  \begin{figure}
+  \[
+    \inferrule[NewObj]{
+      \mathbf{a} \not\in m_1\\
+      \mathbf{a} \not\in m_2\\
+      \ldots\\
+      \mathbf{a} \not\in m_k\\
+    }{
+      \mathcal{P}
+      \left( 
+        {
+        \begin{array}{l}
+        \mathbf{o}\ \texttt{=}\ \texttt{\{}\\
+          \quad \mathbf{a_1}\ \texttt{=}\ e_1\\
+          \quad \mathbf{a_2}\ \texttt{=}\ e_2\\
+          \quad\quad \vdots\\
+          \quad \mathbf{a_n}\ \texttt{=}\ e_n\\
+          \quad\mathrm{meth}_1(\mathbf{x_1})\ \texttt{=}\ m_1\\
+          \quad\mathrm{meth}_2(\mathbf{x_2})\ \texttt{=}\ m_2\\
+          \quad\quad \vdots\\
+          \quad\mathrm{meth}_k(\mathbf{x_k})\ \texttt{=}\ m_k\\
+        \texttt{\}}\ \texttt{;}\\
+        p
+        \end{array}
+        }
+      \right) =
+      {
+      \begin{array}{|l}
+        \texttt{let}\ \mathbf{o}\ \texttt{=}\\
+        \quad \texttt{let}\ \mathbf{a}\ \texttt{=}\ (\\
+        \quad\quad\quad \texttt{new}\ \mathcal{E}_\emptyset(e_1),\\
+        \quad\quad\quad\texttt{new}\ \mathcal{E}_\emptyset(e_2),\\
+        \quad\quad\quad\vdots\\
+        \quad\quad\quad\texttt{new}\ \mathcal{E}_\emptyset(e_n)\\
+        \quad)\ \texttt{in}\\
+        \quad(\texttt{spawn}, \lambda \mathbf{self}. \lambda \mathbf{l}.\\
+        \quad\quad \texttt{if}\ \mathbf{l}\ \texttt{=}\ \mathbf{'meth_1}\ \texttt{then}\\
+        \quad\quad\quad\lambda \mathbf{x_1}.\ \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(m_1)\\
+        \quad\quad \texttt{else}\ \texttt{if}\ \mathbf{l}\ \texttt{=}\ \mathbf{'meth_2}\ \texttt{then}\\
+        \quad\quad\quad\lambda \mathbf{x_2}.\  \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(m_2)\\
+        \quad\quad \vdots\\
+        \quad\quad \texttt{else}\ \texttt{if}\ \mathbf{l}\ \texttt{=}\ \mathbf{'meth_k}\ \texttt{then}\\
+        \quad\quad\quad\lambda \mathbf{x_k}.\  \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(m_k)\\
+        \quad\quad \texttt{else}\ \lambda \mathbf{x}.\ (\:)\\
+        \quad)\\
+        \texttt{in}\ \mathcal{P}(p)
+      \end{array}
+      }
+    }
+    \label{rule:newobj2}
+  \]
+  \end{figure}
+
+
+  \subsection{Encapsulation.}
+
+  \begin{que}
+    Let us consider the following object definition:
+    \[
+    \begin{array}{|l}
+      \mathbf{pass\_checker}\ \texttt{=}\ \texttt{\{}\\
+      \quad \mathbf{secret}\ \texttt{=}\ 42\\
+      \quad \mathrm{validate}(\mathbf{s})\ \texttt{=}\ (\mathbf{s}\ \texttt{=}\ \mathbf{secret})\\
+      \texttt{\}}.
+    \end{array}
+    \]
+    Can the $\mathbf{secret}$ attribute be written or read by any other object? What part of the translation ensures that?
+  \end{que}
+
+  No, it cannot. In deed, this is ensured by declaring the $\mathbf{secret}$ \textit{inside} of the \texttt{let}-binding:
+  a partial translation (using the "one attribute/one method" translation, to remove all the added clutter with multiple attributes and methods) of the \textbf{Erlang} program would be
+  \[
+  \begin{array}{|l}
+    \texttt{let}\ \mathbf{pass\_checker}\ \texttt{=}\\
+    \quad \texttt{let}\ \mathbf{secret}\ \texttt{=}\ \texttt{new}\ 42\ \texttt{in}\\
+    \quad(\texttt{spawn}, \lambda \mathbf{self}. \lambda \mathbf{s}. (\mathbf{s}\ \texttt{=}\ \texttt{!}\mathbf{secret})),\\
+  \end{array}
+  \]
+  and after the "$\texttt{new}\ 42$" is evaluated into $\ell \in \mathds L$, the substitution only occurs in
+  \[
+    \text{"$(\texttt{spawn}, \lambda\mathbf{self}. \lambda\mathbf{s}. (\mathbf{s}\ \texttt{=}\ \texttt{!} \underbrace{\mathbf{secret}}_{
+        \begin{array}{c}
+          \downarrow\\
+          \ell
+        \end{array}
+    }))$"}
+  \] 
+  and nowhere else, so this is the only part of the code that knows the location where the secret key is stored.
+
+  \begin{que}
+    We are interested in formalizing this encapsulation property. For this purpose, we consider what happens if the memory is filled with a new inert value, $\bot$, except for the object being executed.
+
+    Given a program \textbf{Erlisp} $p$, We consider an execution of its compiled program $s_0 = \mathcal{P}(p)$. Let $\mathbf{o}$ an object definition in $p$, We denote $t_{\mathbf{o}}$ its thread (resulting from the $\texttt{spawn}$ instruction) and $A_{\mathbf{o}}$ the set of memory location containing its attributes during the execution of~$s_0$.
+
+    Let $\Theta, \Theta_1', \sigma_1, \sigma_1', \Phi, \Phi_1', e\ell, e\ell_1'$ such that
+    \[
+      \big([t_{\mathbf{o}} \mapsto e\ell] \uplus \Theta, \sigma_1, \Phi \big)
+      \to_{||}
+      \big([t_{\mathbf{o}} \mapsto e\ell'_1] \uplus \Theta_1', \sigma_1', \Phi_1' \big)
+    \] 
+    where $t_{\mathbf{o}}$ is the thread in which the reduction is performed, \textup{i.e.}\ the rule applied is of the form \textsc{\redQuestionBox\ in $t_{\mathbf{o}}$} (\textup{e.g.}\ \textsc{Local in $t_{\mathbf{o}}$}).
+
+    Let $\sigma_2$ such that $\sigma_2(\ell) = \begin{cases}
+      \sigma_1(\ell) & \text{ if } \ell \in A_{\mathbf{o}}\\
+      \bot & \text{ otherwise}.
+    \end{cases}$
+
+    Then, there exists $\sigma_2', \Phi_2', e\ell_2'$ such that \[
+      \big([t_{\mathbf{o}} \mapsto e\ell] \uplus \Theta, \sigma_2, \Phi \big)
+      \to_{||}
+      \big([t_{\mathbf{o}} \mapsto e\ell'_2] \uplus \Theta_2', \sigma_2', \Phi_2' \big).
+    \]
+    We try to relate $\Theta_2', \sigma_2', \Phi_2', e\ell_2'$ with that happens in the first reduction that leads to~$e\ell_1'$.
+
+    \begin{enumerate}
+      \item In each of the following  three cases, relate $\Theta_2', \sigma_2', \Phi_2', e\ell_2'$ with the other variables and explain informally what happens:
+        \begin{enumerate}
+          \item the reduction corresponds to a method call;
+          \item the reduction corresponds to a $\texttt{get}$;
+          \item the reduction corresponds to a read or write to an attribute.
+        \end{enumerate}
+      \item Give the complete encapsulation property that characterizes $\Theta_2', \sigma_2', \Phi_2', e\ell_2'$ independently of the reduction applied.
+    \end{enumerate}
+  \end{que}
+
+  In the following, for a store $\sigma$, we will write $\sigma[\bot]$ for a store defined by
+  \[
+    \sigma[\bot](\ell) \coloneqq \begin{cases}
+      \sigma(\ell) & \text{ if } \ell \in A_{\mathbf{o}}\\
+      \bot & \text{ otherwise}.
+    \end{cases}
+  \]
+  With this notation, $\sigma_2 = \sigma_1[\bot]$.
+
+  \begin{enumerate}
+    \item We consider three cases.
+      \begin{enumerate}
+        \item For a method call, we do a \texttt{launch} operation, starting the method call on some (potentially different) thread.
+          If the method call is on object $\mathbf{o'} \neq \mathbf{o}$, then
+          \[
+            \begin{cases}
+            \Phi_2' = \Phi[f \mapsto \emptyset] = \Phi_1'\\
+            \Theta_2' = [t_{\mathbf{o'}} \mapsto e\ell' :: (f, e)] \uplus \Theta' = \Theta_1'\\
+            e\ell_2' = e\ell' = e\ell_1'\\
+            \sigma_2' = \sigma_2 = \sigma_1[\bot] = \sigma_1'[\bot]
+            \end{cases}
+          \]
+          where $\Theta \eqqcolon [t_{\mathbf{o'}} \mapsto e\ell' ] \uplus \Theta'$ and $f \not\in \mathrm{dom}(\Phi)$.\footnote{The equality "$\Phi_2' = \Phi_1'$" is set assuming we will choose the same $f$ in similar settings (\textit{e.g.}\ with some kind of deterministic choice). In the following, we will always assume that.}
+          If the method call is on object $\mathbf{o}$, then
+          \[
+            \begin{cases}
+            \Phi_2' = \Phi[f \mapsto \emptyset] = \Phi_1'\\
+            \Theta_2' = \Theta = \Theta_1'\\
+            e\ell_2' = e\ell' :: (e, f) = e\ell_1'\\
+            \sigma_2' = \sigma_2 = \sigma_1[\bot] = \sigma_1'[\bot],
+            \end{cases}
+          \]
+          where $f \not\in \mathrm{dom}(\Phi)$.
+        \item For a $\texttt{get}$, it amounts to an \textbf{AssembLISP} $\texttt{get}$, so we have:
+          \[
+            \begin{cases}
+              \Phi_2' = \Phi = \Phi_1'\\
+              \Theta_2' = \Theta = \Theta_1'\\
+              e\ell_2' = (f_0, C[\Phi(f)]) :: e\ell' = e\ell'_1\\
+              \sigma_2' = \sigma_2 = \sigma_1'[\bot],
+            \end{cases}
+          \]
+          where $e \ell = (f_0, C[\texttt{get}\ f]) :: e \ell'$.
+        \item For reading an attribute, we have that 
+          \[
+            \begin{cases}
+              \Phi_2' = \Phi = \Phi_1'\\
+              \Theta_2' = \Theta = \Theta_1'\\
+              e\ell_2' = (f_0, C[\sigma_2(\ell)]) :: e\ell' = e\ell'_1\\
+              \sigma_2' = \sigma_2 = \sigma_1'[\bot],
+            \end{cases}
+          \]
+          where $e \ell = (f_\mathbf{o}, C[\texttt{!} \ell]) :: e\ell'$.
+          Note that, because the compilation only uses references to handle attributes and doesn't let \textbf{Erlisp} programs use them directly, we already know $\ell \in A_\mathbf{o}$ and so~$\sigma_2(\ell) = \sigma_1(\ell)$ (technically, this is part of the encapsulation property).
+
+          For writing an attribute, we have that
+          \[
+            \begin{cases}
+              \Phi_2' = \Phi = \Phi_1'\\
+              \Theta_2' = \Theta = \Theta_1'\\
+              e\ell_2' = (f_0, C[(\:)]) :: e\ell' = e\ell'_1\\
+              \sigma_2' = \sigma_2[\ell \mapsto v] = \sigma_1'[\bot],
+            \end{cases}
+          \]
+          where $e \ell = (f_\mathbf{o}, C[\ell\ \texttt{:=}\ v]) :: e\ell'$ and again $\ell \in A_\mathbf{o}$ (it is again part of the encapsulation property).
+      \end{enumerate}
+    \item After analyzing those cases, we generalize to the following property:
+      For every object $\mathbf{o}$ in $p$,
+      \begin{quote}
+        for any reduction 
+        \[
+          (\Theta, \sigma, \Phi) \to_{||} (\Theta', \sigma', \Phi')
+        \] 
+        where the reduction is done in $t_\mathbf{o}$, then we have a reduction
+        \[
+          (\Theta, \sigma[\bot], \Phi) \to_{||} (\Theta, \sigma'[\bot], \Phi')
+        \] 
+        where the reduction is also done in $t_\mathbf{o}$.
+      \end{quote}
+      To prove this property, we will require that the choice for a new future $f \not\in \mathrm{dom}(\Phi)$ is done leads to the same result in both reductions.
+
+      Intuitively, this property expressed this way tells us that, if we execute something in a thread $t_\mathbf{o}$, then we can only use/update the memory allocated to $\mathbf{o}$ (for the attributes), and that the other values do not matter to this reduction.
+  \end{enumerate}
+
+  \begin{que}[Difficult]
+    Where is evaluated the code computing the initial value of attributes? To perfect our encapsulation, we wish to compute this code in the object’s thread as well. Adjust the compilation and state explicitly which instructions are now executed in the object thread.
+  \end{que}
+
+  The initial value is computed by the "original" thread (the one containing the whole program at the beginning of the execution).
+  We can change the \nameref{rule:newobj3} with the following.
+  We only need to make sure that variable $\mathbf{t}$ is not captured inside any $e_i$ or $m_i$ as it'd override some object $\mathbf{t}$ defined before.
+
+  \begin{figure}[hb]
+  \[
+    \inferrule[NewObj]{
+      \forall i, \mathbf{a} \not\in m_i\\
+      \forall i, \mathbf{t} \not\in m_i\\
+      \forall j, \mathbf{t} \not\in e_j\\
+    }{
+      \mathcal{P}
+      \left( 
+        {
+        \begin{array}{l}
+        \mathbf{o}\ \texttt{=}\ \texttt{\{}\\
+          \quad \mathbf{a_1}\ \texttt{=}\ e_1\\
+          \quad \mathbf{a_2}\ \texttt{=}\ e_2\\
+          \quad\quad \vdots\\
+          \quad \mathbf{a_n}\ \texttt{=}\ e_n\\
+          \quad\mathrm{meth}_1(\mathbf{x_1})\ \texttt{=}\ m_1\\
+          \quad\mathrm{meth}_2(\mathbf{x_2})\ \texttt{=}\ m_2\\
+          \quad\quad \vdots\\
+          \quad\mathrm{meth}_k(\mathbf{x_k})\ \texttt{=}\ m_k\\
+        \texttt{\}}\ \texttt{;}\\
+        p
+        \end{array}
+        }
+      \right) =
+      {
+      \begin{array}{|l}
+        \texttt{let}\ \mathbf{o}\ \texttt{=}\\
+        \quad \texttt{let}\ \mathbf{t}\ \texttt{=}\ \texttt{spawn}\ \texttt{in}\\
+        \quad \texttt{let}\ \mathbf{a}\ \texttt{=}\ \texttt{get}\ \texttt{launch}\ \mathbf{t}\ \texttt{\{}\ (\\
+        \quad\quad\quad \texttt{new}\ \mathcal{E}_\emptyset(e_1),\\
+        \quad\quad\quad\texttt{new}\ \mathcal{E}_\emptyset(e_2),\\
+        \quad\quad\quad\vdots\\
+        \quad\quad\quad\texttt{new}\ \mathcal{E}_\emptyset(e_n)\\
+        \quad)\ \texttt{\}}
+        \ \texttt{in}\\
+        \quad(\mathbf{t}, \lambda \mathbf{self}. \lambda \mathbf{l}.\\
+        \quad\quad \texttt{if}\ \mathbf{l}\ \texttt{=}\ \mathbf{'meth_1}\ \texttt{then}\\
+        \quad\quad\quad\lambda \mathbf{x_1}.\ \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(m_1)\\
+        \quad\quad \texttt{else}\ \texttt{if}\ \mathbf{l}\ \texttt{=}\ \mathbf{'meth_2}\ \texttt{then}\\
+        \quad\quad\quad\lambda \mathbf{x_2}.\  \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(m_2)\\
+        \quad\quad \vdots\\
+        \quad\quad \texttt{else}\ \texttt{if}\ \mathbf{l}\ \texttt{=}\ \mathbf{'meth_k}\ \texttt{then}\\
+        \quad\quad\quad\lambda \mathbf{x_k}.\  \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(m_k)\\
+        \quad\quad \texttt{else}\ \lambda \mathbf{x}.\ (\:)\\
+        \quad)\\
+        \texttt{in}\ \mathcal{P}(p)
+      \end{array}
+      }
+    }
+    \label{rule:newobj3}
+  \]
+  \end{figure}
+\end{document}
