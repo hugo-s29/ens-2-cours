@@ -37,7 +37,7 @@
 \usepackage{fourier-otf}
 %\usepackage{pxfonts}
 %\usepackage[scaled=0.92]{mathpazo}
-\usepackage{juliamono}
+%\usepackage{juliamono}
 \usepackage[osf]{Alegreya}
 \usepackage[osf]{AlegreyaSans}
 \let\mathds\mathbb
@@ -174,6 +174,7 @@
 \declaretheorem[style=thmbluebox, name=Example]{exm}      \defineMarkerColor{exm}{deepblue}
 \declaretheorem[style=thmbluebox, name=Exercise]{exo}     \defineMarkerColor{exo}{deepblue}
 \declaretheorem[style=thmbluebox, name=Question]{que}     \defineMarkerColor{que}{deepblue}
+\declaretheorem[style=thmbluebox,sibling=que, name=Question${}^\star$]{ques}     \defineMarkerColor{ques}{deepblue}
 \declaretheorem[style=thmredbox, name=Proposition]{prop}  \defineMarkerColor{prop}{deepred}
 \declaretheorem[style=thmredbox, name=Theorem]{thm}      \defineMarkerColor{thm}{deepred}
 \declaretheorem[style=thmredbox, name=Lemma]{lem}         \defineMarkerColor{lem}{deepred}
@@ -717,6 +718,7 @@
     \quad\quad
     a = \lnot \lnot a
     .\] 
+    \label{q17}
   \end{que}
 
   We start by showing that $\lnot a \lor \lnot b$ is a complement to $(a \land b)$:
@@ -727,7 +729,7 @@
     \lor
     (a \wedge b \wedge \lnot a) 
     = \bot  \lor \bot 
-    = \bot\\
+  = \bot\\
     (a \wedge b) \vee (\lnot a \vee \lnot b)
     = (a \vee \lnot a \vee \lnot b) \wedge (b \vee \lnot a \vee \lnot b)
     = \top \wedge \top = \top 
@@ -758,12 +760,380 @@
   We can conclude that a map of Boolean algebras preserves complements.
 
   \section{Representation of Boolean Algebras.}
+  \subsection{Filters and Ultrafilters.}
 
-  \hfill
+  \begin{que}
+    Let $(L, \wedge, \top)$ be a meet semilattice. Show that $\mathcal{F} \subseteq L$ is a filter iff
+    \begin{enumerate}
+      \item $\mathcal{F}$ is upward-closed and,
+      \item $\top \in \mathcal{F}$ and,
+      \item $a \wedge b \in \mathcal{F}$ whenever $a \in \mathcal{F}$ and $b \in \mathcal{F}$.
+    \end{enumerate}
+  \end{que}
+
+  Let $\mathcal{F} \subseteq L$ be upward-closed.
+
+  We only need to show that $\mathcal{F}$ is codirected if, and only if, $\top \in \mathcal{F}$ and $a \wedge b \in \mathcal{F}$  whenever $a$ and $b$ are in $\mathcal{F}$.
+
+  \begin{itemize}
+    \item If $\mathcal{F}$ is codirected then there exists $a \in \mathcal{F}$ and, as $a \le \top$, we have that $\top \in \mathcal{F}$.
+      Also, for $a, b \in \mathcal{F}$, there exists $c \in \mathcal{F}$ such that $c \le a$ and $c \le b$ therefore, as $c \le a \wedge b$, we have that $a \wedge b\in \mathcal{F}$.
+    \item Suppose $\top \in \mathcal{F}$ and that $\mathcal{F}$ is stable under the meet operator.
+      Let us show that  $\mathcal{F}$ is codirected.
+      First, $\top \in \mathcal{F}$ so  $\mathcal{F}$ is non-empty.
+      Second, for any two $a, b \in \mathcal{F}$ then $c \coloneqq a\wedge b \in \mathcal{F}$ satisfies that $c \le a, b$.
+  \end{itemize}
+
+  \begin{que}
+    Let $(L, \le)$ be a lattice. Show that if $F \subseteq L$ has the finite intersection property, then 
+    \[
+    \mathrm{Filt}(F) \coloneqq \big\{\, a \in L \;\big|\; a \ge \bigwedge S \text{ for some finite } S \subseteq F\,\big\} 
+    \] 
+    is a proper filter on $(L, \le)$.
+  \end{que}
+
+  Suppose $F \subseteq L$ has the finite intersection property.
+  \begin{itemize}
+    \item First, $\top \in \mathrm{Filt}(F)$ as $\top \ge \bigwedge S$ for, in particular, $S = \emptyset \subseteq F$.
+    \item Second, if $a, b \in \mathrm{Filt}(F)$ with $a \ge \bigwedge S_1$, $b \ge \bigwedge S_2$ and finite $S_1, S_2 \subseteq F$, then $a \wedge b \ge (\bigwedge S_1) \wedge (\bigwedge S_2) = \bigwedge (S_1 \cup S_2)$, thus $a \wedge b \in \mathrm{Filt}(F)$ (as $S_1 \cup S_2$ is a finite subset of $F$).
+    \item Third, if $a \in \mathrm{Filt}(F)$ (with $a \ge \bigwedge S$ and a finite $S \subseteq F$) and $a \le b$, then $b \ge \bigwedge S$ thus $b \in \mathrm{Filt}(F)$.
+  \end{itemize}
+  We have that $\mathrm{Filt}(F)$ is a filter. 
+
+  Suppose $\bot \in \mathrm{Filt}(F)$, then there exists some finite $S \subseteq F$ such that $\bot \ge \bigwedge S$.
+  Also, $\bot \le \bigwedge S$, so $\bigwedge S = \bot$.
+  However, this is absurd by the finite intersection property for $F$.
+  Thus $\bot \not\in \mathrm{Filt}(F)$ and we can conclude that $\mathrm{Filt}(F)$ is a proper filter.
+
+  \begin{ques}
+    Let $\mathcal{F}$ be a filter on a distributive lattice. Show that if $\mathcal{F}$ is an ultrafilter then $\mathcal{F}$ is prime.
+    \label{q21}
+  \end{ques}
+
+  \begin{lem}
+    Any proper filter has the finite intersection property.
+  \end{lem}
+  \begin{prv}
+    Consider some finite subset $S \subseteq \mathcal{F}$ where $\mathcal{F}$ is a proper filter.
+    Then, by induction on the size of $S$, we can show that $\bigwedge S \in \mathcal{F}$, and thus $\bigwedge S \neq \bot$, as $\bot \not\in \mathcal{F}$.
+  \end{prv}
+
+  As $\mathcal{F}$ is an ultrafilter, $\mathcal{F}$ is a proper filter and thus $\bot \not\in \mathcal{F}$.
+  Now, let us show that if $a \vee b$ is in $\mathcal{F}$ then either $a$ or $b$ is in $\mathcal{F}$.
+  Consider three cases.
+  \begin{itemize}
+    \item Either $\mathcal{F} \cup \{a\}$ has the finite intersection property, and thus ${\mathrm{Filt}(\mathcal{F} \cup \{a\})}$ is a proper filter and $\mathcal{F}\subseteq \mathrm{Filt}(\mathcal{F} \cup \{a\})$ (simply take $S = \{f\}$ for every~$f \in \mathcal{F}$ in the definition of $\mathrm{Filt}(-)$), thus $a \in \mathcal{F} = \mathrm{Filt}(\mathcal{F} \cup \{a\})$ since~$\mathcal{F}$ is an ultrafilter.
+    \item Either $\mathcal{F} \cup \{b\}$ has the finite intersection property, and we can show~$b \in \mathcal{F}$ very  similarly.
+    \item Either $\mathcal{F} \cup \{a\}$ and $\mathcal{F} \cup \{b\} $ do not have the finite intersection property, \textit{i.e.}\ there exists some finite $S \subseteq \mathcal{F} \cup \{a\}$ and $S' \subseteq \mathcal{F} \cup \{b\}$ such that~ $\bigwedge S = \bigwedge S' = \bot$.
+      Necessarily $a \in S$ and $b \in S'$ (if $S \subseteq \mathcal{F}$ then with the above lemma, we immediately have that~$\bigwedge S \neq \bot$, and similarly for $S'$).
+      Then, writing $U \coloneqq \bigwedge(S \setminus \{a\})$ and $V \coloneqq \bigwedge (S' \setminus \{b\}) $, we have
+      \begin{align*}
+        & (a \vee b) \wedge (U \wedge V) \\
+        &= (a \wedge (U \wedge V)) \vee (b \wedge (U \wedge V)) && \text{by distributivity, commutativity}  \\
+        &= (V \wedge \bot) \vee (U \wedge \bot) && \text{as } a \wedge U = \wedge S = \bot \\
+        &= \bot \vee \bot \\
+        &= \bot
+      .\end{align*}
+      However, $a \vee b$, $U$ and $V$ are in $\mathcal{F}$ thus so is $(a \vee b) \wedge U \wedge V = \bot \in \mathcal{F}$.
+      This is absurd as $\mathcal{F}$ is a proper filter.
+  \end{itemize}
+
+  \begin{que}
+    Let $(B, \le)$ be a Boolean algebra and let $\mathcal{F} \subseteq B$ be a filter. Show that the following are equivalent:
+    \begin{enumerate}
+      \item $\mathcal{F}$ is an ultrafilter; \label{q22a}
+      \item $\mathcal{F}$ is prime; \label{q22b}
+      \item for each $a \in B$, we have $a \in \mathcal{F}$ iff $\lnot a \not\in \mathcal{F}$. \label{q22c}
+    \end{enumerate}
+    \label{q22}
+  \end{que}
+
+  By question~\ref{q21}, we have that \ref{q22a} implies \ref{q22b}.
+
+  To prove that \ref{q22b} implies \ref{q22c}, consider some $a \in B$: we have $a \vee \lnot a = \top \in \mathcal{F}$, so either $a \in \mathcal{F}$ or $\lnot a \in \mathcal{F}$ $(\star)$.
+  If $a \in \mathcal{F}$ then  $\lnot a \not\in \mathcal{F}$ since, if $\lnot a \in \mathcal{F}$ then~$a \wedge \lnot a = \bot \in \mathcal{F}$, a contradiction since $\mathcal{F}$ is supposed prime.
+  On the other hand, if $\lnot a \in \mathcal{F}$ then necessarily $a \in \mathcal{F}$ by $(\star)$.
+
+  To prove \ref{q22c} implies \ref{q22a}, consider some proper filter $\mathcal{H} \supsetneq \mathcal{F}$, then there exists some $a \in \mathcal{H} \setminus \mathcal{F}$, and so $\lnot a \in \mathcal{F} \subseteq \mathcal{H}$ (applying \ref{q22c} to $\lnot a$ with $\lnot\lnot a = a$).
+  Thus $a, \lnot a \in \mathcal{H}$ and so $a \wedge \lnot a = \bot  \in \mathcal{H}$, a contradiction since $\mathcal{H}$ is a proper filer.
+
+  \begin{que}
+    Let $(A, \le )$ be a partial order and consider some $\mathcal{F} \subseteq A$.
+    \begin{enumerate}
+      \item Show that $\mathcal{F}$ is upward-closed if and only if $\chi_{\mathcal{F}}$ is monotone.
+      \item Assume that $A$ is a meet semilattice.
+        Show that $\mathcal{F}$ is a filter if and only if $\chi_{\mathcal{F}} : A \to \mathbf{2}$ is a morphism of meet semilattices.
+      \item Assume that $A$ is a lattice.
+        Show that $\mathcal{F}$ is a prime filter if and only if $\chi_{\mathcal{F}} : A \to \mathbf{2}$ is a morphism of lattices.
+    \end{enumerate}
+  \end{que}
+
+  In the following subquestions, we will implicitly use the results when from the previous subquestions.
+
+  \begin{enumerate}
+    \item Suppose $\chi_{\mathcal{F}}$ monotone. Let us show that $\mathcal{F}$ is upward-closed.
+      Consider $a \le b$ with $a \in \mathcal{F}$, then $1 = \chi_{\mathcal{F}}(a) \le \chi_{\mathcal{F}}(b)$, thus $\chi_{\mathcal{F}}(b) = 1$ and so $b \in \mathcal{F}$.
+
+      Conversely suppose $\mathcal{F}$ is upward-closed, let us show $\chi_{\mathcal{F}}$ is monotone.
+      Consider $a \le b$.
+      \begin{itemize}
+        \item If $a \not\in \mathcal{F}$ then $0 = \chi_{\mathcal{F}}(a) \le \chi_{\mathcal{F}}(b)$ is true.
+        \item If $a \in \mathcal{F}$ then $b \in \mathcal{F}$ and $1 = \chi_{\mathcal{F}}(a) \le \chi_{\mathcal{F}}(b) = 1$.
+      \end{itemize}
+    \item Suppose $\chi_{\mathcal{F}}$ is a morphism of meet semilattices.
+      Let us show that $\mathcal{F}$ is a filter.
+      Take $a, b \in \mathcal{F}$, then $\chi_{\mathcal{F}}(a \wedge b) = \chi_{\mathcal{F}}(a) \wedge \chi_{\mathcal{F}}(b) = 1 \wedge 1 = 1$ thus $a \wedge b \in \mathcal{F}$.
+      Also, $\chi_{\mathcal{F}}(\top) = \top_{\mathbf{2}} = 1$, thus $\top_{\mathcal{F}} \in \mathcal{F}$.
+
+      Conversely suppose $\mathcal{F}$ is a filter, then $\chi_{\mathcal{F}}(\top) = \top_{\mathbf{2}} = 1$ as $\top  \in \mathcal{F}$.
+      And, for $a, b \in L$,
+      \begin{itemize}
+        \item if $a, b \in \mathcal{F}$ then $1 = \chi_{\mathcal{F}}(a \wedge b) = \chi_{\mathcal{F}}(a) \wedge \chi_{\mathcal{F}}(b) = 1 \wedge 1$;
+        \item if $a \not\in \mathcal{F}$ then $a \wedge b \not\in \mathcal{F}$ (if $a \wedge b \in \mathcal{F}$, then $a \wedge b \le a$ would imply that $a \in \mathcal{F}$), thus $0 = \chi_{\mathcal{F}}(a\wedge b) = \chi_{\mathcal{F}}(a) \wedge \chi_{\mathcal{F}}(b) = 0 \wedge \chi_{\mathcal{F}}(b)$;
+        \item similarly if $b \not\in \mathcal{F}$.
+      \end{itemize}
+    \item Suppose $\chi_{\mathcal{F}}$ is a morphism of lattices.
+      Let us show that $\mathcal{F}$ is a proper filter.
+      As $\chi_{\mathcal{F}}(\bot ) = \bot_{\mathbf{2}} = 0$, then $\bot \not\in \mathcal{F}$.
+      If $a \vee b \in \mathcal{F}$, then \[
+      1 = \chi_{\mathcal{F}}(a \vee b) = \chi_{\mathcal{F}}(a) \vee \chi_{\mathcal{F}}(b)
+      ,\]  thus necessarily $\chi_{\mathcal{F}}(a) = 1$ or $\chi_{\mathcal{F}}(b) = 1$ (if $\chi_{\mathcal{F}}(a) = \chi_{\mathcal{F}}(b) = 0$ then $\chi_{\mathcal{F}}(a \vee b) = 0$ a contradiction), and so either $a \in \mathcal{F}$ or $b \in \mathcal{F}$.
+
+      Conversely suppose $\mathcal{F}$ is a proper filter.
+      Then $\chi_{\mathcal{F}}(\bot) = 0 = \bot_{\mathbf{2}}$ as $\bot \not\in \mathcal{F}$.
+      Take $a, b \in L$:
+      \begin{itemize}
+        \item if $a, b \not\in \mathcal{F}$ then $0 = \chi_{\mathcal{F}}(a \vee b) = \chi_{\mathcal{F}}(a) \vee \chi_{\mathcal{F}}(b) = 0 \vee 0$ (if $a \vee b \in \mathcal{F}$ then either $a \in \mathcal{F}$ or $b \in \mathcal{F}$);
+        \item if $a \in \mathcal{F}$ then $a \le a \vee b$ implies $a \vee b \in \mathcal{F}$ and so $1 = \chi_{\mathcal{F}}(a \vee b) = \chi_{\mathcal{F}}(a) \vee \chi_{\mathcal{F}}(b) = 1 \vee \chi_{\mathcal{F}}(b)$;
+        \item similarly if $b \in \mathcal{F}$.
+      \end{itemize}
+  \end{enumerate}
+
+  In these subquestions, we also proved the following result:
+  \begin{lem}
+    For $a, b \in L$, and $\mathcal{F} \subseteq L$,
+    \begin{itemize}
+      \item if $\mathcal{F}$ is a filter, then $a \wedge b \in \mathcal{F}$ iff $a, b \in \mathcal{F}$ ;
+      \item if $\mathcal{F}$ is a proper filter, then $a \vee b \not\in \mathcal{F}$ iff $a, b \not\in \mathcal{F}$.
+    \qed
+    \end{itemize}
+  \end{lem}
+
+  \subsection{The Spectrum of a Boolean Algebra.}
+
+  \begin{que}
+    Let $(B, \le)$ be a Boolean algebra.
+    Show that we have:
+    \begin{align*}
+      \mathsf{ext}(a \wedge b) &= \mathsf{ext}(a) \cap \mathsf{ext}(b)\\
+      \mathsf{ext}(a \vee b) &= \mathsf{ext}(a) \cup \mathsf{ext}(b)\\
+      \mathsf{ext}(\lnot a) &= \mathbf{Sp}(B) \setminus \mathsf{ext}(a) \\
+      \mathsf{ext}(\top) &= \mathbf{Sp}(B) \\
+      \mathsf{ext}(\bot) &= \emptyset
+    .\end{align*}
+  \end{que}
+  Let $\mathcal{F} \in \mathbf{Sp}(B)$.
+  We have that :
+  \begin{gather*}
+    \mathcal{F} \in \mathsf{ext}(a \wedge b) \iff a \wedge b \in \mathcal{F} \iff a, b \in \mathcal{F} \iff \mathcal{F} \in \mathsf{ext}(a) \cap \mathsf{ext}(b) ; \\
+    \mathcal{F} \not\in \mathsf{ext}(a \vee b) \iff a \vee b \not\in \mathcal{F} \iff a, b \not\in \mathcal{F} \iff \mathcal{F} \not\in \mathsf{ext}(a) \cup \mathsf{ext}(b).
+  \end{gather*}
+  If $\mathcal{F} \not\in \mathsf{ext}(\top)$ then $\top \not\in  \mathcal{F}$ which is absurd.
+  If $\mathcal{F} \in \mathsf{ext}(\bot )$ then $\bot \in \mathcal{F}$ which is impossible since $\mathcal{F}$ is a proper filter.
+  A map $\mathsf{ext} : (B, \le) \to (\wp(\mathbf{Sp}(B)), \subseteq)$ of Boolean algebras automatically preserves complements, thus $\mathsf{ext}(\lnot a) = \mathbf{Sp}(B) \setminus \mathsf{ext}(a)$.
+
+  \begin{que}
+    Show that the spectrum $(\mathbf{Sp}(B), \Omega(\mathbf{Sp}(B)))$ of a Boolean algebra $B$ is $\mathrm{T_0}$ and zero-dimensional.
+  \end{que}
+
+  Let us show that $\mathbf{Sp}(B)$ is $\mathrm{T_0}$.
+  Take $F \neq G \in \mathbf{Sp}(B)$, and $a \in F \mathbin{\triangle} G$ where~$- \mathbin{\triangle}-$ is the symmetric difference of two sets.
+  Without loss of generality, assume $a \in F$ (and thus $a \not\in G$), then $F \in \mathsf{ext}(a)$ and $G \not\in \mathsf{ext}(a)$.
+
+  Let us show that $\mathbf{Sp}(B)$ is zero-dimensional.
+  Every $\mathsf{ext}(a) \in \mathcal{B}$ is a clopen, as it is obviously open, and $\mathsf{ext}(a) = \mathsf{ext}(\lnot \lnot a) = \mathbf{Sp}(B) \setminus \mathsf{ext}(\lnot a)$, thus it is also closed.
+  So, the basis $\mathcal{B}$ only contains clopens.
+
+  \begin{ques}
+    Show that the spectrum $(\mathbf{Sp}(B), \Omega(\mathbf{Sp}(B)))$ of a Boolean algebra $B$ is compact.
+  \end{ques}
+
+  \begin{note}
+    In the following questions, we will only deal with open covers, so a "cover" will always be an open cover.
+    Similarly a "subcover" will always refer to an open subcover.
+  \end{note}
+
+  Suppose $\mathbf{Sp}(B) = \bigcup_{a \in A} \mathsf{ext}(a)$ (we can always do that as $\mathcal{B}$ is a basis of the topology on $\mathbf{Sp}(B)$).
+  Assume this cover of $\mathbf{Sp}(B)$ does not admit a finite subcover.
+  Define 
+  \[
+  \mathcal{C} \coloneqq \{\lnot a  \mid a \in A\} 
+  .\]
+  The set $\mathcal{C}$ has the finite intersection property: if $S$ is a finite subset of $\mathcal{C}$ with $\bigwedge S = \bot$, then
+  \[
+    \bot = \bigwedge_{(\lnot a) \in S} (\lnot a) \overset {(\star)} = \lnot \Big(\bigvee_{(\lnot a) \in S} a\Big)
+  ,\] where $(\star)$ is proven by induction with results from question~\ref{q17}, as $S$ is finite.
+  Taking the complement, we have $\top = \bigvee_{(\lnot a) \in S} a$, thus 
+  \[
+  \mathbf{Sp}(B) = \mathsf{ext}(\top) = \mathsf{ext}\Big(\bigvee_{(\lnot a) \in S} a\Big) = \bigcup_{(\lnot a) \in S} \mathsf{ext}(a)
+  \] 
+  is a finite subcover of $\bigcup_{a \in A} \mathsf{ext}(a)$, which is absurd.
+  Thus $\mathcal{C}$ has the finite intersection property.
+  With the Ultrafilter Lemma, we get an ultrafilter $\mathcal{F} \supseteq \mathcal{C}$.
+  For all $a \in A$, we have $\lnot a \in \mathcal{C} \subseteq \mathcal{F}$ thus $a \not\in \mathcal{F}$ (question~\ref{q22}), and so $\mathcal{F} \not\in \mathsf{ext}(a)$.
+  So, we have $\mathcal{F} \not\in \mathbf{Sp}(B) = \bigcup_{a \in A} \mathsf{ext}(a)$, a contradiction.
+  Thus, the cover $\mathbf{Sp}(B) = \bigcup_{a \in A} \mathsf{ext}(a)$ admits a finite subcover.
+  We can conclude that $\mathbf{Sp}(B)$ is compact.
+
+  \begin{que}
+    Let $(X, \Omega)$ be a topological space. Show that $(X, \Omega)$ is compact if and only if we have $\bigcap \mathcal{F} \neq\emptyset $ for every family of closed sets $\mathcal{F}$ which has the finite intersection property (w.r.t.\ the inclusion (partial) order on closed sets).
+    \label{q27}
+  \end{que}
+
+  For any family $\mathcal{G} \subseteq \wp(X)$, we will write $\bar{\mathcal{G}} \coloneqq \{X \setminus G  \mid G \in \mathcal{G}\}$.
+  We have that $\mathcal{G}$ is a family of closed sets iff $\bar{\mathcal{G}}$ is a family of open sets (\textit{i.e.}\ $\bar{\mathcal{G}} \subseteq \Omega$).
+  Also, we have that $\bar{\bar{\mathcal{G}}} = \mathcal{G}$.
+
+  Firstly, suppose $(X, \Omega)$ to be compact, and let $\mathcal{F} \subseteq \wp(X)$ be a family of closed sets with the finite intersection property.
+  Suppose $\bigcap \mathcal{F} = \emptyset$.
+  Then, $\bigcup \bar{\mathcal{F}} = X$ and, as $X$ is compact, there exists some finite $\mathcal{G} \subseteq \bar{\mathcal{F}}$ such that $\bigcup \mathcal{G} = X$.
+  Thus we get that $\bigcap \bar{\mathcal{G}} = \emptyset$, a contradiction with the finite intersection property, as $\bar{\mathcal{G}}$ is finite.
+  We conclude that $\bigcap \mathcal{F} \neq \emptyset$.
+
+  Secondly, suppose $X = \bigcup \mathcal{F}$ with $\mathcal{F} \subseteq \Omega$ is an open cover of $X$.
+  Assume that there are no finite subcovers $(\star)$.
+  Then, by complement, we have $\bigcap \bar{\mathcal{F}} = \emptyset$ $(\star\star)$.
+  But, $\bar{\mathcal{F}}$ is a family of closed sets and $\bar{\mathcal{F}}$ has the finite intersection property: if there exists some finite $\mathcal{G} \subseteq \bar{\mathcal{F}}$ with $\bigcap \mathcal{G} = \emptyset$ then $\bigcup \bar{\mathcal{G}} = X$  is a finite cover of $X$ with open sets, which is absurd by $(\star)$.
+  So we conclude that $\bar{\mathcal{F}}$ has the finite intersection property, and we can apply the hypothesis to get that $\bigcap \bar{\mathcal{F}} \neq \emptyset$, a contradiction with $(\star\star)$.
+  Thus a finite subcover exists, and we finally have that $X$ is compact.
+
+  \begin{ques}
+    Given a Stone space $(X, \Omega)$, consider the function
+    \begin{align*}
+      \eta: X  &\longrightarrow \wp(\mathbf{K}\Omega) \\
+      x &\longmapsto \{U \in \mathbf{K}\Omega  \mid x \in U\}
+    .\end{align*}
+    Show that $\eta$ is a continuous bijection from $X$ to $\mathbf{Sp}(\mathbf{K}\Omega)$.
+  \end{ques}
+
+  We will proceed in four parts.
+
+  Firstly, let us show that $\eta(x) \in \mathbf{Sp}(\mathbf{K}\Omega)$, \textit{i.e.}\ $\eta(x)$ is a prime filter on  $\mathbf{K}\Omega$.
+  \begin{itemize}
+    \item Suppose $A \in \eta(x)$ and $A \subseteq B \in \mathbf{K}\Omega$, then $x \in A \subseteq B$, we have $x \in B$ and so $B \in \eta(X)$.
+    \item We have that $X \in \eta(x)$ as $x \in X$ and $X$ is a clopen.
+    \item Suppose $A, B \in \eta(x)$ then $x \in A$ and $x \in B$, so $x \in A \cap B$ and thus $A \cap B \in \eta(x)$.
+  \end{itemize}
+  Therefore $\eta(x)$ is a filter on  $\mathbf{K}\Omega$.
+  \begin{itemize}
+    \item Suppose $\bot_{\mathbf{K}\Omega} = \emptyset \in \eta(x)$, then $x \in \emptyset$, which is absurd, so $\eta(x)$  is a proper filter.
+    \item Suppose $A \cup B \in \eta(x)$, then $x \in A \cup B$ so either $x \in A$ or $x \in B$, and thus either $A \in \eta(x)$ or $B \in \eta(x)$.
+  \end{itemize}
+  We can conclude that  $\eta : X \to \mathbf{Sp}(\mathbf{K}\Omega)$.
+
+  Secondly, let us show that $\eta$ is injective.
+  Take $x \neq y$ in $X$.
+  By $\mathrm{T_0}$, we have that there exists an open set $U \in \Omega$ with $x \in U$ and $y \not\in U$, even if it requires swapping $x$ and $y$.
+  As $(X, \Omega)$ is zero-dimensional, we can write  $U= \bigcup_{i \in  I} C_i$ where $C_i \in \mathbf{K}\Omega$.
+  Let $C \in \{C_i  \mid i \in I\} \subseteq \mathbf{K}\Omega$ such that $x \in C_i$.
+  We also have that $y \not\in C$, thus $C \in \eta(x)$ and $C \not\in \eta(y)$, so $\eta(x) \neq \eta(y)$.
+
+  Thirdly let us show that $\eta$ is surjective.
+  Take $\mathcal{F} \in \mathbf{Sp}(\mathbf{K}\Omega)$.
+  Then, from question~\ref{q27} (as $X$ is, by definition, compact and $\mathcal{F}$ is a set of closed sets, with the finite intersection property), we have that $\bigcap \mathcal{F} \neq \emptyset$.
+  Take $x \in \bigcap \mathcal{F} \neq \emptyset$.
+  For every $U \in \mathcal{F}$, $x \in U$ so $U \in \eta(x)$ and thus $\mathcal{F} \subseteq \eta(x)$.
+  Conversely suppose $V \in \mathbf{K}\Omega$ such that $x \in V$ and $V \not\in \mathcal{F}$, then $X \setminus V \in \mathcal{F}$ by question~\ref{q22}(\ref{q22c}), and so $x \in \bigcap \mathcal{F} \subseteq X \setminus V$ and $x \not\in X \setminus V$, a contradiction.
+  We can thus conclude $\mathcal{F} = \eta(x)$, and so $\eta$ is surjective.
+
+  Finally, let us show that $\eta$ is continuous.
+  To show that $\eta^\bullet(V)$ is open for every  $V \in \Omega (\mathbf{Sp}(\mathbf{K}\Omega))$, it  suffices to consider $V \in \mathcal{B}$ as $\eta^\bullet$ commutes with arbitrary unions.
+  Let  $A \in \mathbf{K}\Omega$, and let us show that $\eta^\bullet(\mathsf{ext}(A))$ is open in $X$:
+  \[
+    \eta^\bullet(\mathsf{ext}(A)) = \{x \in X  \mid \eta(x) \in \mathsf{ext}(A)\} 
+    = \{x \in X  \mid \eta(x) \ni A\} 
+    = \{x \in X  \mid x \in A\}
+  ,\] 
+  which exactly is $A \in \mathbf{K}\Omega \subseteq \Omega$.
+
+  Thus we can conclude that $\eta$ is a continuous bijection from $X$ to $\mathbf{Sp}(\mathbf{K}\Omega)$.
+
+  \begin{ques}
+    Assume $(X, \Omega X)$ and $(Y, \Omega Y)$ are compact Hausdorff spaces. Show that if $f : (X, \Omega X) \to (Y, \Omega Y)$ is a continuous bijection, then $f$ is an homeomorphism.
+  \end{ques}
+
+  We will us the following lemma from the course:
+  \begin{lem}
+    If $(X, \Omega X)$ is a compact Hausdorff space, and $C \subseteq X$, then $C$~is compact iff $C$ is closed.
+    \qed
+  \end{lem}
+
+  We also need the following lemma:
+  \begin{lem}
+    Let $(X, \Omega X)$ and  $(Y, \Omega Y)$ be arbitrary topological spaces.
+    If $K$ is compact in $(X, \Omega X)$ then, for every continuous  $f : (X, \Omega X) \to (Y, \Omega Y)$, the set $f_!(K)$ is compact in  $(Y, \Omega Y)$.
+  \end{lem}
+  \begin{prv}
+    Define $L \coloneqq f_!(K)$.
+    Consider a cover $L \subseteq \bigcup_{i \in  I} V_i$ of $L$.
+    Then, $f^\bullet(L) \subseteq f^\bullet(\bigcup_{i \in  I} V_i) = \bigcup_{i \in  I} f^\bullet(V_i)$, so we obtain an open (as $f$ is continuous) cover of $f^\bullet(L)$.
+    As $K \subseteq f^\bullet(K) \subseteq \bigcup_{i \in  I} f^\bullet(V_i)$ and $K$ is compact, then there exists a finite set $J \subseteq I$ such that $K \subseteq \bigcup_{i \in J} f^\bullet(V_i)$. With the direct image $f_!$, we have that $f_!(K) = L \subseteq \bigcup_{i \in  J} f_!(f^\bullet(V_i)) = \bigcup_{i \in J} V_i$ is a finite subcover of $L = f_!(K)$.
+  \end{prv}
+
+  We simply have to show that $g \coloneqq f^{-1} : Y \to X$ is continuous.
+  We have that~$g_! = f^\bullet$ and  $f_! = g^\bullet$ as $f$ and $g$ are inverses of each other.
+  Consider an arbitrary open set $U \in \Omega X$.
+  It suffices to show that $g^\bullet (U) = f_! (U)$ is open in $(Y, \Omega Y)$.
+  With the two previous lemmas, we have that $f_!(C)$ is a closed set in $(Y, \Omega Y)$, for every closed $C$ in $(X, \Omega X)$. 
+  So, \[
+    f_!(X \setminus U) = g^\bullet(X \setminus U) = g^\bullet(X) \setminus g^\bullet(U) = Y \setminus f_!(U)
+  \] 
+  is closed in $(Y, \Omega Y)$, thus  $f_!(U)$ is open.
+  Thus $g$ is continuous.
+
+  We can conclude that $f$ is a homeomorphism.
+
+  \subsection{On the Ultrafilter Lemma.}
+
+  \begin{ques}
+    Prove the Ultrafilter Lemma (assuming Zorn's Lemma).
+  \end{ques}
+
+  Consider some $F \subseteq L$ with the finite intersection property where $(L, \le)$ is a lattice.
+  Define $P \coloneqq \{\mathcal{F} \text{ is a proper filter on } L  \mid F \subseteq \mathcal{F}\}$, ordered by set inclusion $\subseteq$.
+
+  Consider a non-empty chain $\mathcal{C}$ in $P$.
+  We will show that $\mathcal{G} \coloneqq \bigcup \mathcal{C}$ is a proper filter containing $F$.
+  \begin{itemize}
+    \item Take $a \le b$ with $a \in \mathcal{G}$.
+      Then $a \in \mathcal{F}$ for some $\mathcal{F} \in \mathcal{C}$.
+      As $\mathcal{F}$ is a filter, then $b \in \mathcal{F}$, and so $b \in \mathcal{G}$.
+    \item We have $\top \in \mathcal{G}$ as $\mathcal{C}$ is non-empty, and any element of $\mathcal{C}$ contains $\top$.
+    \item We have $F \subseteq \mathcal{G}$ as $\mathcal{C}$ is non-empty, and any element of $\mathcal{C}$ contains $F$.
+    \item Take $a, b \in \mathcal{G}$, then $a \in \mathcal{F}_1$ and $b \in \mathcal{F}_2$ for some proper filters $\mathcal{F}_1, \mathcal{F}_2 \in \mathcal{C}$.
+      As $\mathcal{C}$ is a chain, we can assume without loss of generality, that $\mathcal{F}_1 \subseteq \mathcal{F}_2$, thus $a, b \in \mathcal{F}_2$ and so $a \wedge b \in \mathcal{F}_2 \subseteq \mathcal{G}$.
+    \item If $\bot  \in \mathcal{G}$ then $\bot  \in \mathcal{F}$ for some $\mathcal{F}$ in $\mathcal{C}$, which is absurd as $\mathcal{F}$ is a proper filter.
+  \end{itemize}
+  Now, we can immediately see that this is an upper bound of $\mathcal{C}$: if $\mathcal{F} \in \mathcal{C}$ then we have $\mathcal{F} \subseteq \mathcal{G} = \bigcup \mathcal{C}$.
+
+  For an empty chain $\mathcal{C}$, we use $\mathrm{Filt}(F) \in P$ as upper bound (as $F$ has the finite intersection property).
+
+  Then, we apply Zorn's lemma to $(P, \subseteq)$, and get a maximal element $\mathcal{U} \in P$.
+  Let us show that $\mathcal{U}$ is an ultrafilter.
+  Consider $\mathcal{H}$ a proper filter on $L$ such that $\mathcal{H} \supseteq \mathcal{U}$.
+  Then $F \subseteq \mathcal{U} \subseteq \mathcal{H}$ so $\mathcal{H} \in P$.
+  By maximality of $\mathcal{U}$ in $P$, we have that $\mathcal{U} = \mathcal{H}$.
+
+  We can finally conclude that $\mathcal{U}$ is an ultrafilter containing $F$, finishing the proof of the Ultrafilter Lemma.
+
+  \vfill
 
   \begin{center}
-    \large\sffamily\itshape\bfseries
-    The rest will be given in the next part.
+    \color{deepblue}
+    \boxed{
+      \textbf{\textit{End of Homework.}}
+    }
   \end{center}
 
+  \vfill
 \end{document}
