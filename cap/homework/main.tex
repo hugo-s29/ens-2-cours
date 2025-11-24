@@ -984,6 +984,7 @@
   \[
     \inferrule[NewObj]{
       \mathbf{a} \not\in e_m\\
+      \mathbf{a} \neq \mathbf{x}
     }{
       \mathcal{P}
       \left( 
@@ -1085,6 +1086,7 @@
       \mathbf{x_{arg}} \not\in e\\
       \mathbf{x_{self}} \neq \mathbf{a}\\
       \mathbf{x_{arg}} \neq \mathbf{a}\\
+      \mathbf{x_{arg}} \neq \mathbf{x_{self}}\\
     }{
       \mathcal{E}_{\mathbf{a}; \mathbf{a_1}, \ldots, \mathbf{a_n}}(e.\mathrm{meth}(e')) =
       {
@@ -1104,10 +1106,8 @@
   \begin{figure}
   \[
     \inferrule[NewObj]{
-      \mathbf{a} \not\in m_1\\
-      \mathbf{a} \not\in m_2\\
-      \ldots\\
-      \mathbf{a} \not\in m_k\\
+      \forall i, \mathbf{a} \not\in m_i\\
+      \forall i, \mathbf{a} \neq \mathbf{x_i}\\
     }{
       \mathcal{P}
       \left( 
@@ -1321,6 +1321,7 @@
   \begin{figure}[hb]
   \[
     \inferrule[NewObj]{
+      \forall i, \mathbf{x_i} \neq  \mathbf{a}\\
       \forall i, \mathbf{a} \not\in m_i\\
       \forall i, \mathbf{t} \not\in m_i\\
       \forall j, \mathbf{t} \not\in e_j\\
