@@ -120,5 +120,145 @@
     \[
       s_0 \sim s_1 \iff \exists \mathcal{R} \text{ une bisimulation}, \: s_0 \mathrel{\mathcal{R}} s_1
     .\]
+    On dit alors que $s_0$ est \textit{bisimilaire} à $s_1$.
   \end{defn}
+
+  \begin{lem}
+    \begin{enumerate}
+      \item Étant donné $TS$, on a que $s$ est bisimilaire à~$s$ (car $\{(s,s)  \mid s \in S\}$ est une bisimulation entre $TS$ et lui-même).
+      \item Si $\mathcal{R}$ est une bisimulation entre $TS_1$ et $TS_2$, alors 
+        \[
+        \mathcal{R}^{-1} := \{(s_2, s_1)  \mid (s_1, s_2) \in \mathcal{R}\}
+        \] 
+        est une bisimulation entre $TS_2$ et $TS_1$.
+      \item Si $\mathcal{R}$ est une bisimulation entre $TS_1$ et $TS_2$, et $\mathcal{S}$ est une bisimulation entre $TS_2$ et $TS_3$, alors 
+        \[
+        \mathcal{S} \circ \mathcal{R} := \mleft\{\,(s_1, s_3) \;\middle|\; \exists s_2,
+        \begin{array}{l}
+          (s_1, s_2) \in \mathcal{R}\\
+          (s_2, s_3) \in \mathcal{S}
+        \end{array}\,\mright\}  
+        \]
+        est une bisimulation entre $TS_1$ et $TS_2$.
+    \end{enumerate}
+    \qed
+  \end{lem}
+
+  \begin{lem}
+    \begin{enumerate}
+      \item La relation de bisimilarité $\sim$ entre $TS_1$ et $TS_2$ est une bisimulation.
+      \item Si $\mathcal{R}$ est une bisimulation entre $TS_1$ et $TS_2$ alors $\mathcal{R} \subseteq {\sim}$.
+      \item La relation $\sim$ entre $TS$ et lui-même est une relation d'équivalence.
+    \end{enumerate}
+  \end{lem}
+  \begin{prv}
+    (Idée)
+    \begin{enumerate}
+      \item Soient $s_1 \sim s_2$, et soit donc $\mathcal{R}$ telle que $s_1 \mathrel{\mathcal{R}} s_2$.
+        Donc,
+        \begin{itemize}
+          \item $L_1(s_1) = L_2(s_2)$ ;
+          \item comme $s_1' \mathrel{\mathcal{R}} s_2'$, on a $s_1' \sim s_2'$ où
+            \[
+            \begin{tikzcd}
+              s_0 \arrow{d}{\alpha} \arrow[dash]{r}{\mathcal{R}} & s_1 \arrow[dashed]{d}{\alpha}\\
+              s_0' \arrow[dashed,dash]{r}{\mathcal{R}} & s_1'
+            \end{tikzcd}
+            ;\]
+          \item et symétriquement pour le cas dual.
+        \end{itemize}
+      \item Si $s_1 \mathrel{\mathcal{R}} s_2$ alors $s_1 \sim s_2$ par définition de $\sim$.
+      \item On a les points suivants.
+        \begin{description}
+          \item[Réflexivité.]
+            On a $s \sim s$.
+          \item[Symétrie.] Si $s \sim s'$ alors  $s \mathrel{\mathcal{R}} s'$ pour une certaine bisimulation $\mathcal{R}$, et donc $s' \mathrel{\mathcal{R}^{-1}} s$ et donc $s \sim s'$.
+          \item[Transitivité.]
+            Si $s \sim s'$ et  $s' \sim s''$ alors  $s \mathrel{\mathcal{R}} s'$ et $s' \mathrel{\mathcal{S}} s''$, et donc $s \mathrel{(\mathcal{S} \circ \mathcal{R})} s''$ d'où $s \sim s''$.
+        \end{description}
+    \end{enumerate}
+  \end{prv}
+
+  \section{Quotient par bisimulation.}
+
+  \begin{defn}[Quotient par bisimulation.]
+    Soit un système de transitions $TS = (S, \mathrm{Act}, {\to}, I, \mathrm{AP}, L)$.
+    On définit $TS_\sim$ par :
+     \begin{itemize}
+       \item $S_\sim := \{[s]_\sim  \mid s \in S\}$ ;
+       \item $\mathrm{Act}_\sim := \mathrm{Act}$ ;
+       \item $[s]_\sim \xrightarrow{\alpha} [s']_\sim$ ssi  $s \xrightarrow{\alpha} s'$ ;
+       \item $I_\sim = \{[s]_\sim  \mid s \in I\}$ ;
+       \item $\mathrm{AP}_\sim := \mathrm{AP}$ ;
+       \item $L_\sim([s]_\sim) = L(s)$.
+    \end{itemize}
+  \end{defn}
+
+  \begin{lem}
+    Pour tout $s \in I$ et $s \sim [s]_\sim$.
+  \end{lem}
+
+  \begin{defn}
+    Soient $TS_1 = (S_1, \mathrm{Act}, {\to_1}, I_1, \mathrm{AP}, L_1)$ et
+    $TS_2 = (S_2, \mathrm{Act}, {\to_2}, I_2, \mathrm{AP}, L_2)$ deux systèmes de transitions.
+
+    On note $TS_1 \approx TS_2$ s'il existe une bisimulation $\mathcal{R}$ entre $TS_1$ et $TS_2$ telle que
+    \begin{enumerate}
+      \item pour tout $s_1 \in I_1$, il existe $s_2 \in I_2$ tel que $s_1 \mathrel{\mathcal{R}} s_2$ ;
+      \item pour tout $s_2 \in I_2$, il existe $s_1 \in I_1$ tel que $s_1 \mathrel{\mathcal{R}} s_2$.
+    \end{enumerate}
+  \end{defn}
+
+  \section{Bisimilarité et équivalence de traces.}
+
+  \begin{prop}
+    Soient $TS_1, TS_2$ sur un même ensemble d'actions $\mathrm{Act}$ et de propositions atomiques $\mathrm{AP}$.
+    Si $TS_1 \approx TS_2$ alors \[
+    \mathrm{Tr}^\omega (TS_1) = \mathrm{Tr}^\omega(TS_2)
+    .\] 
+  \end{prop}
+
+  \begin{crlr}
+    Si $TS_1 \approx TS_2$ alors, pour toute propriété LT $P \subseteq (\mathbf{2}^\mathrm{AP})^\omega$, on a 
+    \[
+    TS_1 \md P \quad \iff \quad TS_2 \md P
+    .\]
+  \end{crlr}
+
+  \begin{exm}
+    Pour un système de transitions $TS$, on a $TS \approx TS_\sim$, on peut donc se ramener au quotient par bisimilarité, pour tester si $TS \md P$.
+  \end{exm}
+
+  \begin{exm}
+    Le quotient par bisimilarité du système de transitions
+    \begin{center}
+      \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
+        \node[state, initial, initial where=left] (A) {};
+        \node[state, right of=A] (B) {};
+        \node[state, right of=B] (C) {};
+        \node[state, right of=C] (D) {};
+        \node[state, right of=D] (E) {};
+        \node[right of=E] (F) {$\cdots$};
+        \draw[->] (A) edge (B);
+        \draw[->] (B) edge (C);
+        \draw[->] (C) edge (D);
+        \draw[->] (D) edge (E);
+        \draw[->] (E) edge (F);
+        \node[above=0.1cm of A] {$\{\mathsf{a}\}$};
+        \node[above=0.1cm of B] {$\{\mathsf{a}\}$};
+        \node[above=0.1cm of C] {$\{\mathsf{a}\}$};
+        \node[above=0.1cm of D] {$\{\mathsf{a}\}$};
+        \node[above=0.1cm of E] {$\{\mathsf{a}\}$};
+      \end{tikzpicture}
+    \end{center}
+    est le système de transitions
+    \begin{center}
+      \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
+        \node[state, initial, initial where=left] (A) {};
+        \draw[->] (A) edge[loop below] (A);
+        \node[above=0.1cm of A] {$\{\mathsf{a}\}$};
+      \end{tikzpicture}
+    \end{center}
+    car tous les états sont bisimilaires dans le système de transitions original.
+  \end{exm}
 \end{document}

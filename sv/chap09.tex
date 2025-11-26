@@ -1,0 +1,258 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \selectlanguage{french}
+  \setquotestyle{french}
+
+  \chapter{Logique modale pour systèmes de transitions.}
+
+  \section{Modèle de Kripke.}
+
+  Dans un système de transition $TS = (S, \mathrm{Act}, {\to}, I, \mathrm{AP}, L)$, on différencie 
+  \begin{itemize}
+    \item la partie \textit{\textbf{transitions}} $K = (S, \mathrm{Act}, {\to})$ ;
+    \item la partie \textit{\textbf{logique}} $M = (K, \mathrm{AP}, L)$ ;
+    \item la partie \textit{\textbf{structure "pointée"}} $(M, I)$.
+  \end{itemize}
+
+  \begin{defn}
+    Une \textit{structure de Kripke} (sur $\mathrm{AP}$) est de la forme \[
+    K = (S, \mathrm{Act}, \to)
+    .\]
+
+    Un \textit{modèle de Kripke} sur $\mathrm{Act}$ et $\mathrm{AP}$ est de la forme 
+    \[
+    M = (K, \mathrm{AP}, L)
+    \] 
+    où $K$ est une structure de Kripke sur $\mathrm{Act}$.
+  \end{defn}
+
+  \section{Logique de Hennessy-Milner.}
+
+  Fixons $\mathrm{Act}$ et $\mathrm{AP}$.
+
+  \begin{defn}
+    On définit les formules de la logique $\mathsf{HML}$ par :
+    \begin{align*}
+      \phi, \psi ::={}& \texttt{a} && \texttt{a} \in \mathrm{AP}\\
+      \mid {} & \phi \land \psi  \mid \top  \\
+      \mid {} & \phi \lor \psi  \mid \bot  \\
+      \mid {} & \lnot \phi \\
+      \mid {} & \underbrace{\langle \alpha \rangle}_{\eventually} \phi  \mid \underbrace{[\alpha]}_{\always} \phi && \alpha \in \mathrm{Act}
+    .\end{align*}
+  \end{defn}
+
+  \begin{defn}
+    Pour $M = (S, \mathrm{Act}, {\to}, \mathrm{AP}, L)$, on définit $\llbracket \phi\rrbracket \in \wp(S) $ par induction sur $\phi$ :
+     \begin{itemize}
+      \item $\llbracket \texttt{a}\rrbracket := \{s \in S  \mid \texttt{a} \in L(s)\}$ ;
+      \item $\llbracket \top \rrbracket := S$ ;
+      \item $\llbracket \bot \rrbracket := \emptyset$ ;
+      \item $\llbracket \phi \land \psi \rrbracket := \llbracket \phi\rrbracket  \cap \llbracket \psi\rrbracket  $ ;
+      \item $\llbracket \phi \lor \psi \rrbracket := \llbracket \phi\rrbracket  \cup \llbracket \psi\rrbracket  $ ;
+      \item $\llbracket \lnot \phi \rrbracket := \wp(S) \setminus \llbracket \phi\rrbracket$ ;
+      \item $\llbracket \langle \alpha \rangle \phi\rrbracket  := \{s \in S  \mid \exists s' \in S, s \xrightarrow{\alpha} s' \text{ et } s' \in \llbracket \phi\rrbracket \}$ ;
+      \item $\llbracket [ \alpha ] \phi\rrbracket  := \{s \in S  \mid\forall s' \in S, s \xrightarrow{\alpha} s' \text{ implique } s' \in \llbracket \phi\rrbracket \}$ ;
+    \end{itemize}
+  \end{defn}
+
+  \begin{nota}
+    On note $s \Vdash \phi$ si  $s \in \llbracket \phi\rrbracket$.
+  \end{nota}
+
+  \begin{defn}
+    Soient $\mathrm{Act}$, $\mathrm{AP}$ et soit $\phi$ une formule $\mathsf{HML}$.
+     \begin{enumerate}
+       \item Pour $M = (S, \mathrm{Act}, \to, \mathrm{AP}, L)$, on dit que $s \in S$ \textit{\textbf{satisfait}} $\phi$ si $s \Vdash \phi$. 
+       \item On dit que $\phi$ est \textit{\textbf{valide}} dans $M = (S, \mathrm{Act}, \to, \mathrm{AP}, L)$, que l'on note $M \models \phi$, si 
+          \[
+         \forall s \in S, \quad s \Vdash \phi
+         .\] 
+       \item On dit que $\phi$ est \textit{\textbf{valide}}, que l'on note $\models \phi$, si  $\phi$ est  valide dans tout modèle $M$.
+    \end{enumerate}
+  \end{defn}
+
+  \begin{exm}[Logique $\mathsf{LML}$.]
+    Soit  $\mathrm{Act} = \mathbf{1} = \{\bullet\}$.
+    Soit \[
+    M((\mathbf{2}^\mathrm{AP})^\omega) := (S, \mathbf{1}, \to, \mathrm{AP}, L)
+    \] 
+    où
+    \begin{itemize}
+      \item $S = (\mathbf{2}^\mathrm{AP})^\omega$ ;
+      \item pour tout $\sigma$, on a que $\sigma \xrightarrow\bullet \sigma \upharpoonright 1$ ;
+      \item $L(\sigma) = \sigma(0)$.
+    \end{itemize}
+    On a 
+    \[
+      \sigma \Vdash \langle \bullet \rangle \phi \iff \sigma \upharpoonright 1 \Vdash \phi \iff \phi \Vdash  [\bullet] \phi
+    ,\]
+    donc $\langle \bullet \rangle$ et $[\bullet]$ correspondent ainsi à la modalité $\nxt$ "next".
+
+    De plus, sur ce système, on a $\sigma \sim s'$ ssi $\sigma = \sigma'$.
+  \end{exm}
+
+  \section{Équivalences logiques.}
+
+  \subsection{Équivalences logiques pour les formules.}
+
+  \begin{defn}
+    Soient $\mathrm{AP}$, $\mathrm{Act}$, et soient $\phi, \psi$ des formules.
+    On note $\phi \equiv \psi$ ssi
+     \[
+    \forall M = (S, \mathrm{Act}, \to, \mathrm{AP}, L),
+    \quad \llbracket \phi = \psi\rrbracket  
+    ,\] 
+    autrement dit $\forall  M, \forall s \in S, \quad s \Vdash \phi \iff s \Vdash \psi$.
+  \end{defn}
+
+  \begin{lem}
+    On a que $[\alpha]-$ et  $\langle \alpha\rangle -$ sont duaux par De Morgan :
+    \[
+      [\alpha] \phi \equiv \lnot \langle \alpha \rangle \lnot \phi
+      \quad\text{et}\quad
+      \langle\alpha\rangle \phi \equiv \lnot [\alpha] \lnot \phi
+    .\]
+
+    De plus, comme $\langle \alpha \rangle -$ est défini comme quantification existentielle, on a 
+     \[
+    \langle \alpha \rangle (\phi \lor \psi) \equiv \langle \alpha \rangle \phi \lor \langle \alpha \rangle \psi
+    \quad\text{et}\quad
+    \langle \alpha \rangle \bot \equiv\bot
+    .\]
+    De même, comme $[\alpha]-$ est défini comme quantification universelle, on a 
+     \[
+       [\alpha] (\phi \land \psi) \equiv [ \alpha ] \phi \land [ \alpha ] \psi
+    \quad\text{et}\quad
+      [\alpha] \top \equiv \top
+    .\]
+  \end{lem}
+
+  \subsection{Équivalences logiques pour les états.}
+
+  \begin{defn}
+    Soient $\mathrm{Act}$ et $\mathrm{AP}$.
+    On se donne $M_1$, et $M_2$  deux modèles de Kripke.
+    Pour $s_1 \in S_1$ et $s_2 \in S_2$, on note \[
+    s_1 \equiv s_2 \quad\quad \text{ ssi } \quad\quad \forall \phi, \quad s_1 \Vdash \phi \iff s_2 \Vdash \phi
+    .\]
+  \end{defn}
+
+  \begin{rmk}
+    On aurait pu définir une telle équivalence pour $\mathsf{LML}$, mais on aurait que $\sigma_1 \equiv \sigma_2$ ssi $\sigma_1 = \sigma_2$, ce qui n'est pas très intéressant.
+    Avec des modèles de Kripke et la logique $\mathsf{HML}$, on a des états différents qui sont équivalents.
+  \end{rmk}
+
+  \begin{thm}
+    Si $s_1 \sim s_2$ alors $s_1 \equiv s_2$.
+  \end{thm}
+  \begin{prv}
+    Par induction sur $\phi$, on montre que 
+    \[
+    s_1 \sim s_2 \implies (s_1 \Vdash \phi \iff s_2 \Vdash \phi)
+    .\] 
+    \begin{description}
+      \item[Cas de $\texttt{a} \in \mathrm{AP}$.]
+        Si $s_1 \sim s_2$ alors $L_1(s_1) = L_2(s_2)$ donc $s_1 \Vdash \texttt{a}$ ssi $s_2 \Vdash \texttt{a}$.
+      \item[Cas de $-\land-$, $-\lor-$, $\top$, $\bot$, et $\lnot-$.]
+        On applique l'hypothèse d'induction et/ou l'hypothèse $s_1 \sim s_2$, et on conclut.
+      \item[Cas de $\langle \alpha \rangle -$.]
+        Supposons $s_1 \sim s_2$.
+        Supposons $s_1 \Vdash \langle \alpha \rangle \phi$.
+        Il existe donc $s_1'$ tel que $s_1 \xrightarrow\alpha s_1'$ et $s_1' \Vdash \phi$.
+        Par bisimulation
+        \[
+        \begin{tikzcd}
+          s_1 \arrow{d}{\alpha} \arrow[dash]{r}{\sim} & s_2 \arrow[dashed]{d}{\alpha}\\
+          s_1' \arrow[dashed,dash]{r}{\sim} & s_2'
+        \end{tikzcd}
+        ,\] 
+        il existe donc $s_2'$ tel que $s_2 \xrightarrow \alpha s_2'$ et $s_1' \sim s_2'$.
+        Donc, par hypothèse d'induction, on a que $s_2' \Vdash \phi$.
+        On a donc $s_2 \Vdash \langle \alpha \rangle \phi$.
+        On procédant de même dans l'autre cas, on a bien que \[
+        s_1 \Vdash \langle \alpha \rangle \phi \iff
+        s_2 \Vdash \langle \alpha \rangle \phi
+        .\]
+      \item[Cas de $\lbracket \alpha \rbracket -$.]
+        On a que $[\alpha] \phi \equiv \lnot \langle \alpha \rangle \lnot \phi$.
+    \end{description}
+  \end{prv}
+
+  \section{Propriété de Hennessy-Milner.}
+
+  \begin{rmk}[Question]
+    Est-ce que $s_1 \equiv s_2$ implique $s_1 \sim s_2$ ?
+    Autrement dit, est-ce que $\equiv$ est une bisimulation ?
+
+    La réponse est \textit{\textbf{non}} en général.
+  \end{rmk}
+
+  \begin{exm}
+    Considérons les système de transitions suivants.
+    \begin{center}
+      \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
+        \node[state, initial, initial where=above] (A) {$s_1$};
+        \node[state, below left of=A] (B) {};
+        \draw[->] (A) edge (B);
+        \node[state, below of=A] (B) {};
+        \node[state, below of=B] (C) {};
+        \draw[->] (A) edge (B);
+        \draw[->] (B) edge (C);
+        \node[state, below right of=A] (B) {};
+        \node[state, below right of=B] (C) {};
+        \node[state, below right of=C] (D) {};
+        \draw[->] (A) edge (B);
+        \draw[->] (B) edge (C);
+        \draw[->] (C) edge (D);
+        \node[right of=B] {$\adots$};
+      \end{tikzpicture}
+    \end{center}
+    \begin{center}
+      \begin{tikzpicture}[every state/.style={minimum size=12pt,draw=deepblue,thick,rounded rectangle}]
+        \node[state, initial, initial where=above] (A) {$s_2$};
+        \node[state, below left of=A] (B) {};
+        \draw[->] (A) edge (B);
+        \node[state, below of=A] (B) {};
+        \node[state, below of=B] (C) {};
+        \draw[->] (A) edge (B);
+        \draw[->] (B) edge (C);
+        \node[state, below right of=A] (B) {};
+        \node[state, below right of=B] (C) {};
+        \node[state, below right of=C] (D) {};
+        \draw[->] (A) edge (B);
+        \draw[->] (B) edge (C);
+        \draw[->] (C) edge (D);
+        \node[right of=B] {$\adots$};
+        \node[state, right of=A] (B) {};
+        \node[state, right of=B] (C) {};
+        \node[state, right of=C] (D) {};
+        \node[right of=D] (E) {$\cdots$};
+        \draw[->] (A) edge (B);
+        \draw[->] (B) edge (C);
+        \draw[->] (C) edge (D);
+        \draw[->] (D) edge (E);
+      \end{tikzpicture}
+    \end{center}
+    On remarque que $s_1 \nsim s_2$ mais $s_1 \equiv s_2$ (la logique $\mathsf{HML}$ ne peut "voir" qu'à une profondeur finie).
+  \end{exm}
+
+  \begin{defn}
+    Une classe $\mathfrak{M}$ de modèles a la \textit{\textbf{propriété de Hennessy-Milner}} si, dans $\mathfrak{M}$, l'équivalence  $\equiv$ entre états est une bisimulation.
+  \end{defn}
+
+  \begin{defn}
+    Soit $K = (S, \mathrm{Act}, \to)$ alors, pour $\alpha \in \mathrm{Act}$ et $s \in S$, on note 
+    \[
+      \mathrm{Succ}^\alpha(s) := \{s' \in S  \mid s \xrightarrow \alpha s' \} 
+    .\]
+  \end{defn}
+
+  \begin{defn}
+    Un modèle de Kripke $M$ est dit \textit{\textbf{à image finie}} si, pour tout $s \in S$ et $\alpha \in \mathrm{Act}$, l'ensemble $\mathrm{Succ}^\alpha(s)$ des successeurs de $s$ par une action $\alpha$ fixée est finie.
+  \end{defn}
+
+  \begin{prop}[Hennessy-Milner]
+    La classe des modèles à image finie a la propriété de Hennessy-Milner.
+  \end{prop}
+\end{document}
