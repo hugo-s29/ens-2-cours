@@ -255,4 +255,329 @@
   \begin{prop}[Hennessy-Milner]
     La classe des modèles à image finie a la propriété de Hennessy-Milner.
   \end{prop}
+
+  \section{Saturation modale.}
+
+  \begin{defn}
+    Soit $M = (S, \mathrm{Act}, \to , \mathrm{AP}, L)$.
+    \begin{enumerate}
+      \item Soient $T \subseteq S$ et $\Phi \subseteq \mathsf{HML}$.
+        On dit que $\Phi$ est \textit{satisfiable} dans $T$ s'il existe $s \in T$ tel que pour tout $ \phi \in \Phi$, on a $s \Vdash \phi$.
+      \item Soient $T \subseteq S$ et $\Phi \subseteq \mathsf{HML}$.
+        On dit que $\Phi$ est \textit{finiement satisfiable} dans $T$ si, tout $\Psi \subseteq_{\mathrm{fin}} \Phi$ est satisfiable dans $T$, autrement dit 
+        \[
+        \forall \Psi \subseteq_\mathrm{fin} \Phi
+        \quad \exists s \in T 
+        \quad s \Vdash \bigwedge \Psi
+        .\]
+      \item On dit que $M$ est \textit{modalement saturée} si, pour tout $s \in S$, tout $\alpha \in \mathrm{Act}$ et tout $\Phi \subseteq \mathsf{HML}$ tel que $\Phi$ est finiement satisfiable dans $\mathrm{Succ}^\alpha(s)$ alors $\Phi$ est satisfiable dans  $\mathrm{Succ}^\alpha(s)$, autrement dit 
+        \begin{gather*}
+          \forall s \in S, \forall \alpha \in \mathrm{Act}, \forall \Phi \subseteq \mathsf{HML},\\
+          \begin{pmatrix}
+            \forall \Psi \subseteq_{\mathrm{fin}} \Phi \quad \exists s' \xleftarrow{\alpha} s \quad s' \Vdash \bigwedge \Psi\\
+            \vertical{\implies}\\
+            \exists s' \xleftarrow{\alpha} s \quad\forall  \phi \in \Phi \quad s' \Vdash \phi
+          \end{pmatrix} 
+        .\end{gather*}
+    \end{enumerate}
+  \end{defn}
+
+  \begin{prop}
+    Si $M_1$ et $M_2$ sont modalement saturés alors $\equiv$ entre $S_1$ et $S_2$ est une bisimulation.
+  \end{prop}
+  \begin{prv}
+    Soient $s_1 \equiv s_2$.
+    \begin{enumerate}
+      \item On a bien $L_1(s_1) = L_2(s_2)$.
+      \item Supposons $s_1 \xrightarrow{\alpha}s_1'$.
+        On pose $\Phi = \{\phi  \mid s_1' \Vdash \phi\}$.
+        Soit $\Psi \subseteq_\mathrm{fin} \Phi$ quelconque.
+        On a $s_1 \Vdash \langle \alpha \rangle \bigwedge \Psi$ donc $s_2 \Vdash \langle \alpha \rangle \bigwedge \Psi$.
+        Il existe donc $s_2' \xleftarrow{\alpha} s_2$ telle que $s_2' \Vdash \bigwedge \Psi$.
+        Par \textit{\textbf{saturation modale}} (de $M_2$), il existe $s_2' \xleftarrow{\alpha} s_2$ tel que, pour tout $\phi \in \Phi$, $s_2' \Vdash \phi$.
+        Autrement dit, on a bien :
+        \[
+        \begin{tikzcd}
+          s_1 \arrow{d}{\alpha} \arrow[dash]{r}{\equiv} & s_2 \arrow[dashed]{d}{\alpha}\\
+          s_1' \arrow[dashed,dash]{r}{\equiv} & s_2'
+        \end{tikzcd}
+        .\]
+      \item Symétriquement.
+    \end{enumerate}
+  \end{prv}
+
+  \begin{prop}
+    Si $M$ est à image finie alors $M$ est modalement saturé.
+  \end{prop}
+  \begin{prv}
+    Soit $s \in S$, $\alpha \in \mathrm{Act}$, et $\Phi \subseteq \mathsf{HML}$.
+    Supposons que $\Phi$ finiement saturé dans $\mathrm{Succ}^\alpha(s)$.
+    Par l'absurde, supposons 
+    \[
+      \forall t \xrightarrow{\alpha} s \quad \exists \phi_t \in \Phi \quad t \nVdash \phi_t
+    .\]
+    On pose 
+    \[
+      \Psi := \{\phi_t  \mid t \in \mathrm{Succ}^\alpha(s)\} \subseteq_\mathrm{fin} \Phi
+    .\]
+    Il existe donc $t \xleftarrow{\alpha} s$ tel que  $t \Vdash \bigwedge \Psi$, donc $t \Vdash \phi_t$.
+    \textit{\textbf{Absurde}}.
+  \end{prv}
+
+  \section{Algèbres de Boole avec opérateurs.}
+
+  Soit $\mathfrak{L}(\mathsf{HML}) = \{[\phi]_\equiv  \mid \phi \in \mathsf{HML}\}$.
+  On notera dans la suite $\phi$ pour $[\phi]_\equiv$.
+  Comme pour le \textit{Homework}, on a que $(\mathfrak L(\mathsf{HML}), \le)$ est une algèbre de Boole où $\phi \le \psi$ ssi $\phi \land \psi \equiv \phi$.
+
+  Pour un modèle de Kripke $M$, on a que $(\wp(M), \subseteq)$ est une algèbre de Boole et 
+  \begin{align*}
+    \llbracket -\rrbracket  : \mathfrak L(\mathsf{HML}) &\longrightarrow \wp(S) \\
+    [\phi]_\equiv &\longmapsto \llbracket \phi\rrbracket  
+  \end{align*}
+  est un morphisme d'algèbres de Boole.
+
+  \begin{lem}
+    Soit $M$ un modèle de Kripke.
+    On a que 
+    \begin{align*}
+      \llbracket \langle \alpha \rangle\rrbracket : \wp(S) &\longrightarrow \wp(S) \\
+      A &\longmapsto \{s  \mid \exists s' \xleftarrow{\alpha} s \quad s' \in A\}
+    \end{align*}
+    est un morphisme de $\vee$-semi-treillis,
+    et on a $\llbracket \langle \alpha \rangle \phi \rrbracket = \llbracket \langle \alpha \rangle \rrbracket (\llbracket \phi\rrbracket)$.
+
+    De même, on a que 
+    \begin{align*}
+      \llbracket [\alpha]\rrbracket : \wp(S) &\longrightarrow \wp(S) \\
+      A &\longmapsto \{s  \mid \forall s' \xleftarrow{\alpha} s \quad s' \in A\}
+    \end{align*}
+    est un morphisme de $\wedge$-semi-treillis,
+    et on a $\llbracket [\alpha] \phi \rrbracket = \llbracket [\alpha] \rrbracket (\llbracket \phi\rrbracket)$.
+    \qed
+  \end{lem}
+
+  \begin{lem}
+    On a que
+    \begin{align*}
+      \langle \alpha \rangle: \mathfrak L(\mathsf{HML}) &\longrightarrow \mathfrak L(\mathsf{HML}) \\
+      [\phi]_\equiv &\longmapsto [\langle \alpha \rangle \phi]_\equiv
+    \end{align*}
+    est un morphisme de $\vee$-semi-treillis
+    et 
+    \begin{align*}
+      [\alpha]: \mathfrak L(\mathsf{HML}) &\longrightarrow \mathfrak L(\mathsf{HML}) \\
+      [\phi]_\equiv &\longmapsto [[\alpha] \phi]_\equiv
+    \end{align*}
+    est un morphisme de $\wedge$-semi-treillis
+
+    On a $\llbracket [\alpha]\rrbracket = \llbracket \langle \alpha \rangle\rrbracket^\partial$ et $[\alpha] = \langle \alpha \rangle^\partial$ avec la notation définie ci-après.
+  \end{lem}
+
+  \begin{defn}
+    Pour $f : B \to B'$ où $B, B'$ sont deux algèbres de Boole, on note
+    \begin{align*}
+      f^\partial: B &\longrightarrow B' \\
+      a &\longmapsto \lnot' f(\lnot a)
+    .\end{align*}
+    C'est le dual par De Morgan de $f$.
+  \end{defn}
+
+  \begin{lem}
+    Pour $f : B \to B'$ où $B, B'$ sont deux algèbres de Boole,
+    \begin{enumerate}
+      \item on a $(f^\partial)^\partial  = f$ ;
+      \item si $f$ est un morphisme de $\vee$-semi-treillis alors  $f^\partial $ est un morphisme de $\wedge$-semi-treillis ;
+      \item si $f$ est un morphisme de $\wedge$-semi-treillis alors  $f^\partial $ est un morphisme de $\vee$-semi-treillis ;
+      \item si $f$ est un morphisme de treillis alors $f^\partial = f$.
+    \end{enumerate}
+  \end{lem}
+
+  \begin{rmk}
+    Dans $\mathsf{LML}$, on a une modalité $\nxt$ qui est auto duale car morphisme de treillis.
+  \end{rmk}
+
+  \begin{defn}[BAO]
+    Une \textit{algèbre de Boole avec opérateurs} (BAO) est de la forme 
+    \[
+      (B, \le, (f_\alpha)_{\alpha \in \mathrm{Act}})
+    \] 
+    où $(B, \le)$ est une algèbre de Boole et $f_\alpha : B \to B$ est un morphisme de $\vee$-semi-treillis pour tout  $\alpha \in \mathrm{Act}$.
+  \end{defn}
+
+  \begin{exm}
+    On a que $\mathfrak{L}(\mathsf{HML})^+ := (\mathfrak{L}(\mathsf{HML}), \le , (\langle \alpha \rangle)_{\alpha \in \mathrm{Act}})$ est une algèbre de Boole avec opérateurs.
+  \end{exm}
+
+  \begin{exm}
+    Pour $L = (S, \mathrm{Act}, \to)$ une structure de Kripke, alors 
+    \[
+    K^+ := \big(\wp(S), \subseteq, (\llbracket \langle \alpha \rangle \rrbracket)_{\alpha \in \mathrm{Act}}\big) 
+    \] est une algèbre de Boole avec opérateurs.
+  \end{exm}
+
+  \section{Structures ultrafiltres.}
+
+  \begin{defn}
+    Soit $(B, \le , (f_\alpha)_{\alpha \in \mathrm{Act}})$ une algèbre de Boole avec opérateurs.
+    On définit 
+    \[
+      \mathfrak{Uf}(B) := (\mathbf{Sp}(B), \mathrm{Act}, \to)
+    ,\] 
+    où $\mathcal{F} \xrightarrow{\alpha} \mathcal{H}$ ssi pour tout $b \in B$, $b \in \mathcal{H}$ implique $f_\alpha(b) \in \mathcal{F}$.
+  \end{defn}
+
+  \begin{lem}
+    On a $\mathcal{F} \xrightarrow{\alpha} \mathcal{H}$ ssi pour tout $b \in B$, $f_\alpha^\partial (b) \in \mathcal{F}$ implique $b \in \mathcal{H}$. 
+  \end{lem}
+  \begin{prv}
+    (Idée)
+    Supposons $\mathcal{F} \xrightarrow{\alpha} \mathcal{H}$.
+    Soit $b \in B$.
+    Par contraposée, supposons $b \not\in \mathcal{H}$.
+    On a donc $\lnot b \in \mathcal{H}$ et donc $f_\alpha(\lnot b) \in \mathcal{F}$.
+    Mais, $f_\alpha(\lnot b) = \lnot f_\alpha^\partial (b)$ et donc $f_\alpha^\partial (b) \not\in \mathcal{F}$.
+
+    Réciproquement, supposons $\mathcal{F} \not\xrightarrow{\alpha} \mathcal{H}$.
+    Il existe donc $b \in B$ tel que $b \in \mathcal{H}$ et $f_\alpha(b) \not\in \mathcal{F}$.
+    Donc $\lnot f_\alpha(b) = f_\alpha^\partial (\lnot b) \in \mathcal{F}$ et $\lnot b \not\in \mathcal{H}$.
+  \end{prv}
+
+  \subsection{Extensions d'ultrafiltres aux modèles de Kripke.}
+
+  Soit $M = (S, \mathrm{Act}, \to , \mathrm{AP}, L)$.
+
+  \begin{rmk}
+    Soit $X$ un ensemble.
+    \begin{itemize}
+      \item Un \textit{filtre} (\textit{propre}) sur $X$ est un filtre (propre) sur $(\wp(X), \subseteq)$.
+      \item Un \textit{ultrafiltre} sur $X$ est un ultrafiltre sur $(\wp(X), \subseteq)$.
+      \item Si $G \subseteq \wp(X)$ qui a la propriété des intersections finies (\textit{finite intersection property}) alors 
+        \[
+        \bigcap \mleft\{\,E \;\middle|\; E \text{ filtre propre  et } E \supseteq G\,\mright\}  
+        \] est un filtre propre.
+      \item Si $G \subseteq \wp(X)$ a la propriété des intersections finies alors il existe un ultrafiltre $\mathcal{F}$ sur $X$ tel que $G \subseteq \mathcal{F}$.
+      \item Pour tout $x \in X$, on définit 
+        \[
+        \pi(x) := \{A \in \wp(X)  \mid x \in A\}
+        \]
+        est l'\textit{ultrafiltre principal} induit par $x$.
+        On a que
+        \[
+        \pi : X \to \mathfrak{Uf}(X) =: \mathbf{Sp}(\wp(X), \subseteq)
+        .\]
+    \end{itemize}
+  \end{rmk}
+
+  \begin{rmk}
+    La fonction de \textit{labelling} $L : S \to \mathbf{2}^\mathrm{AP}$ peut être décrite par $V : \mathrm{AP} \to \mathbf{2}^S$.
+  \end{rmk}
+
+  \begin{defn}
+    Soit $M = (S, \mathrm{Act}, \to, \mathrm{AP}, L)$ un modèle de Kripke.
+    L'\textit{extension ultrafiltre} de $M$ est 
+    \[
+      \mathfrak{Uf}(M) = (\underbrace{\mathfrak{Uf}(S), \mathrm{Act}, \to}_{(S, \mathrm{Act}, \to)^+}, \mathrm{AP}, L')
+    ,\]
+    où $L' : \mathfrak{Uf}(S) \to \mathbf{2}^\mathrm{AP}$ est générée par 
+    \begin{align*}
+      V': \mathrm{AP} &\longrightarrow \mathbf{2}^{\mathfrak{Uf}(S)} \\
+      \texttt{a} &\longmapsto \{\mathcal{F}  \mid V(\texttt{a}) \in \mathcal{F}\} 
+    .\end{align*}
+  \end{defn}
+
+  \begin{rmk}
+    Dans $\mathfrak{Uf}(M)$ les propriétés suivantes sont équivalentes :
+    \begin{itemize}
+      \item $\mathcal{F} \xrightarrow{\alpha} \mathcal{H}$
+      \item pour tout $A \in \wp(S)$, $A \in \mathcal{H}$ implique $\llbracket \langle\alpha \rangle\rrbracket (A) \in \mathcal{F}$ ;
+      \item pour tout $A \in \wp(S)$, $\llbracket [\alpha]\rrbracket (A) \in \mathcal{F} $ implique $A \in \mathcal{H}$.
+    \end{itemize}
+  \end{rmk}
+
+  \begin{rmk}
+    Si $M$ est \textit{\textbf{fini}} alors
+    \begin{itemize}
+      \item $\pi : S \to \mathfrak{Uf}(S)$ est une bijection ;
+      \item $\pi(s) \xrightarrow{\alpha} \pi(t)$ ssi $s \xrightarrow{\alpha} t$ ;
+      \item  $L'(\pi(s)) = L(s)$.
+    \end{itemize}
+  \end{rmk}
+
+  \begin{prop}
+    Pour tout $\mathcal{F} \in \mathfrak{Uf}(S)$, et tout $\phi$ une formule $\mathsf{HML}$, on a 
+    \[
+      \underbrace{\llbracket \phi\rrbracket  \in \mathcal{F}}_{\text{\clap{dans $M$}}}
+      \iff
+      \underbrace{\mathcal{F} \Vdash \phi}_{\text{\clap{dans $\mathfrak{Uf}(M)$}}}
+    .\]
+  \end{prop}
+
+  \begin{prv}
+    On procède par induction sur $\phi$.
+    \begin{description}
+      \item[Cas $\texttt{a} \in \mathrm{AP}$.]
+        Par définition de $\mathfrak{Uf}(M)$, on a  $\mathcal{F} \Vdash \texttt{a}$ ssi $\llbracket \texttt{a}\rrbracket \in \mathcal{F}$.
+      \item[Cas $-\lor-$,  $-\land-$,  $\lnot-$,  $\top$,  $\bot$.]
+        Vu dans le  \textit{Homework}, partie II.
+      \item[Cas $\langle \alpha \rangle -$.]
+        On montre que $\mathcal{F} \Vdash \langle \alpha \rangle \phi \iff \llbracket \langle \alpha \rangle\rrbracket (\llbracket \phi\rrbracket) \in \mathcal{F}$.
+        \begin{itemize}
+          \item "$\implies$".
+            Si $\mathcal{F} \xrightarrow{\alpha} \mathcal{H}$ tel que $\mathcal{H} \Vdash \phi$ alors, par hypothèse d'induction $\llbracket \phi\rrbracket \in \mathcal{H} $ et donc $\llbracket \langle \alpha \rangle\rrbracket (\llbracket \phi\rrbracket) \in \mathcal{F}$.
+          \item "$\impliedby$".
+            Supposons $\llbracket \langle \alpha \rangle\rrbracket (\llbracket \phi\rrbracket) \in \mathcal{F}$.
+            On va montrer qu'il existe $\mathcal{H}$ tel que $\mathcal{F} \xrightarrow{\alpha} \mathcal{H}$ et $\llbracket \phi\rrbracket \in \mathcal{H}$.
+            On va utiliser le lemme de l'ultrafiltre.
+            Soit 
+            \[
+            H := \mleft\{\,A \cap \llbracket \phi\rrbracket  \;\middle|\; 
+            \begin{array}{c}
+              A \in \wp(S)\\
+              \text{ et }\\
+              \llbracket [\alpha]\rrbracket (A) \in \mathcal{F} 
+            \end{array}\,\mright\} 
+            .\]
+            \begin{enumerate}
+              \item Remarquons que $H$ est stable par intersections binaires : si $A_1 \cap \llbracket \phi\rrbracket, A_2 \cap \llbracket \phi\rrbracket \in H $ alors $(A_1 \cap A_2) \cap \llbracket \phi\rrbracket \in H$ car $\llbracket [\alpha]\rrbracket (A_1),  \llbracket [\alpha]\rrbracket (A_2) \in \mathcal{F}$ et donc \[
+              \llbracket [\alpha]\rrbracket (A_1 \cap A_2) = \llbracket [\alpha]\rrbracket (A_1)  \cap \llbracket [\alpha]\rrbracket (A_2) \in \mathcal{F}
+              .\]
+
+              \item De plus, on a que $\emptyset \not\in H$. En effet, soit $A \cap \llbracket \phi\rrbracket \in H$ alors 
+              \[
+                \llbracket \langle \alpha \rangle \phi\rrbracket  \cap  \llbracket [\alpha] \rrbracket (A) \neq \emptyset 
+              \] (intersection de deux éléments de $\mathcal{F}$), il existe donc $s \in S$ tel que $s \Vdash \langle \alpha \rangle \phi$ et pour tout $s' \xleftarrow{\alpha} s$, on a  $s' \in A$.
+              Donc $A \neq \emptyset$ (car il existe $s' \xleftarrow{\alpha} s$).
+              \item On a  $S \cap \llbracket \phi\rrbracket \in H $ car $\llbracket [\alpha]\rrbracket (S) = S \in \mathcal{F}$.
+            \end{enumerate}
+            Donc $H$ a la propriété des intersections finies, et par le lemme de l'ultrafiltre, il existe $\mathcal{H} \in \mathfrak{Uf}(S)$ tel que $\mathcal{H} \supseteq H$.
+            De plus, on a $\mathcal{F} \xrightarrow{\alpha} \mathcal{H}$ car, pour tout $A \in \wp(S)$, 
+            $\llbracket [\alpha]\rrbracket (A) \in \mathcal{F} $ implique $A \cap \llbracket \phi\rrbracket \in H $ qui implique $A \in \mathcal{H}$.
+            On a aussi $\llbracket \phi\rrbracket \in \mathcal{H} $ car $S \cap \llbracket \phi\rrbracket  \in \mathcal{H}$.
+            Ainsi, par hypothèse d'induction, on a $\mathcal{H} \Vdash \phi$ et donc $\mathcal{F} \Vdash \langle \alpha \rangle \phi$.
+        \end{itemize}
+      \item[Cas $\lbracket \alpha \rbracket -$.] Par dualité.
+    \end{description}
+  \end{prv}
+
+  \begin{crlr}
+    Soit $\phi$ une formule $\mathsf{HML}$.
+    Pour tout $s \in S$, on a
+    \[
+    s \Vdash \phi \iff s \in \llbracket \phi\rrbracket  \iff \llbracket \phi\rrbracket \in \pi(s) 
+    .\]
+    De plus,  \[
+      M \models \phi \iff \llbracket \phi\rrbracket = S \iff \mathfrak{Uf} (M) \models \phi
+    .\] 
+  \end{crlr}
+
+  \begin{prop}
+    L'extension ultrafiltre $\mathfrak{Uf}(M)$ de $M$ est modalement saturée.
+    En particulier, étant donnés $M_1$ et $M_2$ deux modèles de Kripke, on a 
+    \[
+    s_1 \equiv s_2 \iff \pi(s_1) \equiv \pi(s_2)
+    \iff \pi(s_1) \sim_{\mathfrak{Uf}(M)} \pi(s_2)
+    .\] 
+  \end{prop}
+
 \end{document}
