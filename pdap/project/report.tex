@@ -1,0 +1,487 @@
+\documentclass[fontsize=12pt,a4paper,DIV=21,parskip=half]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hyperindex]{hyperref}
+\usepackage{lastpage}
+\usepackage{wrapfig}
+\usepackage{xfrac}
+\usepackage{tikz}
+\usepackage{tikzpagenodes}
+\usepackage{pgfplots}
+\usepackage{enumitem}
+\usepackage{scrlayer-scrpage}
+\usepackage{xspace}
+\usepackage{float}
+\usepackage{amsfonts,amsmath,amsthm,amssymb}
+\usepackage{multirow}
+\usepackage{thmtools}
+\usepackage[english]{babel}
+\usepackage[autostyle, style=english]{csquotes}
+\usepackage{subfigure}
+\usepackage{mleftright}
+%\usepackage{BOONDOX-calo}
+%\usepackage{dsfont}
+\usepackage{tikz-cd}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{soulutf8}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{stmaryrd}
+\usepackage{fvextra}
+\usepackage{adjustbox}
+\usepackage{fontspec}
+\usepackage{etoolbox}
+\usepackage{todonotes}
+\usepackage{verbatim}
+\usepackage{ebproof}
+\usepackage{cancel}
+\usepackage{setspace}
+\usepackage{fourier-otf}
+\setmathfont{Erewhon-Math.otf}[CharacterVariant={20}]
+%\usepackage{pxfonts}
+%\usepackage[scaled=0.92]{mathpazo}
+\usepackage{juliamono}
+\usepackage[osf]{Alegreya}
+\usepackage[osf]{AlegreyaSans}
+\let\mathds\mathbb
+%\DeclareMathAlphabet{\mathsf}{OT1}{cmss}{m}{n}
+
+\renewcommand{\mathsf}[1]{\textup{\textsf{#1}}}
+\newcommand\Agda{\textsf{Agda}\xspace}
+
+\ebproofset{right label template=$\inserttext$, left label template=\tiny$\inserttext$, center=false}
+
+\RedeclareSectionCommand[beforeskip=0.10em, afterskip=0.10em]{section}
+\RedeclareSectionCommand[beforeskip=0.05em, afterskip=0.001em plus 0em]{subsection}
+
+
+\fvset{bgcolor=lightgray!10,backgroundcolorpadding=3pt}
+
+\MakeOuterQuote{"}
+
+\colorlet{deeppurple}{DarkOrchid}
+\colorlet{deepgreen}{ForestGreen!70!black}
+\colorlet{deepblue}{NavyBlue!70!black}
+\colorlet{deepred}{RawSienna!70!black}
+\colorlet{nicered}{BrickRed!70!white}
+
+\makeatletter
+\g@addto@macro\bfseries{\boldmath}
+\makeatother
+
+\hypersetup{
+    colorlinks,
+    citecolor=deepgreen,
+    filecolor=nicered,
+    linkcolor=deepblue,
+    pdfencoding=auto,
+    psdextra,
+    urlcolor=deepred
+}
+
+\usetikzlibrary{positioning,shadings,arrows.meta}
+
+\clearpairofpagestyles
+
+\newcommand\showpage{\itshape\hfill--~\thepage/\pageref*{LastPage}~--\hfill}
+\cofoot[\showpage]{\showpage} \cefoot[\showpage]{\showpage}
+
+\setlist[enumerate]{font={\bfseries\color{deepblue}}}
+\AtBeginDocument{
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+\newcommand\separatorBlock{
+  \raisebox{-0.2em}{
+    \tikz{ \draw[deepblue,ultra thick, line cap=round] (0,0) -- (0,1em); }
+  }
+}
+
+\newcommand\vertical[1]{
+  \rotatebox[origin=c]{270}{\ensuremath{#1}}
+}
+
+\mdfsetup{skipabove=1em,skipbelow=0em,linewidth=0pt,rightline=false, topline=false, bottomline=false}
+
+
+\theoremstyle{definition}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=ForestGreen, % backgroundcolor=ForestGreen!5,
+% },
+]{thmgreenbox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont\sffamily\itshape,
+% mdframed={
+%   linecolor=NavyBlue,% backgroundcolor=NavyBlue!5,
+% },
+]{thmbluebox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
+  mdframed={
+    linecolor=deepblue,
+    linewidth=2pt,
+  },
+  numbered=no,
+]{thmblueline}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!5,
+% },
+]{thmredbox}
+
+\declaretheoremstyle[
+  headfont=\itshape\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!1,
+%   linewidth=0pt,
+% },
+  numbered=no,
+  qed=\qedsymbol,
+]{thmproofbox}
+
+\newcommand\defineMarkerColor[2]{
+  \AtBeginEnvironment{#1}{
+    \setlist[enumerate]{font={\color{#2}}}
+    \renewcommand{\labelitemi}{\color{#2}\small$\triangleright$}
+    \renewcommand{\labelitemii}{\color{#2}–}
+    \renewcommand{\labelitemiii}{\color{#2}•}
+    \renewcommand\emph[1]{{\bfseries\em\color{#2}##1}}
+  }
+}
+
+
+\AtBeginDocument{
+  \setlist[enumerate]{font={\bfseries\color{deepblue}}}
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}\small$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+
+\setlist[enumerate]{font={\color{deepblue}}}
+\renewcommand{\labelitemi}{\color{deepblue}\small$\triangleright$}
+\renewcommand{\labelitemii}{\color{deepblue}–}
+\renewcommand{\labelitemiii}{\color{deepblue}•}
+
+\declaretheorem[style=thmgreenbox, name=Axiom, numbered=no]{axi} \defineMarkerColor{axi}{deepgreen}
+\declaretheorem[style=thmgreenbox, name=Definition]{defn} \defineMarkerColor{defn}{deepgreen}
+\declaretheorem[style=thmbluebox, name=Example]{exm}      \defineMarkerColor{exm}{deepblue}
+\declaretheorem[style=thmbluebox, name=Exercise]{exo}     \defineMarkerColor{exo}{deepblue}
+\declaretheorem[style=thmbluebox, name=Question]{que}     \defineMarkerColor{que}{deepblue}
+\declaretheorem[style=thmbluebox,sibling=que, name=Question${}^\star$]{ques}     \defineMarkerColor{ques}{deepblue}
+\declaretheorem[style=thmredbox, name=Proposition]{prop}  \defineMarkerColor{prop}{deepred}
+\declaretheorem[style=thmredbox, name=Theorem]{thm}      \defineMarkerColor{thm}{deepred}
+\declaretheorem[style=thmredbox, name=Lemma]{lem}         \defineMarkerColor{lem}{deepred}
+\declaretheorem[style=thmredbox, name=Corollary]{crlr}   \defineMarkerColor{crlr}{deepred}
+\declaretheorem[style=thmblueline, name=Remark]{rmk}    \defineMarkerColor{rmk}{deepblue}
+\declaretheorem[style=thmblueline, name=Note]{note}       \defineMarkerColor{note}{deepblue}
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
+\newenvironment{prv}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementproof}}{\end{replacementproof}} \defineMarkerColor{prv}{deepred}
+\declaretheorem[style=thmproofbox, name=Proof idea]{replacementideaproof}
+\newenvironment{prvid}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementideaproof}}{\end{replacementideaproof}} \defineMarkerColor{prvid}{deepred}
+
+\RequirePackage{caption}
+\DeclareCaptionLabelFormat{labelformat}{\textbf{#1~#2}\separatorBlock}
+\captionsetup{labelformat=labelformat,labelsep=none,textfont=sl}
+
+\DeclareMathSizes{11}{9}{7}{5}
+
+\title{Parallel Algorithms and Programs -- \textit{Project}}
+\author{Hugo \textsc{Salou}}
+
+\let\emph\relax
+\DeclareTextFontCommand{\emph}{\bfseries\em\color{deepblue}}
+
+\renewcommand{\thefootnote}{\alph{footnote}}
+
+\makeatletter
+\def\moverlay{\mathpalette\mov@rlay}
+\def\mov@rlay#1#2{\leavevmode\vtop{%
+   \baselineskip\z@skip \lineskiplimit-\maxdimen
+   \ialign{\hfil$\m@th#1##$\hfil\cr#2\crcr}}}
+\newcommand{\charfusion}[3][\mathord]{
+    #1{\ifx#1\mathop\vphantom{#2}\fi
+        \mathpalette\mov@rlay{#2\cr#3}
+      }
+    \ifx#1\mathop\expandafter\displaylimits\fi}
+\makeatother
+
+\usepackage{pifont}
+
+
+\tikzcdset{arrow style=math font}
+\tikzset{
+  equiv/.style={-,preaction={draw,double equal sign distance}},
+  >=Straight Barb,
+}
+
+\usepackage{import}
+\usepackage{pgf}
+\let\mathdefault\relax
+\let\pgfimageWithoutPath\pgfimage 
+\renewcommand{\pgfimage}[2][]{\pgfimageWithoutPath[#1]{figures/#2}}
+
+\begin{document}
+  \begin{center}
+    \bfseries
+    \sffamily
+
+    {\large\itshape ---\hspace{1em}Project\hspace{1em}---}
+
+    {\huge Parallel Algorithms and Programs}
+
+    {\large \itshape Hugo SALOU}
+  \end{center}
+
+  Throughout this project, we tested the implementations on about $500$ small graphs, and comparing with the expected flow value for each one.
+  This expected value was given by the \href{https://networkx.org/en/}{\textit{\texttt{networkx}}} Python library.
+  These small testing graphs had at most $14$ vertices, and between $2$ and $5$ processors (or $1$ when testing the sequential algorithms).
+  They were able to detect errors quickly.
+  The script \texttt{test\_flow.py} runs all these tests in a few minutes (or, equivalently, \texttt{make test}).
+
+  After we were confident the implementations of Edmonds-Karp's and Dinic's algorithms worked without issues on small graphs, we started scaling the graphs to tests the performance.
+  In the next section, the testing strategy will be presented, how we sample the graphs for performance-testing.
+
+  \section{Sampling Random Graphs.}
+
+  To test, two samplers were used: one for sparse graphs, and one for dense graphs.
+  All of this is managed in the \texttt{bench\_flow.py} script.
+  Table~\ref{tab:sampling-graphs} gives the random distributions used for graph sampling, and table~\ref{tab:sampling-mpi} gives us the MPI settings used.
+  We write~$\mathcal{U}(X)$ for the uniform distribution on set~$X$, and~$\mathcal{E}(\lambda)$ for the exponential distribution with parameter~$\lambda$.
+  The term $\delta$ in the sampling for the number of vertices $N$ is used to ensure that $P$ divides~$N$.
+
+  \begin{table}[h]
+    \caption{Parameters Sampling for Performance Testing}
+    \centering
+    \subtable[~]{
+    \begin{adjustbox}{center}
+    \begin{tabular}{|c|c|}
+      \hline
+      \multicolumn{2}{|c|}{\textsc{\textbf{MPI Parameters}}}\\
+      \hline \hline
+      \textit{Number of Processors $P$} &
+      $P \hookleftarrow \mathcal{U}(\llbracket 10, 150\rrbracket)$
+      \\ \hline
+      \textit{Link Bandwidth} &
+      $100\:\mathrm{Gb}/\mathrm{s}$
+      \\ \hline
+      \textit{Link Latency} &
+      $10\:\mathrm{µ s}$
+      \\ \hline
+      \textit{Simulation node compute power} &
+      $100$
+      \\ \hline
+      \textit{Real machine compute power} &
+      $100$
+      \\ \hline
+      \textit{Topology} &
+      complete
+      \\ \hline
+    \end{tabular} 
+    \end{adjustbox}
+    \label{tab:sampling-mpi}
+    }
+    \subtable[~]{
+    \begin{adjustbox}{center}
+    \begin{tabular}{|c|c|c|}
+      \hline
+      \textsc{\textbf{Type of Graph}} &
+      \textsc{Sparse Graph} & 
+      \textsc{Dense Graph}
+      \\ \hline \hline
+      \textit{Number of Nodes $N$} &
+      $N \hookleftarrow \lfloor \mathcal{E}(\sfrac{1}{10\,000}) \rfloor + 10 + \delta$ &
+      $N \hookleftarrow \lfloor \mathcal{E}(\sfrac{1}{1\,000}) \rfloor + 1\,000 + \delta$
+      \\ \hline
+      \textit{Number of Edges $M$} &
+      $M \hookleftarrow \mathcal{U}(\llbracket n - 1, \min(\lfloor \sfrac{n(n-1)}{2} \rfloor, 50 N)\rrbracket) $ &
+      $M \hookleftarrow \mathcal{U}(\llbracket \lfloor \sfrac{n (n-1)}{3} \rfloor, \lfloor \sfrac{n (n-1)}{2} \rfloor\rrbracket  )$
+      \\ \hline
+      \textit{Maximum capacity $C$} &
+      \multicolumn{2}{|c|}{$C \hookleftarrow \mathcal{U}(\llbracket 1, 100\rrbracket)$}
+      \\ \hline
+    \end{tabular}
+    \end{adjustbox}
+    \label{tab:sampling-graphs}
+    }
+    \label{tab:sampling-settings}
+  \end{table}
+
+  After sampling these values, we choose uniformly the indices of the source $s$ and target $t$ in $\llbracket 1, N\rrbracket$.
+  Using \textit{\texttt{networkx}}, we sample uniformly a graph $G$ with $N$ vertices and $M$ edges which is weakly-connected, and contains an $st$-path.
+  For each edge in this graph, we assign a random capacity following the uniform distribution on $\llbracket 1, C\rrbracket$.
+
+  Figure~\ref{fig:dense-vs-sparse} (page~\pageref{fig:dense-vs-sparse}) shows the number of edges and vertices for each sampler.
+  Table~\ref{tab:statistical-results} (page~\pageref{tab:statistical-results}) also gives statistical results.
+
+  \begin{figure}[h]
+    \centering
+    \begin{adjustbox}{center}
+      \import{figures/}{graph_generation.pgf}
+    \end{adjustbox}
+    \caption{Random Graph Sampling (sparse \textup{vs.}\ dense)}
+    \label{fig:dense-vs-sparse}
+  \end{figure}
+
+  Also, when testing the performance of the implementations, we also check that we have the correct flow value (assuming \textit{\texttt{networkx}}'s is correct), in an effort to ensure correctness of the implementation.
+
+  In the end, we sampled around $500$ sparse graphs, and $150$ dense graphs.
+
+  \section{Performance Testing of Implementations.}
+
+  We decide to use the following metrics to track the performance of our implementations:
+  \begin{itemize}
+    \item the (simulated) execution time $T_P$ with $P$ processes;
+    \item the parallel speedup with $P$ processes $S_P := T_P / T_1$;
+    \item the "theoretical" speedup $T_P / C_P(N, M)$ where $C_P(N, M)$ is the time-complexity of the algorithm.
+  \end{itemize}
+
+  The first metric allows us to compare the two algorithms' performance (as comparing the speedup would only tells us how our implementation "scales").
+  The second metric allows us to look at how much parallelization speeds up the flow computation.
+  The last metric allows us to look at the "correctness" (in terms of time-complexity) of our implementations, as it should stay bounded.
+  For Dinic's algorithm, we set $C_P(N,M) = N^2 M$ and for Edmonds-Karp's we use $C_P(N, M) = N M^2$.
+
+  \begin{figure}[h]
+    \centering
+    \begin{adjustbox}{center}
+      \import{figures/}{time_by_algorithm.pgf}
+    \end{adjustbox}
+    \caption{Execution time for each implementation}
+    \label{fig:time-by-algorithm}
+  \end{figure}
+
+  Figure~\ref{fig:time-by-algorithm} show the execution time for each algorithm on the two kind of graphs sampled (the left part only contains sparse graphs, and the right one only dense graphs).
+  Parallelization does not help a lot when dealing with dense graphs, but it could rivals the performance of sequential algorithms on some sparse graphs.
+  The main bottleneck with parallelization for dense graphs is that the algorithms already have a high-enough time-complexity, so "spreading" data between multiple processes adds even more overhead.
+
+  In retrospect, allowing the use of up to $150$ processors did not help with the time complexity: with the log-log scale, adding a few more processes does not improve by a lot the runtime.
+  This makes sense as, when we increase the number of processes, we also dispatch the graph's data in more places so, at a certain point, adding more processes will only add data-retrieving-time, and not parallel-computation-time.
+
+  \begin{figure}[h]
+    \centering
+    \begin{adjustbox}{center}
+      \import{figures/}{parallel_speedup.pgf}
+    \end{adjustbox}
+    \caption{Parallel speedup}
+    \label{fig:parallel-speedup}
+  \end{figure}
+
+  In terms of parallel speedup (\textit{see} figure~\ref{fig:parallel-speedup}), we did not gain a lot of performance: this is possibly due to a suboptimal parallel implementation of the two algorithms, or an overhead too large due to the link latency and bandwidth.
+  An interesting experiment would be to vary those parameters instead of relying on those in table~\ref{tab:sampling-mpi}, maybe figure~\ref{fig:parallel-speedup} would look a lot different.
+  Due to a lack of time, we were not able to do this experiment: simulating these implementations took about 40 hours.
+
+  \begin{figure}[h]
+    \begin{minipage}{0.5\textwidth}
+      \subfigure[Sequential Implementations]{
+        \begin{adjustbox}{center}
+          \import{figures/}{ratio_expected_sequential.pgf}
+        \end{adjustbox}
+      }
+    \end{minipage}
+    \begin{minipage}{0.5\textwidth}
+      \subfigure[Parallel Implementations]{
+        \begin{adjustbox}{center}
+          \import{figures/}{ratio_expected_parallel.pgf}
+        \end{adjustbox}
+      }
+    \end{minipage}
+    \caption{"Theoretical" speedup}
+    \label{fig:theoretical-speedup}
+  \end{figure}
+
+  Looking at the "theoretical" speedup (\textit{see} figure~\ref{fig:theoretical-speedup}), we see that our implementations have the expected time-complexity, or at least for the graphs sampled.
+  We can also see that, for dense graphs, the bound on Edmonds-Karp's time-complexity is "looser" than the one on Dinic's time-complexity.
+
+  \section{Conclusion.}
+
+  Our implementations of Dinic's and Edmonds-Karp's algorithms is correct, has the required time-complexity, yet the parallel implementations is slightly worse than the sequential one, which is unexpected, but optimizing parallel implementations of algorithms is not as straightforward as optimizing a sequential algorithm.
+
+  Reproducing tho results should be as effortless as running \texttt{make bench}, choosing the implementation whose performance will be tested, and the graph sampler used (sparse or dense).
+  It'll then create the tests, the hostfiles and platform files for MPI testing, and start running the tests.
+  A CSV file will be produced containing the simulation data. Assuming all benchmarks have been done, the Python notebook \texttt{plots.ipynb} will produce the plots used in this report.
+  This Python notebook is especially useful for further analysis of the data.
+  Expect a few hours of waiting to get results (though you can stop the script when simulating at any moment, and the already-computed results will be put in the CSV files).
+
+  \begin{center}
+    \color{deepblue}
+    \boxed{
+      \textbf{\textit{End of report.}}
+    }
+  \end{center}
+
+  \begin{table}[h]
+      \centering
+      \begin{tabular}{|r|c|c|}
+        \hline
+        \textsc{\textbf{Type of Graph}}
+        & \textsc{Dense Graph}
+        & \textsc{Sparse Graph}\\
+
+        \hline
+        \hline
+        Count
+                &$737$&$2\,000$\\
+
+        \hline
+        \hline
+        Vertices
+          \hfill      \textsf{\textit{mean}}&$1\,996$&$2\,205$\\
+        \textsf{\textit{st. dev.}}&$1\,023$&$1\,881$\\
+        \textsf{\textit{min}}&$1\,020$&$33$\\
+        \textsf{\textit{median}}&$1\,705$&$1\,722$\\
+        \textsf{\textit{max}}&$8\,772$&$11\,890$\\
+
+        \hline
+        \hline
+        Edges
+          \hfill      \textsf{\textit{mean}}&$2\,059\,699$&$35\,460$\\
+        \textsf{\textit{st. dev.}}&$2\,813\,298$&$25\,470$\\
+        \textsf{\textit{min}}&$369\,773$&$55$\\
+        \textsf{\textit{median}}&$1\,187\,210$&$32\,434$\\
+        \textsf{\textit{max}}&$27\,584\,196$&$141\,898$\\
+
+        \hline
+        \hline
+        Processors
+          \hfill      \textsf{\textit{mean}}&$47$&$40$\\
+        \textsf{\textit{st. dev.}}&$49$&$49$\\
+        \textsf{\textit{min}}&$1$&$1$\\
+        \textsf{\textit{median}}&$31$&$6$\\
+        \textsf{\textit{max}}&$149$&$150$\\
+
+        \hline
+        \hline
+        Flow
+          \hfill      \textsf{\textit{mean}}&$20\,677$&$242\,733$\\
+        \textsf{\textit{st. dev.}}&$16\,234$&$257\,423$\\
+        \textsf{\textit{min}}&$458$&$55$\\
+        \textsf{\textit{median}}&$17\,660$&$148\,884$\\
+        \textsf{\textit{max}}&$98\,396$&$1\,504\,156$\\
+
+        \hline
+        \hline
+        Time (ms)
+          \hfill      \textsf{\textit{mean}}&$7\,344$&$267$\\
+        \textsf{\textit{st. dev.}}&$13\,589$&$410$\\
+        \textsf{\textit{min}}&$17$&$0$\\
+        \textsf{\textit{median}}&$3\,202$&$78$\\
+        \textsf{\textit{max}}&$182\,576$&$2\,863$\\
+        \hline
+      \end{tabular}
+      \caption{Statistical results}
+      \label{tab:statistical-results}
+  \end{table}
+
+\end{document}

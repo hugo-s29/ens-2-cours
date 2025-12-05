@@ -1,0 +1,12 @@
+BasedOnStyle: LLVM
+IndentWidth: 2
+UseTab: Never
+AllowShortFunctionsOnASingleLine: None
+BreakBeforeBraces: Attach
+ColumnLimit: 90
+SortIncludes: false
+SpaceAfterCStyleCast: true
+SeparateDefinitionBlocks: Always
+InsertNewlineAtEOF: true
+---
+Language: Cpp
