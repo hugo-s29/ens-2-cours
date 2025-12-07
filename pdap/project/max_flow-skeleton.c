@@ -213,7 +213,7 @@ void parse_graph(char *file_name,
 
     /** We can now go through the file once more and add the correct
         values */
-    int *current_in_index = (int *)malloc(sizeof(int) * local_nb_vertices + 1);
+    int *current_in_index = (int *)malloc(sizeof(int) * (local_nb_vertices + 1));
     for (int i = 0; i < local_nb_vertices + 1; i++)
     {
         current_in_index[i] = (*local_in_adjacency_beginning)[i];
