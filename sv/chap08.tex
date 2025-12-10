@@ -139,7 +139,7 @@
           (s_2, s_3) \in \mathcal{S}
         \end{array}\,\mright\}  
         \]
-        est une bisimulation entre $TS_1$ et $TS_2$.
+        est une bisimulation entre $TS_1$ et $TS_3$.
     \end{enumerate}
     \qed
   \end{lem}
@@ -172,7 +172,7 @@
         \begin{description}
           \item[Réflexivité.]
             On a $s \sim s$.
-          \item[Symétrie.] Si $s \sim s'$ alors  $s \mathrel{\mathcal{R}} s'$ pour une certaine bisimulation $\mathcal{R}$, et donc $s' \mathrel{\mathcal{R}^{-1}} s$ et donc $s \sim s'$.
+          \item[Symétrie.] Si $s \sim s'$ alors  $s \mathrel{\mathcal{R}} s'$ pour une certaine bisimulation $\mathcal{R}$, et donc $s' \mathrel{\mathcal{R}^{-1}} s$ et donc $s' \sim s$.
           \item[Transitivité.]
             Si $s \sim s'$ et  $s' \sim s''$ alors  $s \mathrel{\mathcal{R}} s'$ et $s' \mathrel{\mathcal{S}} s''$, et donc $s \mathrel{(\mathcal{S} \circ \mathcal{R})} s''$ d'où $s \sim s''$.
         \end{description}

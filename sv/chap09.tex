@@ -50,7 +50,7 @@
       \item $\llbracket \bot \rrbracket := \emptyset$ ;
       \item $\llbracket \phi \land \psi \rrbracket := \llbracket \phi\rrbracket  \cap \llbracket \psi\rrbracket  $ ;
       \item $\llbracket \phi \lor \psi \rrbracket := \llbracket \phi\rrbracket  \cup \llbracket \psi\rrbracket  $ ;
-      \item $\llbracket \lnot \phi \rrbracket := \wp(S) \setminus \llbracket \phi\rrbracket$ ;
+      \item $\llbracket \lnot \phi \rrbracket := S \setminus \llbracket \phi\rrbracket$ ;
       \item $\llbracket \langle \alpha \rangle \phi\rrbracket  := \{s \in S  \mid \exists s' \in S, s \xrightarrow{\alpha} s' \text{ et } s' \in \llbracket \phi\rrbracket \}$ ;
       \item $\llbracket [ \alpha ] \phi\rrbracket  := \{s \in S  \mid\forall s' \in S, s \xrightarrow{\alpha} s' \text{ implique } s' \in \llbracket \phi\rrbracket \}$ ;
     \end{itemize}
@@ -89,7 +89,7 @@
     ,\]
     donc $\langle \bullet \rangle$ et $[\bullet]$ correspondent ainsi à la modalité $\nxt$ "next".
 
-    De plus, sur ce système, on a $\sigma \sim s'$ ssi $\sigma = \sigma'$.
+    De plus, sur ce système, on a $\sigma \sim \sigma'$ ssi $\sigma = \sigma'$.
   \end{exm}
 
   \section{Équivalences logiques.}
@@ -311,7 +311,7 @@
   \end{prop}
   \begin{prv}
     Soit $s \in S$, $\alpha \in \mathrm{Act}$, et $\Phi \subseteq \mathsf{HML}$.
-    Supposons que $\Phi$ finiement saturé dans $\mathrm{Succ}^\alpha(s)$.
+    Supposons que $\Phi$ finiement satisfiable dans $\mathrm{Succ}^\alpha(s)$.
     Par l'absurde, supposons 
     \[
       \forall t \xrightarrow{\alpha} s \quad \exists \phi_t \in \Phi \quad t \nVdash \phi_t
