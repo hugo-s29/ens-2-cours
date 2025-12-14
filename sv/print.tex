@@ -1,0 +1,62 @@
+\documentclass{../print-en-fr}
+
+\usepackage{temporal-logic}
+
+\title{Semantics and Verifications}
+\author{Based on the lectures of Colin \textsc{Riba} \\ Notes written by Hugo \textsc{Salou}}
+
+\usepackage{subfiles}
+\usepackage{centernot}
+
+
+\ifSubfilesClassLoaded{%
+  \renewcommand\thesection{\arabic{section}}
+  \renewcommand\thepart{\Roman{part}}
+  \renewcommand\thechapter{\phantom}
+  \renewcommand\theequation{\arabic{section}.\arabic{equation}}
+}{}
+
+\newcommand\tr[1]{\ensuremath{\mathrel{\xrightarrow{#1}}}}
+\newcommand\trh[1]{\ensuremath{\mathrel{\xhookrightarrow{#1}}}}
+\newcommand\md{\ensuremath{\mathrel{{|}\!{\approx}}}}
+\newcommand\nmd{\ensuremath{\mathrel{\centernot{{|}\!{\approx}}}}}
+
+\newcommand\nxt{{\cnext}}
+\newcommand\always{{\cglobally}}
+\newcommand\eventually{{\ceventually}}
+\newcommand\until{\ensuremath{\mathrel{\mathsf{Until}}}}
+\newcommand\wuntil{\ensuremath{\mathrel{\mathsf{WUntil}}}}
+
+\newcommand\lbracket{\ensuremath{[}}
+\newcommand\rbracket{\ensuremath{]}}
+
+\tikzset{
+  initial text={},
+  node distance=2cm,
+  auto,
+  every state/.style={draw=deepblue,thick,rounded rectangle},
+  straight-right/.style={ to path={|- (\tikztotarget)  \tikztonodes}},
+  straight-left/.style={ to path={-| (\tikztotarget)  \tikztonodes}}
+}
+
+\begin{document}
+  \selectlanguage{english}
+  \maketitle
+
+  \dominitoc
+  \tableofcontents
+
+  \pagebreak
+
+  \subfile{chap00.tex}
+  \subfile{chap01.tex}
+  \subfile{chap02.tex}
+  \subfile{chap03.tex}
+  \subfile{chap04.tex}
+  \subfile{chap05.tex}
+  \subfile{chap06.tex}
+  \subfile{chap07.tex}
+  \subfile{chap08.tex}
+  \subfile{chap09.tex}
+\end{document}
+

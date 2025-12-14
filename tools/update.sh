@@ -28,6 +28,8 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
 
   cp sv/td.pdf     ../web/public/data/ens2/sv-td.pdf
   cp sv/main.pdf   ../web/public/data/ens2/sv.pdf
+  cp sv/print.pdf   ../web/public/data/ens2/sv-print.pdf
+  cp sv/print2.pdf   ../web/public/data/ens2/sv-print2.pdf
   cp sv/homework/main.pdf ../web/public/data/ens2/sv-homework.pdf
   cp sv/chap00.pdf ../web/public/data/ens2/sv-chap00.pdf
   cp sv/chap01.pdf ../web/public/data/ens2/sv-chap01.pdf
