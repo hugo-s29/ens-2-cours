@@ -66,8 +66,9 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp ip/presentation1.pdf ../web/public/data/ens2/ip-presentation1.pdf
   cp ip/usage_guide.pdf ../web/public/data/ens2/ip-usage-guide.pdf
 
-
   # ==========
   # SEMESTRE 2
   # ==========
+  
+  cp pp/td.pdf ../web/public/data/ens2/pp-td.pdf
 fi
