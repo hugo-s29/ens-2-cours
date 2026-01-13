@@ -71,4 +71,5 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   # ==========
   
   cp pp/td.pdf ../web/public/data/ens2/pp-td.pdf
+  cp dbdm/td.pdf ../web/public/data/ens2/dbdm-td.pdf
 fi
