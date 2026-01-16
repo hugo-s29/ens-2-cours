@@ -72,8 +72,10 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   
   cp pp/td.pdf ../web/public/data/ens2/pp-td.pdf
 
+  cp cc/td.pdf ../web/public/data/ens2/cc-td.pdf
+
   cp dbdm/td.pdf ../web/public/data/ens2/dbdm-td.pdf
 
   cp toplogie-algebrique/main.pdf ../web/public/data/ens2/topoalg.pdf
-  #cp toplogie-algebrique/td.pdf ../web/public/data/ens2/topoalg-td.pdf
+  cp toplogie-algebrique/td.pdf ../web/public/data/ens2/topoalg-td.pdf
 fi
