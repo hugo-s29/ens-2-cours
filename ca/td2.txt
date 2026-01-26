@@ -1,0 +1,345 @@
+fact_loop := proc(n::nonnegint)
+  local i, res;
+  res := 1;
+  for i to n do
+    res := res*i;
+  end do;
+  return res;
+end proc;
+
+
+
+test_loop := proc() 
+  local n, t;
+  n := 1; 
+  do 
+    t := time(); 
+    fact_loop(n);
+    t := time() - t;
+    printf("n = %d, time = %f seconds\n", n, t); 
+    if 30 < t then
+      return n;
+    end if;
+    n := 2*n;
+  end do;
+end proc;
+
+
+test_loop();
+n = 1, time = 0.000000 seconds
+n = 2, time = 0.000000 seconds
+n = 4, time = 0.000000 seconds
+n = 8, time = 0.000000 seconds
+n = 16, time = 0.000000 seconds
+n = 32, time = 0.000000 seconds
+n = 64, time = 0.000000 seconds
+n = 128, time = 0.000000 seconds
+n = 256, time = 0.001000 seconds
+n = 512, time = 0.000000 seconds
+n = 1024, time = 0.001000 seconds
+n = 2048, time = 0.002000 seconds
+n = 4096, time = 0.006000 seconds
+n = 8192, time = 0.081000 seconds
+n = 16384, time = 0.473000 seconds
+n = 32768, time = 1.883000 seconds
+n = 65536, time = 8.322000 seconds
+n = 131072, time = 40.244000 seconds
+
+                             131072
+
+
+fact_rec := proc(a::posint, b::posint)
+    local m;
+    if a > b then
+        return 1;
+    elif a = b then
+        return a;
+    else
+        m := iquo(a + b, 2);
+        return thisproc(a, m) * thisproc(m + 1, b);
+    end if;
+end proc;
+
+fact := n -> fact_rec(1, n);
+
+test_rec := proc()
+    local n, t;
+    n := 1;
+    while true do
+        t := time():
+        fact(n):
+        t := time() - t;
+        printf("n = %d, time = %f seconds\n", n, t);
+
+        if t > 30 then
+            return n;
+        end if;
+
+        n := n * 2;
+    end do;
+end proc;
+
+test_rec();
+n = 1, time = 0.000000 seconds
+n = 2, time = 0.000000 seconds
+n = 4, time = 0.000000 seconds
+n = 8, time = 0.000000 seconds
+n = 16, time = 0.000000 seconds
+n = 32, time = 0.000000 seconds
+n = 64, time = 0.000000 seconds
+n = 128, time = 0.001000 seconds
+n = 256, time = 0.000000 seconds
+n = 512, time = 0.002000 seconds
+n = 1024, time = 0.002000 seconds
+n = 2048, time = 0.004000 seconds
+n = 4096, time = 0.008000 seconds
+n = 8192, time = 0.012000 seconds
+n = 16384, time = 0.023000 seconds
+n = 32768, time = 0.047000 seconds
+n = 65536, time = 0.101000 seconds
+n = 131072, time = 0.223000 seconds
+n = 262144, time = 0.544000 seconds
+n = 524288, time = 1.361000 seconds
+n = 1048576, time = 2.486000 seconds
+n = 2097152, time = 5.786000 seconds
+n = 4194304, time = 11.062000 seconds
+n = 8388608, time = 23.864000 seconds
+n = 16777216, time = 48.228000 seconds
+
+                            16777216
+
+Ctilde_rec := proc(a::posint, b::posint)
+    local m;
+    if a > b then
+        return 1;
+    elif a = b then
+        return 4*a - 2;
+    else
+        m := iquo(a + b, 2);
+        return thisproc(a, m) * thisproc(m + 1, b);
+    end if;
+end proc;
+
+Ctilde := n -> 
+  if n = 0 then
+      1
+  else
+      Ctilde_rec(1, n)
+  end if;
+
+C := n -> Ctilde(n) / factorial(n + 1);
+
+test_C := proc()
+    local n, t;
+    n := 1;
+    while true do
+        t := time():
+        C(n):
+        t := time() - t;
+        printf("n = %d, time = %f seconds\n", n, t);
+
+        if t > 30 then
+            return n;
+        end if;
+
+        n := n * 2;
+    end do;
+end proc;
+
+test_C();
+
+n = 1, time = 0.000000 seconds
+n = 2, time = 0.000000 seconds
+n = 4, time = 0.000000 seconds
+n = 8, time = 0.000000 seconds
+n = 16, time = 0.000000 seconds
+n = 32, time = 0.000000 seconds
+n = 64, time = 0.000000 seconds
+n = 128, time = 0.000000 seconds
+n = 256, time = 0.001000 seconds
+n = 512, time = 0.001000 seconds
+n = 1024, time = 0.004000 seconds
+n = 2048, time = 0.004000 seconds
+n = 4096, time = 0.007000 seconds
+n = 8192, time = 0.013000 seconds
+n = 16384, time = 0.029000 seconds
+n = 32768, time = 0.065000 seconds
+n = 65536, time = 0.123000 seconds
+n = 131072, time = 0.389000 seconds
+n = 262144, time = 0.558000 seconds
+n = 524288, time = 1.485000 seconds
+n = 1048576, time = 2.930000 seconds
+n = 2097152, time = 6.165000 seconds
+n = 4194304, time = 13.323000 seconds
+n = 8388608, time = 27.839000 seconds
+n = 16777216, time = 60.035000 seconds
+
+                            16777216
+
+
+A := n -> Matrix(2,2, [
+    [0, n+3],
+    [3*n, 2*n+3]
+]) / (n+3);
+
+prodA := proc(a::nonnegint, b::nonnegint)
+    local m;
+    if a >= b then
+        return Matrix(2,2, [[1,0],[0,1]]); # identity
+    elif a = b-1 then
+        return A(a);
+    else
+        m := iquo(a+b,2);
+        return thisproc(m,b) . thisproc(a,m);
+    end if;
+end proc;
+
+V0 := Vector([1,1]);
+
+Mn_vector := n -> prodA(0,n) . V0;
+
+Mn := n -> Mn_vector(n)[1];
+
+test_Mn := proc()
+    local n, t;
+    n := 1;
+    while true do
+        t := time():
+        Mn(n);
+        t := time() - t;
+        printf("n = %d, time = %f seconds\n", n, t);
+
+        if t > 30 then
+            return n;
+        end if;
+
+        n := n * 2;
+    end do;
+end proc;
+
+test_Mn();
+
+n = 5000, time = 0.909000 seconds
+n = 10000, time = 1.959000 seconds
+n = 20000, time = 3.844000 seconds
+n = 40000, time = 7.867000 seconds
+n = 80000, time = 19.353000 seconds
+n = 160000, time = 36.369000 seconds
+
+                             160000
+
+Mn_loop := proc(n::nonnegint)
+    local i, Mprev, Mcurr, Mnext;
+    if n = 0 then
+        return 1;
+    elif n = 1 then
+        return 1;
+    end if;
+
+    Mprev := 1:   # M0
+    Mcurr := 1:   # M1
+
+    for i from 0 to n-2 do
+        Mnext := ((2*i + 3) * Mcurr + 3*i * Mprev) / (i + 3);
+        Mprev := Mcurr;
+        Mcurr := Mnext;
+    end do;
+
+    return Mcurr;
+end proc;
+
+test_Mn_loop := proc()
+    local n, t;
+    n := 5000;
+    while true do
+        t := time():
+        Mn_loop(n);
+        t := time() - t;
+        printf("n = %d, time = %f seconds\n", n, t);
+
+        if t > 30 then
+            return n;
+        end if;
+
+        n := n * 2;
+    end do;
+end proc;
+
+test_Mn_loop();
+
+n = 5000, time = 0.130000 seconds
+n = 10000, time = 0.117000 seconds
+n = 20000, time = 0.440000 seconds
+n = 40000, time = 2.995000 seconds
+n = 80000, time = 12.007000 seconds
+n = 160000, time = 57.314000 seconds
+
+                             160000
+
+B := n -> Matrix(2,2, [
+    [0, 1],
+    [-(n+1), n+3]
+]);
+
+
+prodB := proc(a::nonnegint, b::nonnegint)
+    local m;
+    if a >= b then
+        return Matrix(2,2, [[1,0],[0,1]]);
+    elif a = b-1 then
+        return B(a);
+    else
+        m := iquo(a+b,2);
+        return thisproc(b,m) . thisproc(a,m);
+    end if;
+end proc;
+
+U0 := Vector([1,2]);
+
+Un_vector := n -> prodB(0,n) . U0 / n!;
+
+en := n -> en_vector(n)[1];
+
+test_en := proc()
+    local n, t;
+    n := 1;
+    while true do
+        t := time():
+        Mn(n);
+        t := time() - t;
+        printf("n = %d, time = %f seconds\n", n, t);
+
+        if t > 30 then
+            return n;
+        end if;
+
+        n := n * 2;
+    end do;
+end proc;
+
+test_en();
+
+n = 1, time = 0.000000 seconds
+n = 2, time = 0.000000 seconds
+n = 4, time = 0.000000 seconds
+n = 8, time = 0.001000 seconds
+n = 16, time = 0.000000 seconds
+n = 32, time = 0.002000 seconds
+n = 64, time = 0.003000 seconds
+n = 128, time = 0.004000 seconds
+n = 256, time = 0.006000 seconds
+n = 512, time = 0.010000 seconds
+n = 1024, time = 0.020000 seconds
+n = 2048, time = 0.045000 seconds
+n = 4096, time = 0.098000 seconds
+n = 8192, time = 0.289000 seconds
+n = 16384, time = 0.473000 seconds
+n = 32768, time = 0.972000 seconds
+n = 65536, time = 1.969000 seconds
+n = 131072, time = 4.214000 seconds
+n = 262144, time = 8.598000 seconds
+n = 524288, time = 18.046000 seconds
+n = 1048576, time = 37.447000 seconds
+
+                            1048576
+

@@ -1,0 +1,4 @@
+name: Proofs
+include: .
+depend: standard-library
+flags: --no-import-sorts --allow-unsolved-metas -WnoUserWarning --rewriting
