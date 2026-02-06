@@ -1,7 +1,6 @@
 open import Agda.Primitive
 open import Data.Bool using (if_then_else_)
-open import Data.Nat
-open import Data.Nat.Properties
+open import Data.Nat hiding (_≟_)
 open import Data.Unit using (tt) renaming (⊤ to Unit)
 open import Data.Empty renaming (⊥ to False)
 open import Data.Product using (_×_ ; _,_ ; proj₁ ; proj₂ ; Σ)
@@ -14,10 +13,7 @@ open import Relation.Binary.Definitions
 open import Relation.Binary.PropositionalEquality
 open import Relation.Nullary.Decidable
 
-record Variable : Set where
-  constructor var
-  field
-    ident : String
+open import base
 
 data Formula : Set where
   ⦅_⦆ : Variable → Formula
@@ -36,34 +32,19 @@ a = ⦅ var "a" ⦆
 b = ⦅ var "b" ⦆
 c = ⦅ var "c" ⦆
 
-data Context : Set where
-  ． : Context
-  _⨾_ : Context → Formula → Context
-
-_⨾⨾_ : Context → Context → Context
-Γ ⨾⨾ ． = Γ
-Γ ⨾⨾ Δ ⨾ ϕ = (Γ ⨾⨾ Δ) ⨾ ϕ
-
-⨾⨾-empty : ∀ Γ → ． ⨾⨾ Γ ≡ Γ
-⨾⨾-empty ． = refl
-⨾⨾-empty (Γ ⨾ ϕ) = cong (_⨾ ϕ) (⨾⨾-empty Γ)
-
-length : Context → ℕ
-length ． = 0
-length (Γ ⨾ ϕ) = 1 + length Γ
-
-at : (Γ : Context) → Fin (length Γ) → Formula
-at ． ()
-at (Γ ⨾ ϕ) zero = ϕ
-at (Γ ⨾ x) (suc n) = at Γ n
+Context : Set
+Context = GenContext {Formula}
 
 infix 5 _⊢_
-infixl 11 _⨾_
-infixl 10 _⨾⨾_
 infixr 15 _⇒_
+infixr 15 _⇔_
 infixr 20 _∨_
 infixr 30 _∧_
 infix  40 ¬_
+
+_⇔_ : Formula → Formula → Formula
+f ⇔ g = (f ⇒ g) ∧ (g ⇒ f)
+
 
 data Sequent : Set where
   _⊢_ : Context → Formula → Sequent
@@ -83,9 +64,6 @@ data NJ⟨_⟩[_] : List Sequent → Sequent → Set where
   ∨Il : ∀ {Γ p A B} → NJ⟨ p ⟩[ Γ ⊢ A ] → NJ⟨ p ⟩[ Γ ⊢ A ∨ B ]
   ∨Ir : ∀ {Γ p A B} → NJ⟨ p ⟩[ Γ ⊢ B ] → NJ⟨ p ⟩[ Γ ⊢ A ∨ B ]
   ∨E : ∀ {Γ p A B C} → NJ⟨ p ⟩[ Γ ⊢ A ∨ B ] → NJ⟨ p ⟩[ Γ ⨾ A ⊢ C ] → NJ⟨ p ⟩[ Γ ⨾ B ⊢ C ] → NJ⟨ p ⟩[ Γ ⊢ C ]
-
-test : NJ⟨ [] ⟩[ ． ⨾ x ⨾ y ⊢ x ]
-test = ax (suc zero)
 
 record Rule : Set where
   constructor rule
@@ -413,3 +391,41 @@ module TD1 where
   ex9 R .proj₁ h Γ = h Γ R .proj₁ (⇒I (ax zero))
   ex9 R .proj₂ ¬R Γ A .proj₁ Π = ¬I (¬E (¬R (Γ ⨾ A)) (⇒E (wk-admissible _ _ _ (Π , tt)) (ax zero)))
   ex9 R .proj₂ ¬R Γ A .proj₂ Π = ⇒I (⊥E (¬E (wk-admissible _ _ _ (Π , tt)) (ax zero)))
+
+
+module CourseExercises where
+  ex1-a : NJ[ ． ⊢ a ⇒ a ⇒ a ]
+  ex1-a = ⇒I (⇒I (ax zero))
+
+  ex1-b : NJ[ ． ⊢ ((a ⇒ a) ⇒ b) ⇒ b ]
+  ex1-b = ⇒I (⇒E (ax zero) (⇒I (ax zero)))
+
+  ex2 : NJ[ ． ⨾ ¬ a ∨ ¬ b ⊢ ¬ (a ∧ b) ]
+  ex2 = ¬I (∨E (ax (suc zero)) (¬E (ax zero) (∧El (ax (suc zero)))) (¬E (ax zero) (∧Er (ax (suc zero)))))
+
+  ex7-a : ∀ Γ A B → derivable (rule ((Γ ⨾ A ⊢ B) ∷ (Γ ⨾ B ⊢ A) ∷ []) (Γ ⊢ A ⇔ B))
+  ex7-a Γ A B = ∧I (⇒I (prem zero refl)) (⇒I (prem (suc zero) refl))
+
+  ex7-b : ∀ Γ A B → derivable (rule ((Γ ⊢ A ⇔ B) ∷ (Γ ⊢ B) ∷ []) (Γ ⊢ A))
+  ex7-b Γ A B = ⇒E (∧Er (prem zero refl)) (prem (suc zero) refl)
+
+  ex7-c : ∀ Γ A B → derivable (rule ((Γ ⊢ A ⇔ B) ∷ (Γ ⊢ A) ∷ []) (Γ ⊢ B))
+  ex7-c Γ A B = ⇒E (∧El (prem zero refl)) (prem (suc zero) refl)
+
+  ex10 : ∀ Γ A B → NJ[ Γ ⨾ A ⊢ B ] → NJ[ Γ ⨾ ¬ B ⊢ ¬ A ]
+  ex10 Γ A B Π = ¬I (¬E (ax (suc zero)) (op-admissible (Γ ⨾ ¬ B ⨾ A) (Γ ⨾ A) lem (Π , tt)))
+    where
+    lem : ∀ {Γ} → Γ ⨾ A ⊆ Γ ⨾ ¬ B ⨾ A
+    lem zero = zero , refl
+    lem (suc i) = (suc (suc i)) , refl
+
+
+  _↔_↔_ : Set → Set → Set → Set
+  p ↔ q ↔ r = (p → q) × (q → r) × (r → p)
+
+  ex12 : (∀ A → NJ[ ． ⊢ A ]) ↔ (∀ A → NJ[ ． ⊢ A ∧ ¬ A ]) ↔ NJ[ ． ⊢ ⊥ ]
+  ex12 .proj₁ ⊢A A = ⊢A (A ∧ ¬ A)
+  ex12 .proj₂ .proj₁ ⊢A∧¬A = ¬E (∧Er (⊢A∧¬A ⊤)) ⊤I
+  ex12 .proj₂ .proj₂ ⊢⊥ A = ⊥E ⊢⊥
+
+
