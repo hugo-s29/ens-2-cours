@@ -1,0 +1,31 @@
+\documentclass{../notes}
+
+\title{Complexité Algorithmique}
+\author{Basé sur le cours de Pascal \textsc{Koiran}\\ Notes prises par Hugo \textsc{Salou}}
+
+\usepackage{subfiles}
+
+\ifSubfilesClassLoaded{%
+  \renewcommand\thesection{\arabic{section}}
+  \renewcommand\thepart{\Roman{part}}
+  \renewcommand\thechapter{\phantom}
+  \renewcommand\theequation{\arabic{section}.\arabic{equation}}
+}{}
+
+\newcommand\pbPath{\hyperref[pb:path]{\textsc{Path}}}
+\newcommand\pbQBF{\hyperref[pb:qbf]{\textsc{QBF}}}
+
+\begin{document}
+  \maketitle
+
+  \dominitoc
+  \tableofcontents
+
+  \pagebreak
+
+  %\subfile{chap00.tex}
+  %\subfile{chap01.tex}
+  %\subfile{chap02.tex}
+  \subfile{chap03.tex}
+\end{document}
+

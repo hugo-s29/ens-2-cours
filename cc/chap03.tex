@@ -1,0 +1,211 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Complexité en espace.}
+
+  \begin{rmk}[Rappels]
+    On a que
+    \begin{itemize}
+      \item $\mathrm{NSPACE}(s(n)) \subseteq \mathrm{DTIME}(2^{\mathrm{O}(s(n))})$
+      \item et $\mathrm{NSPACE}(s(n)) \subseteq \mathrm{DSPACE}(s(n)^2)$ (Savitch)
+    \end{itemize}
+    lorsque $s(n) \ge \log n$.
+    On a
+    \[
+    \mathsf{L} \subseteq \mathsf{NL} \subseteq \mathsf{P} \subseteq \mathsf{PSPACE}
+    ,\] et avec Savitch et la hiérarchie en espace, on a 
+    \[
+    \mathsf{NL} \subsetneq \mathsf{PSPACE}
+    .\] 
+  \end{rmk}
+
+  \begin{defn}
+    On définit
+    \[
+    \mathsf{PSPACE} := \bigcup_{k \ge 1} \mathrm{DSPACE}(n^k)
+    .\] 
+  \end{defn}
+
+  \begin{rmk}
+    On peut aussi définir la classe $\mathsf{NPSPACE}$ mais cette classe est égale à $\mathsf{PSPACE}$ par Savitch.
+    On a donc
+    \[
+      \mathsf{P} \subseteq \mathsf{NP} \underset {(*)} \subseteq \mathsf{PSPACE} \underset {(**)} \subseteq \mathsf{EXPTIME} = \bigcup_{k \ge 1} \mathrm{DTIME}(2^{n^k})
+    ,\] 
+    où 
+    \begin{itemize}
+      \item $(*)$ est vraie car $\mathrm{NTIME}(t(n)) \subseteq \mathrm{DSPACE}(t(n))$ ;
+      \item $(**)$ est vraie car $\mathrm{DSPACE}(s(n)) \subseteq \mathrm{DTIME}(2^{\mathrm{O}(s(n))})$.
+    \end{itemize}
+    On sait, de plus, que $\mathsf{P} \subsetneq \mathsf{EXPTIME}$ par la hiérarchie en temps (variante (vue en TD) de la hiérarchie en espace vue avant).
+  \end{rmk}
+
+  \section{Formules booléennes quantifiés.}
+
+  On autorise des quantificateurs universels et existentiels aux formules vues précédemment.
+
+  \begin{exm}
+    Les formules
+    \begin{itemize}
+      \item $\forall x \: \exists y \: \big(\overbrace{(x \vee y) \wedge (\bar{x} \vee \bar{y})}^{\text{c'est $x \operatorname{xor} y$}}\big)$
+      \item $\exists y \: \forall x \:  \big((x \vee y) \wedge (\bar{x} \vee \bar{y})\big)$
+    \end{itemize}
+    sont des formules booléennes quantifiées.
+    La première est vraie (avec $y = \bar{x}$) mais pas la seconde (avec $x = y$).
+    On suppose que les quantificateurs sont tous en début de formule (forme prénexe).
+  \end{exm}
+
+  \begin{defn}
+    On définit le problème
+    \problem[QBF]{pb:qbf}{Une formule booléenne quantifiée $F$ (close)}{Est-ce que $F$ est vraie ?}
+  \end{defn}
+
+  \begin{prop}
+    On a $\pbQBF \in \mathsf{PSPACE}$.
+  \end{prop}
+  \begin{prv}
+    On utilise l'algorithme suivant.
+    \begin{enumerate}
+      \item Si $F$ ne contient pas de quantificateurs, accepter si $F$ s'évalue à vrai et rejeter si $F$ s'évalue à faux.
+      \item Si $F = \exists x \: G$, on décide récursivement avec  $G[x := 0]$ et  $G[x := 1]$
+        Si une de ces formules s'évalue à vrai, accepter sinon rejeter.
+      \item Si $F = \forall x \: G$, on décide récursivement avec  $G[x := 0]$ et  $G[x := 1]$
+        Si une de ces formules s'évalue à faux, rejeter sinon accepter.
+    \end{enumerate}
+    Cet algorithme utilise un espace linéaire.
+  \end{prv}
+
+  \begin{thm}
+    Le problème \pbQBF\ est $\mathsf{PSPACE}$-complet.
+  \end{thm}
+  \begin{prv}
+    Supposons que $A$ est résolu en espace $n^k$ par une machine~$M$ à un ruban.
+    On va montrer que $A \le_\mathrm{P} \pbQBF$.
+    
+    On considère le diagramme espace-temps de taille $n^k$ en espace et $2^{c \cdot n^k}$ en temps.
+    On ne peut pas simplement utiliser la même preuve que pour \textsc{sat} car le diagramme est exponentiel.
+
+    On construit une formule $\phi_t(c_1, c_2)$ qui exprime qu'on peut aller de la configuration $c_1$ en la configuration $c_2$ en au plus $2^t$ étapes de calcul.
+
+    On a donc que $M$ accepte si $\phi_{c \cdot n^k}(c_\text{initiale}, c_\text{finale})$.\footnote{On peut considérer qu'il y a une unique configuration acceptante, quitte à transformer tout état acceptant en un état qui efface tout le ruban et remet la tête en position initiale.}
+
+    La formule $\phi_{0}(c_1, c_2)$ est de taille polynomiale (\textit{c.f.}\ preuve du théorème de Cook).
+
+    Pour aller de $\phi_t$ à $\phi_{t+1}$, on cherche la configuration du milieu.
+    On pourrait utiliser $(*) := \exists c\: \phi_t(c_1, c) \wedge \phi_t(c, c_2)$ qui est correcte mais trop couteuse (taille exponentielle).
+    On choisit plutôt :
+    \[
+      \exists c \: \forall c_3 \: \forall c_4 \: \big[ (c_3 = c_1 \wedge c_4 = c) \vee (c_3 = c \wedge c_4 = c_2)  \big] \Rightarrow \phi_t(c_3, c_4)
+    .\]
+    Cette formule est logiquement équivalente à $(*)$ (en regardant les cas où $(c_3, c_4) = (c_1, c)$ et $(c_3, c_4) = (c, c_2)$).
+    Il est important de se rappeler que que $c$, $c_3$, $c_4$ ne sont pas des variables mais des $n$-uplets  de taille $\mathrm{O}(n^k)$ variables booléennes.
+    La taille de $\phi_{t+1}$ augmente de $\mathrm{O}(n^k)$ par rapport à la taille de $\phi_t$.
+    Au final, on est de taille $\mathrm{O}(n^{2k})$.\footnote{Le passage quadratique est similaire au théorème de Savitch.}
+  \end{prv}
+
+  Le problème \pbQBF\ est "le" problème $\mathsf{PSPACE}$-complet. En TD, on fera des réductions de certains problèmes à \pbQBF.
+
+  \begin{thm}[Savitch]
+    On a $\mathrm{NSPACE}(s(n)) \subseteq \mathrm{DSPACE}(s(n)^2)$ si $s(n) \ge \log n$.\footnote{Depuis sa preuve, on n'a jamais réussi à améliorer ce résultat, ni montrer qu'un facteur carré est nécessaire.}
+    \qed
+  \end{thm}
+
+  \begin{crlr}
+    On a $\mathsf{NL} \subseteq \mathrm{DSPACE}(\log^2 n)$.
+  \end{crlr}
+
+  \begin{prop}
+    On a que $\pbPath \in \mathrm{DSPACE}(\log^2 n)$, où
+    \problem[Path]{pb:path}
+    {Un graphe $G$ orienté, et $s, t \in \mathrm{V}(G)$}
+    {Existe-t-il un chemin de $s$ à $t$ dans $G$ ?}
+  \end{prop}
+
+  \begin{rmk}
+    En TD, on a vu que \pbPath\ est $\mathsf{NL}$-complet, et donc la proposition implique le corollaire.
+    En effet, soit $A \in \mathsf{NL}$ et $x \in \{0,1\}^n$, on a 
+    \[
+    x \in A \iff f(x) \in \pbPath
+    ,\]
+    où $f : A \le_\mathrm{L} \pbPath$ est la réduction en espace logarithmique (car le problème \pbPath\ est $\mathsf{NL}$-complet).
+    La construction de $f(x)$ se fait en espace $\mathrm{O}(\log n)$ et décider si $f(x) \in \textsc{Path}$ ou non peut se faire en espace $\mathrm{O}(\log^2 |f(x)|$, or $|f(x)|$ est polynomial en $|x| = n$, d'où la borne annoncée.
+  \end{rmk}
+
+  \vspace{12pt}
+
+  \begin{prv}[de la proposition]
+    On donne un algorithme $\textsf{path}(G, u, v, i)$ en espace $\mathrm{O}(\log^2 n)$ qui décide s'il existe, dans $G$, un chemin de $u$ à $v$ de longueur au plus $2^i$.
+    On pourra donc résoudre \pbPath\ en appelant $\textsf{path}(G, s, t, \left\lceil \log n \right\rceil)$.
+
+    \begin{algorithmic}[1]
+      \Procedure{$\mathsf{path}$}{$G, u, v, i$}
+      \If{$i = 0$}
+      \If{$u v \in \mathrm{E}(G)$ ou $u = v$} \textbf{Accepter}
+      \Else \textbf{ Rejeter}
+      \EndIf
+      \EndIf
+      \ForAll{sommet $w \in \mathrm{V}(G)$}
+      \If{$\mathsf{path}(G, u, w, i - 1)$ et $\mathsf{path}(G, w, v, i-1)$}
+      \State \textbf{Accepter}
+      \EndIf
+      \EndFor
+      \State \textbf{Rejeter}
+      \EndProcedure
+    \end{algorithmic}
+
+    Pour la correction, on montre si $\mathsf{path}(G, u, v, i)$ accepte alors il existe un chemin de longueur au plus $2^i$ par récurrence sur $i$.
+    \begin{itemize}
+      \item Pour le cas $i = 0$, c'est bon par le premier "\textbf{si}".
+      \item Pour l'hérédité, si on a un chemin de longueur au plus $2^{i-1}$ de $u$ à $w$ et un chemin de longueur au plus $2^{i-1}$ de $w$ à $v$, on concatène ces chemins pour obtenir un chemin de $u$ à $v$ de longueur au plus $2^i$.
+    \end{itemize}
+
+    Réciproquement, s'il existe un chemin de $u$ à $v$ de longueur au plus $2^i$, alors $\mathsf{path}(G, u, v, i)$ accepte, car il suffit de choisir $w$ comme sommet milieu du chemin.
+
+    On a $\mathrm{O}(\log n)$ appels récursifs; et à chaque appel, on doit mémoriser $w$ ce qui demande $\mathrm{O}(\log n)$ bits.
+    On en déduit une complexité en espace en $\mathrm{O}(\log^2 n)$.
+  \end{prv}
+
+  \vspace{12pt}
+
+  \begin{prv}[du théorème de Savitch]
+    Supposons que $A$ peut être résolu par une machine non-déterministe $M$ en espace $\mathrm{O}(s(n))$ où est $s(n)$ constructible en espace.
+    Soit $x \in \{0,1\}^n$  une instance de~$A$.
+
+    On considère le graphe $G_x$ des \textit{\textbf{configurations potentielles}} de la machine $M$ sur l'entrée $x$, c'est-à-dire l'ensemble des configurations avec $x$ en entrée et au plus $c \cdot s(n)$ cases utilisées sur chaque ruban de travail.
+
+    \begin{lem}
+      Le graphe $G_x$ a $2^{\mathrm{O}(s(n))}$ sommets et peut être construit en espace $\mathrm{O}(s(n))$.
+      \qed
+    \end{lem}
+
+    On a que 
+    \[
+    x \in A \quad\quad \iff \quad \quad (G_x, s, t) \in \pbPath
+    ,\] 
+    où $s$ est la configuration initiale de $M$ sur l'entrée $x$ et $t$ la configuration acceptante (qu'on supposera unique, \textit{c.f.}\ preuve de la $\mathsf{PSPACE}$-complétude de \pbQBF).
+    Par le lemme, on a que $(G_x, s, t)$ se fait en espace $\mathrm{O}(s(n))$. Décider si $(G_x, s, t) \in \pbPath$ se fait en espace $\mathrm{O}(\log^2 |G_x|)$ donc $\mathrm{O}(s(n)^2)$.
+  \end{prv}
+
+  \begin{rmk}
+    La preuve précédente utilise deux résultats
+    \begin{itemize}
+      \item le théorème de composition \textit{amélioré} :
+    \end{itemize}
+    \begin{thm}[Composition]
+      Soient $f$ et $g$ deux fonctions calculables en espace $s_f(n)$ (\textit{resp}.\ $s_g(n)$).
+      On peut calculer la composée  $(f \circ g)(x)$ en espace $\mathrm{O}(s_g(|x|)) + s_f(|g(x)|)$.
+      \qed
+    \end{thm}
+    \begin{itemize}
+      \item et le fait que l'on pourra supprimer l'hypothèse de constructibilité de $s(n)$ :
+
+        Pour cela, on essaye $s(n) = 1, 2, \ldots$ et on s'arrête à $s(n) = i$ si aucune configuration de taille  $i + 1$ n'est accessible à partir de la configuration initiale sur l'entrée $x$ (appel à l'algorithme pour \pbPath).
+    \end{itemize}
+  \end{rmk}
+
+  \begin{rmk}
+    Le problème \pbPath\ dans les graphes non-orientés est dans $\mathsf{L}$ ! C'est un résultat récent (2005).
+  \end{rmk}
+
+  La prochaine fois, on s'intéresse aux oracles.
+\end{document}
