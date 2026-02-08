@@ -259,7 +259,7 @@
 \declaretheorem[style=thmredbox, name=``Lemme'']{not-lem}         \defineMarkerColor{not-lem}{deepred}    \removefootnoteinside{not-lem}
 
 \declaretheorem[style=thmproofbox, name=Preuve]{replacementproof}
-\newenvironment{prv}[1][\proofname]{\vspace{-12pt}\begin{replacementproof}}{\end{replacementproof}} \removefootnoteinside{prv} \defineMarkerColor{prv}{deepred}
+\newenvironment{prv}[1][]{\vspace{-12pt}\if\relax\detokenize{#1}\relax\begin{replacementproof}\else\begin{replacementproof}[#1]\fi}{\end{replacementproof}} \removefootnoteinside{prv} \defineMarkerColor{prv}{deepred}
 
 \declaretheorem[style=thmexplanationbox, name=Solution]{replacementsolution}
 \newenvironment{sol}[1][\proofname]{\vspace{-12pt}\begin{replacementsolution}}{\end{replacementsolution}} \removefootnoteinside{sol} \defineMarkerColor{sol}{deepblue}
@@ -466,6 +466,7 @@
     \end{NiceTabular}
     \label{#2}
   \end{figure}
+  \csgdef{pb#1}{\hyperref[#2]{\textsc{#1}}}
 }
 
 \newfontface\unshape[]{Latin Modern Roman Unslanted} 
