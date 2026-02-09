@@ -4,6 +4,19 @@
 \author{Basé sur le cours de Pascal \textsc{Koiran}\\ Notes prises par Hugo \textsc{Salou}}
 
 \usepackage{subfiles}
+\usepackage{juliamono}
+\usepackage[notion,hyperref]{knowledge}
+
+
+\hypersetup{
+  colorlinks,
+  citecolor=black,
+  filecolor=black,
+  linkcolor=deepblue,
+  pdfencoding=auto,
+  psdextra,
+  urlcolor=blue
+}
 
 \ifSubfilesClassLoaded{%
   \renewcommand\thesection{\arabic{section}}
@@ -11,6 +24,13 @@
   \renewcommand\thechapter{\phantom}
   \renewcommand\theequation{\arabic{section}.\arabic{equation}}
 }{}
+
+\knowledgedirective {problem}{notion,style=problem,intro style=intro problem}
+\knowledgestyle{intro problem}{smallcaps, ensuretext, color=deepblue!70}
+\knowledgestyle{problem}{smallcaps, ensuretext, color=deepblue}
+
+\input{notions.tex}
+\directlua{dofile("turing.lua")}
 
 \begin{document}
   \maketitle
@@ -20,9 +40,12 @@
 
   \pagebreak
 
-  %\subfile{chap00.tex}
-  %\subfile{chap01.tex}
-  %\subfile{chap02.tex}
+  Merci Amaury MAZOYER pour les $2.5$ premiers chapitres (même si j'ai corrigé quelques coquilles).
+
+  \pagebreak
+
+  \subfile{chap01.tex}
+  \subfile{chap02.tex}
   \subfile{chap03.tex}
 \end{document}
 

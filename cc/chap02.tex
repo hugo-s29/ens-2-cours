@@ -1,0 +1,202 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Circuits booléens.}
+
+  \section{Définitions.}
+
+  \begin{defn}
+    Un \textit{circuit booléen} est un DAG\footnote{\textit{Directed Acyclic Graph}, un graphe orienté acyclique} dont les sommets sont étiquetés et de degré entrant $0$, $1$ ou $2$ :
+    \begin{itemize}
+      \item les sommets de degré entrant $2$ sont étiquetés par $\wedge$ ou $\vee$ ;
+      \item les sommets de degré entrant $1$ sont étiquetés par $\lnot$ ;
+      \item les sommets de degré $0$ sont étiquetés par $0$, $1$ ou des variables booléennes $x_1, \ldots, x_n$.
+    \end{itemize}
+    Les sommets sont appelés \textit{portes}, et les sommets de degré $0$ sont des  \textit{portes d'entrées}.
+  \end{defn}
+
+  \begin{defn}
+    Soit $C$ un circuit booléen avec des variables d'entrée $x_1, \ldots, x_n$.
+    Étant donné une \textit{valuation} $a \in \{\texttt{0}, \texttt{1}\}^n$, pour chaque porte $\alpha$ de $C$, on définit la \textit{valeur} prise par $\alpha$ sur l'entrée $a$ par :
+    \begin{itemize}
+      \item pour les portes d'entrées, on pose  \[
+        \mathrm{val}(x_i) := a_i, \quad \mathrm{val}(0) := \texttt{0}, \quad \mathrm{val}(1) := \texttt{1}\;
+        ;\]
+      \item pour les autres portes, on pose
+        \begin{itemize}
+          \item $\mathrm{val}(\alpha \vee \beta) = \mathrm{val}(\alpha) \mathbin{\texttt{||}} \mathrm{val}(\beta)$,
+          \item $\mathrm{val}(\alpha \wedge \beta) = \mathrm{val}(\alpha) \mathbin{\texttt{\&\&}} \mathrm{val}(\beta)$,
+          \item $\mathrm{val}(\lnot \alpha) = \texttt{not}\: \mathrm{val}(\alpha)$.
+        \end{itemize}
+    \end{itemize}
+  \end{defn}
+
+  \begin{defn}
+    Si $C$ n'a qu'une seule porte $\alpha$ de degré sortant $0$, on dit une $\alpha$ est \textit{porte de sortie} de $C$, et on pose $\mathrm{val}(C) := \mathrm{val}(\alpha)$.
+
+    On peut donc dire que $C$ calcule une fonction $f : \{\texttt{0}, \texttt{1}\}^n \to \{\texttt{0}, \texttt{1}\}$ lorsque $f(a)$ est la valeur prise par $C$ sur l'entrée~$a$.
+
+    Plus généralement, si $C$ a $s$ portes de sorties, le circuit $C$ peut calculer une fonction $f : \{\texttt{0}, \texttt{1}\}^n \to \{\texttt{0}, \texttt{1}\}^ s$.
+  \end{defn}
+
+  \begin{rmk}
+    Toute fonction booléenne peut être calculée par un circuit : il suffit de considérer l'arbre de syntaxe de celle-ci.
+  \end{rmk}
+
+  \begin{exo}
+    Donner une famille de fonctions booléennes "explicites" $(f_n)_{n \ge 1}$ qui ne sont pas calculables par des circuits de taille polynomiale.
+  \end{exo}
+
+  \begin{lem}
+    On a $\pbValCirc \in \p$ où
+
+    \showValCirc
+  \end{lem}
+  \begin{prv}
+    On utilise l'algorithme suivant :
+
+    \begin{algorithmic}[1]
+      \State Calculer un tri topologique de $C$ (pour la boucle ci-dessous).
+      \For{toute porte $\alpha$ de $C$}
+      \State Évaluer $\alpha$ à l'aide des valeurs déjà calculées\footnote{Par l'ordre topologique, on sait que les entrées de $\alpha$ ont déjà été évaluées.}
+      \EndFor
+      \State \Return la valeur de la porte de sortie
+    \end{algorithmic}
+  \end{prv}
+
+  \section{Simulation de machines de Turing par les circuits.}
+
+  \begin{prop}
+    Soit $M$ une machine à un ruban fonctionnant en temps $T(n)$. On peut simuler $M$ sur les entrées de taille $n$ par un circuit de taille $\mathrm{O}(T(n)^2)$.
+  \end{prop}
+
+  \begin{rmk}
+    On peut donner la borne de $\mathrm{O}(T(n) \log T(n))$ au lieu de $\mathrm{O}(T(n)^2)$, même pour des machines à plusieurs rubans.
+  \end{rmk}
+
+  \begin{defn}
+    Un \textit{diagramme espace-temps} est un diagramme 2D représentant l'état d'un ruban de $M$ au cours du temps (figure~\ref{fig:space-time-diagram})
+  \end{defn}
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \directlua{draw_spacetime_diagram({
+        tape_width = 7,
+        steps = {
+          {content = {'1', '0', '1'}, head_pos = 1},
+          {content = {'1', '1', '1'}, head_pos = 2},
+          {content = {'1', '1', '0'}, head_pos = 3},
+          {content = {'1', '1', '0', '1'}, head_pos = 4},
+          {content = {'1', '1', '0', '1'}, head_pos = 3}
+        }
+      })}
+    \end{tikzpicture}
+    \caption{Exemple de diagramme espace-temps}
+    \label{fig:space-time-diagram}
+  \end{figure}
+
+
+  \begin{prv}[Simulation par circuit]
+    Considérons un diagramme de taille $p \times p$, où $p = T(n) + 1$.
+    Par la localité du calcul, le contenu de la cellule $(i, t)$ ne dépend que de trois cellules sur le ruban du dessous : celle directement en dessous, celle en dessous et à gauche, et celle en dessous et à droite.
+
+    Définissons une variable $\ell_{a,i,t}$ qui dit "à l'instant $t$, la case $i$ contient la lettre $a$" pour tout $a, i, t$.
+    Définissions aussi $q_{r, i, t}$ indiquant "à l'instant $t$ la machine est dans l'état $r$ et la tête de lecture est sur la case $i$".
+
+    Comme indiqué, on peut déterminer la valeur de ces variables à partir des valeurs de ces variables avec $(i-1, t-1)$, $(i, t- 1)$ et $(i+1, t - 1)$.
+    Ceci nous permet d'en déduire une fonction booléenne
+     \[
+    f : \{\texttt{0}, \texttt{1}\}^{3p} \to \{\texttt{0}, \texttt{1}\}^p
+    .\]
+    Cette fonction ne dépendant que des transitions de $M$, on en déduit un circuit $C$ calculant $f$.
+
+    En réalisant $\mathrm{O}(T(n)^2)$ copies de $C$, on obtient le circuit final.
+    L'entrée est acceptée si $\bigvee_{i=0}^{T(n)} q_{q_\text{accepte}, i, T(n)}$ a pour valeur $\texttt{1}$.
+  \end{prv}
+
+  \begin{defn}[Famille de circuits uniforme]
+    Soit $(C_n)_{n \ge 1}$ une famille de circuits sur $n$ variables.
+    Cette famille est \textit{uniforme} s'il existe une machine de Turing qui, sur l'entrée $\texttt{1}^n$, calcule une description complète de $C_n$ en temps polynomial.
+    C'est-à-dire, pour chaque porte $\alpha$ de $C_n$, elle calcule 
+    \begin{itemize}
+      \item le type de porte ;
+      \item si c'est une porte d'entrée, son étiquette ;
+      \item si ce n'est pas une porte d'entrée, les numéros des portes en entrée de $\alpha$.
+    \end{itemize}
+  \end{defn}
+
+  \begin{rmk}
+    Si $(C_n)_{n \ge 1}$ est une famille uniforme, alors $C_n$ est de taille polynomiale en $n$ car sa description complète est écrite en temps polynomial.
+  \end{rmk}
+
+  \begin{thm}
+    Un langage $L \subseteq \{\texttt{0}, \texttt{1}\}^\star$ est dans $\p$ si et seulement si $L$ est reconnu par une famille uniforme de circuits booléens de taille polynomiale.
+  \end{thm}
+  \begin{prv}
+    \begin{itemize}
+      \item "$\implies$".
+        Soit $L \in \p$.
+        Dans la preuve précédente, on construit une famille de circuits taille polynomiale.
+        Elle est uniforme car il suffit d'itérer sur $i$ et sur $t$, pour calculer les valeurs de $\ell_{a, i, t}$ et $q_{r, i, t}$.
+        Ceci se fait en temps polynomial.
+      \item "$\impliedby$".
+        Pour tester si $x \in \{\texttt{0}, \texttt{1}\}^n$ est dans $L$, on construit $C_n$ (en temps polynomial), puis on évalue $C_n$ sur $x$ (qui se fait en temps polynomial).
+    \end{itemize}
+  \end{prv}
+
+  \section{Premiers problèmes $\np$-complets.}
+
+  \begin{thm}
+    Le problème \pbCircuitSat\ est $\np$-complet où
+    \showCircuitSat
+  \end{thm}
+  \begin{prv}
+    \begin{itemize}
+      \item D'une part, $\pbCircuitSat \in \np$ avec $a$ le certificat et \pbValCirc\ le problème de vérification.
+      \item D'autre part, soit $L \in \np$.
+        Il existe une machine de Turing non-déterministe $M$ fonctionnant en temps polynômial et qui reconnaît $L$.
+        Soit $x \in \{\texttt{0}, \texttt{1}\}^n$. On doit construire en temps polynomial un circuit $C_x$ qui est satisfiable ssi $x \in L$.
+
+        On peut simuler $M$ sur l'entrée $x$ par un circuit de taille~$\mathrm{O}(T(n)^2)$\ldots\ mais ce n'est pas suffisant : il faut modéliser le non-déterminisme.
+
+        On ajoute des variables d'entrée supplémentaires $y_1, \ldots, y_{T(n)}$ qui modélisent les choix non-déterministes de la machine~$M$.
+
+        On en déduit $C_x$ (construit en temps polynomial) qui simule $M$ sur l'entrée $x$ avec les $(y_i)_i$ pour les choix non-déterministes.
+
+        On a que $C_x$ est satisfiable si et seulement s'il existe une suite de choix non-déterministes (les valeurs des $y_i$) telle que $M$ accepte l'entrée $x$, c'est-à-dire ssi $x \in L$.
+    \end{itemize}
+  \end{prv}
+
+  \begin{thm}[Cook-Levin]
+    Le problème \pbThreeSat\ est $\np$-complet où
+    \showThreeSat
+  \end{thm}
+  \begin{prv}
+    \begin{itemize}
+      \item On a que $\pbThreeSat \in \np$ car on peut utiliser la valuation comme certificat.
+      \item On fait une réduction de \pbCircuitSat\ à \pbThreeSat.
+        Soit $C$ un circuit booléen avec des variables $x_1, \ldots, x_n$.
+        Pour chaque porte $\alpha$, on crée une variable $z_\alpha$ qui représente la valeur prise par le porte $\alpha$.
+        On utilise l'identité $(P \Rightarrow Q) \Leftrightarrow \bar{P} \vee Q$ pour construire les clauses qui contraignent les variables $z_\alpha$ à respecter le fonctionnement des portes.
+        Par exemple :
+        \begin{itemize}
+          \item si $\alpha = \beta \wedge \gamma$, on ajoute les clauses 
+            \[
+              \underbrace{(\bar{z}_\beta \vee \bar{z}_\gamma \vee z_\alpha)}_{\beta \wedge \gamma \Rightarrow \alpha} , \quad \underbrace{(z_\beta \vee \bar{z}_\alpha)}_{\alpha \Rightarrow \beta} \quad \text{ et } \quad \underbrace{(z_\gamma \vee \bar{z}_\alpha)}_{\gamma \Rightarrow \alpha} \;
+            ;\] 
+          \item si $\alpha = \beta \vee \gamma$, on ajoute les clauses 
+            \[
+              \underbrace{(z_\beta \vee z_\gamma \vee \bar{z}_\alpha)}_{\alpha \Rightarrow  \beta \vee \gamma} , \quad \underbrace{(\bar{z}_\beta \vee z_\alpha)}_{\beta \Rightarrow \alpha} \quad \text{ et } \quad \underbrace{(\bar{z}_\gamma \vee z_\alpha)}_{\gamma \Rightarrow \alpha} \;
+            ;\] 
+          \item si $\alpha = \lnot \beta$, on ajoute les clauses 
+            \[
+              \underbrace{(\bar{z}_\beta \vee \bar{z}_\alpha)}_{\alpha \Rightarrow \bar{\beta}}
+              \quad\text{et}\quad
+              \underbrace{(z_\beta \vee z_\alpha)}_{\bar{\alpha} \Rightarrow \beta}\;
+            .\]
+        \end{itemize}
+        Enfin, on ajoute la clause $z_{\alpha_\text{sortie}}$ pour forcer la porte de sortie à être vraie.
+    \end{itemize}
+  \end{prv}
+\end{document}

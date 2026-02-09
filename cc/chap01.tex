@@ -1,0 +1,199 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Machines de Turing.}
+  
+  On travaille avec des machines à $k \ge 1$ rubans. Les rubans sont semi-infinis à droite et sur chaque ruban, on a une tête de lecture qui lit le contenu d'une case.
+
+  À chaque étape,
+  \begin{itemize}
+    \item la machine $M$ lit les $k$ caractères situés sous les têtes de lecture $(a_1, \ldots, a_k)$ ;
+    \item en fonction de son état interne $q \in Q$, et des caractères lus, $M$ remplace chaque $a_i$ par $a_i'$, déplace les têtes de lectures (d'au plus un case à droite ou à gauche), et passe dans un état $q' \in Q$.
+  \end{itemize}
+
+  \section{Définitions.}
+
+  \begin{defn}
+    Formellement, une \textit{machine de Turing} à $k$ rubans est un triplet $(\Gamma, Q, \delta)$ où
+    \begin{itemize}
+      \item $\Gamma$ est l'alphabet du ruban ;
+      \item $Q$ est un ensemble fini d'états ;
+      \item $\delta : Q \times \Gamma^k \to Q \times \Gamma^k \times \{\texttt{←}, \texttt{→}, \texttt{I}\}^k$ la fonction de transition.
+    \end{itemize}
+  \end{defn}
+
+  \begin{rmk}
+    On fixe 
+    \begin{itemize}
+      \item un \textit{ruban d'entrée} (généralement supposé en lecture uniquement), 
+      \item un \textit{ruban de sortie} (généralement supposé en écriture uniquement),
+      \item un état initial $q_\text{initial}$ ;
+      \item un état final $q_\text{final}$ ;
+      \item un symbole blanc $\intro * \blank \in \Gamma$ ;
+      \item un symbole de départ $\intro * \start \in \Gamma$ ;
+      \item un alphabet d'entrée $\Sigma \subseteq \Gamma \setminus \{\start, \blank\}$.\footnote{Généralement, on prendra $\Sigma \subseteq \{\texttt{0},\texttt{1}\}$.}
+    \end{itemize}
+
+    Au départ, $M$ est dans l'état $q_\text{initial}$, le ruban d'entrée contient le mot infini $\start x \blank^\infty$ où $x \in \Sigma^\star$ est l'entrée.
+  \end{rmk}
+
+  \begin{defn}
+    On dit que $M$ \textit{calcule} la fonction $f : \Sigma^\star \to \Sigma^\star$ si, pour toute entrée $x \in \Sigma^\star$, le calcul de $M$ termine et $f(x)$ est écrit sur le ruban de sortie.
+
+    On dit qu'un langage $L \subseteq \Sigma^\star$ est \textit{reconnu} si on peut calculer la fonction $\mathds{1}_L : \Sigma^\star \to \{\texttt{0}, \texttt{1}\} \subseteq \Sigma$.
+    On peut aussi avoir un état $q_\text{accepte}$ acceptant et un état $q_\text{rejet}$ de rejet.
+  \end{defn}
+
+  \begin{rmk}[Variantes]
+    On peut considérer un modèle avec des rubans bi-infinis. C'est un modèle équivalent (\textit{c.f.}\ TD).
+
+    On peut considérer une machine avec $\Gamma = \{\texttt{0}, \texttt{1}, \texttt{2}, \texttt{3}, \blank, \start\}$, c'est-à-dire un alphabet plus gros. Ce modèle est équivalent avec l'association 
+    \[
+      \texttt{0} \leftrightarrow \texttt{00} \quad\quad \texttt{1} \leftrightarrow \texttt{01} \quad\quad \texttt{2} \leftrightarrow \texttt{10} \quad\quad \texttt{3} \leftrightarrow \texttt{11}
+    .\]
+  \end{rmk}
+
+
+  \begin{defn}
+    Un langage $L \subseteq \Sigma^\star$ est \textit{reconnu en temps} $T(n)$ par une machine $M$ si
+    \begin{itemize}
+      \item $M$ reconnaît $L$ ;
+      \item sur toute entrée $x$ de taille $n$, la machine $M$ s'arrête en au plus $T(n)$ étapes de calcul.
+    \end{itemize}
+  \end{defn}
+
+  \begin{defn}
+    On dit que $L$ est dans la classe $\intro * \dtime{f(n)}$ s'il existe une machine (à plusieurs rubans) qui reconnaît $L$ en temps~$\mathrm{O}(f(n))$.
+    On supposera toujours avoir $f(n) \ge n + 1$.\footnote{Il faut, au moins, lire l'entrée.}
+  \end{defn}
+
+  \begin{defn}
+    La classe $\intro*\p$ est l'ensemble des langages reconnaissables en temps polynomial :
+     \[
+       \p = \bigcup_{\alpha \ge 1} \dtime{n^\alpha}
+    .\]
+  \end{defn}
+
+  \begin{thm}
+    Si $L \in \dtime{f(n)}$ alors  $L$ peut être reconnu en temps $\mathrm{O}(f(n)^2)$ sur une machine à un ruban.
+  \end{thm}
+
+  \begin{thm}[Simulation efficace]
+    Pour toute machine $M$ fonctionnant en temps $T(n)$, il existe une machine $M'$ à deux rubans qui fonctionne en temps $\mathrm{O}(T(n) \log T(n))$ telle que $M(x) = M'(x)$ pour toute entrée $x \in \Sigma^\star$.
+  \end{thm}
+
+  \begin{defn}
+    Étant donné $x, y$, on définit l'encodage du~couple $(x,y)$ comme le mot $\intro*\code{x, y} = \texttt{1}^{|x|} \texttt{0} x y$.
+  \end{defn}
+
+  \begin{defn}
+    Une \textit{machine universelle} $U$ prend en entrée des coules $\code{x,\alpha}$ (où $\alpha$ est le code d'une machine $M_\alpha$ et $x \in \Sigma^\star$) et simule la machine $M_\alpha$ sur l'entrée $x$.
+    Autrement dit, pour tout $x$ et tout $\alpha$, on a 
+    \[
+      U(\code{x, \alpha}) = M_\alpha(x)
+    .\]
+  \end{defn}
+
+  \begin{thm}
+    Il existe une machine de Turing universelle $U$ telle que, sur tout entrée $\code{x, \alpha}$, si  $M_\alpha$ s'arrête sur $x$ en $t$ étapes, alors la machine $U$ s'arrête sur $\code{x, \alpha}$ en au plus $c\: t \log t$, où $c$ ne dépend que de $x$.
+  \end{thm}
+  \begin{prv}
+    \begin{itemize}
+      \item \textit{Cas d'une machine à deux rubans.}
+        On montre d'abord que si $M_\alpha$ est une machine à deux rubans, alors $U$ peut simuler $M_\alpha$ en temps linéaire.
+        En effet, on utilise quatre rubans (figure~\ref{fig:univ-constr}) :
+        \begin{itemize}
+          \item deux rubans pour stocker les deux rubans de $M_\alpha$ ;
+          \item un ruban qui stocke l'état de $M_\alpha$ ;
+          \item le ruban d'entrée qui contient $\code{x, \alpha}$.
+        \end{itemize}
+
+        Pour faire une étape de calcul de $M_\alpha$, la machine $U$ doit déterminer $\delta(q, a, b)$, mais la complexité de cette opération est cachée dans la constante.
+      \item \textit{Cas général.}
+        Par le théorème de simulation efficace, on peut construire une machine $M_\beta$ à deux rubans équivalente et on peut simuler $M_\beta$ en temps linéaire, et on obtient bien la complexité attendue.
+    \end{itemize}
+  \end{prv}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+    \directlua{turing_diagram('M', {
+        {name = 'out', label = [[état de $M_\alpha$]], n = 7, content = {}, head_pos = 4},
+        {name = 'w1', label = [[ruban de travail de $M_\alpha$]], n = 7, content = {}, head_pos = 2},
+        {name = 'w1', label = [[ruban de travail de $M_\alpha$]], n = 7, content = {}, head_pos = 3},
+        {name = 'in', label = [[ruban d'entrée $\code{x, \alpha}$]], n = 7, content = {}, head_pos = 1}
+    })}
+    \end{tikzpicture}
+    \caption{Construction de $U$ dans le cas à deux rubans}
+    \label{fig:univ-constr}
+  \end{figure}
+
+  \section{Non déterminisme.}
+
+  \begin{defn}
+    Une \textit{machine de Turing non-déterministe} est un triplet $(\Gamma, Q, \delta)$ où
+    \[
+    \delta : Q \times \Gamma^k \to \wp(Q \times \Gamma^k \times \{\texttt{←}, \texttt{→}, \texttt{I}\}^k)
+    ,\]
+    où l'on distingue deux états $q_\text{accepte}$ et $q_\text{rejet}$.
+
+    Une entrée $x \in \Sigma^\star$ est \textit{acceptée} s'il existe un chemin d'exécution acceptant sur l'entrée $x$.
+  \end{defn}
+
+  \begin{defn}
+    On note $\intro*\ntime{f(n)}$ l'ensemble des langages acceptés par une machine de Turing non-déterministe fonctionnant en temps $\mathrm{O}(f(n))$ sur toute entrée de taille $n$ et tout chemin de calcul.
+  \end{defn}
+
+  \begin{defn}
+    Un langage $L$ est dans $\intro*\np$ s'il existe une machine non-déterministe  $M$ fonctionnant en temps polynomial tel que $L$ est l'ensemble des entrées acceptées par $M$.
+    Ainsi,
+    \[
+      \np = \bigcup_{\alpha \ge 1} \ntime{n^\alpha}
+    .\]
+  \end{defn}
+
+  \begin{thm}[Définition alternative de $\np$]
+    Un langage $L$ est dans $\np$ s'il existe un polynôme $p$ et $A \in \p$ tel que, pour toute entrée $x \in \{\texttt{0}, \texttt{1}\}^\star$,
+    \[
+      x \in L \quad\quad \iff \quad\quad \exists y \in \{\texttt{0}, \texttt{1}\}^\star, \quad \code{x,y} \in A
+    .\]
+    On dit que $y$ \textit{certifie} que $x$ est dans $L$.
+  \end{thm}
+
+  \section{$\np$-complétude.}
+
+  \begin{defn}
+    On dit qu'un problème \textit{$A$ se réduit à $B$ en temps polynomial} s'il existe une fonction $f : \Sigma^\star \to \Sigma^\star$ calculable en temps polynomial telle que, pour toute entrée $x$,
+    \[
+    x \in A \quad \iff \quad f(x) \in B
+    .\]
+    On note alors $A \intro*\redP B$ ou $A \le_\mathrm{M} B$.\footnote{Personnellement, je noterai parfois $f : A \redP B$ où $f$ est une fonction de réduction.}
+  \end{defn}
+
+  \begin{rmk}
+    Si $A \redP B$ et $B \redP C$ alors $A \redP C$ par composition des réductions.
+  \end{rmk}
+
+  \begin{defn}[$\np$-complétude]
+    On dit que $A$ est \textit{$\np$-complet} dès lors que
+    \begin{itemize}
+      \item $A \in \np$ ;
+      \item $A$ est \textit{$\np$-dur}, c'est-à-dire $B \redP A$ pour tout $B \in \np$.
+    \end{itemize}
+  \end{defn}
+
+  \begin{rmk}
+    Pour montrer qu'un problème $A \in \np$ est $\np$-complet, il suffit de montrer que $B \redP A$ où $B$ est un problème $\np$-complet.
+    En effet, on a alors, pour tout $C \in \np$,
+    \[
+    C \redP B \redP A
+    .\] 
+
+    Il suffit donc d'avoir un problème $\np$-complet comme "point de départ".
+    Généralement, on choisit \pbSat\ ou \pbThreeSat, mais dans ce cours on partira de \pbCircuitSat\ (défini au prochain chapitre).
+  \end{rmk}
+
+  \showSat
+
+  \showThreeSat
+\end{document}

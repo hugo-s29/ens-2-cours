@@ -454,19 +454,42 @@
 \let\preceq\preccurlyeq
 \let\succeq\succcurlyeq
 
+\NewDocumentCommand{\problem}{ommm}{
+  \csgdef{intro#2}{
+    \begin{figure}[H]
+      \centering
+      \arrayrulecolor{deepblue}
+      \setlength\arrayrulewidth{1pt}
+      \begin{NiceTabular}{r|p{10cm}}
+        \Block{2-1}{\textsc{#1}} & \textbf{Entrée.} #3\\
+                            & \textbf{Sortie.} #4
+      \end{NiceTabular}
+      \label{pb:#2}
+    \end{figure}
+  }
 
-\newcommand\problem[4][\relax]{
-  \begin{figure}[H]
-    \centering
-    \arrayrulecolor{deepblue}
-    \setlength\arrayrulewidth{1pt}
-    \begin{NiceTabular}{r|p{10cm}}
-      \Block{2-1}{\textsc{#1}} & \textbf{Entrée.} #3\\
-                          & \textbf{Sortie.} #4
-    \end{NiceTabular}
-    \label{#2}
-  \end{figure}
-  \csgdef{pb#1}{\hyperref[#2]{\textsc{#1}}}
+  \csgdef{pb#2}{\hyperref[pb:#2]{\textsc{#1}}}
+
+  \csgdef{recall#2}{
+    \begin{figure}[H]
+      \centering
+      \arrayrulecolor{deepblue}
+      \setlength\arrayrulewidth{1pt}
+      \begin{NiceTabular}{r|p{10cm}}
+        \Block{2-1}{\hyperref[pb:#2]{\textsc{#1}}} & \textbf{Entrée.} #3\\
+                            & \textbf{Sortie.} #4
+      \end{NiceTabular}
+    \end{figure}
+  }
+
+  \csgdef{show#2}{%
+    \ifcsname introduced@#2\endcsname
+      \csname recall#2\endcsname
+    \else
+      \csname intro#2\endcsname
+      \expandafter\gdef\csname introduced@#2\endcsname{}%
+    \fi
+  }
 }
 
 \newfontface\unshape[]{Latin Modern Roman Unslanted} 

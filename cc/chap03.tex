@@ -3,41 +3,190 @@
 \begin{document}
   \chapter{Complexité en espace.}
 
+
+  \section{Définitions et premières propriétés.}
+
+  \begin{defn}
+    L'\textit{espace utilisé} par une machine de Turing déterministe sur une entrée $x$ est le nombre de cases distinctes utilisés sur les rubans de travail\footnote{Pas le ruban d'entrée, ni le ruban de sortie, ceci permet de parler de machine utilisant un espace logarithmique, bien que la taille de l'entrée soit $n$.} au cours de son calcul sur $x$.
+
+    On dit que $M$ fonctionne en espace $s(n)$ si $M$ s'arrête sur toutes ses entrées et utilise un espace au plus $s(n)$ sur toute entrée de taille $n$.
+
+    On note $\intro*\dspace{s(n)}$ l'ensemble des langages reconnus par une machine de Turing déterministe fonctionnant en espace $\mathrm{O}(s(n))$.
+  \end{defn}
+
+  \begin{rmk}
+    On supposera que, pour le ruban d'entrée, la tête de lecture ne dépassera jamais la fin de l'entrée.
+  \end{rmk}
+
+  \begin{exm}
+    \begin{itemize}
+      \item Un algorithme naïf pour \pbSat\ utilise un espace en~$\mathrm{O}(n)$. En effet, il suffit d'énumérer toutes les valuations possibles avec un compteur binaire de taille $n$, puis de vérifier si une de ces valuations satisfait la formule.
+      \item L'addition de deux entiers de taille $n$ peut s'effectuer en espace $\mathrm{O}(\log n)$. En effet, il suffit de stocker les positions des bits en cours d'addition et la retenue.
+    \end{itemize}
+  \end{exm}
+
+  \begin{defn}
+    On dit que $t : \mathds{N} \to \mathds{N}$ est \textit{constructible en espace} s'il existe une machine de Turing qui, sur l'entrée $\texttt{1}^n$ calcule $\texttt{1}^{t(n)}$ en espace $\mathrm{O}(t(n))$.
+  \end{defn}
+
+  \begin{prop}
+    On a l'inclusion
+    \[
+      \ntime{f(n)} \subseteq \dspace{f(n)}
+    .\] 
+  \end{prop}
+  \begin{prv}
+    Supposons $f$ constructible en espace $(*)$.
+
+    Soit $L \in \ntime{f(n)}$ et $M$ une machine non-déterministe reconnaissant $L$ en temps au plus $c\: f(n)$.
+    On code un chemin de calcul de $M$ par $y \in \llbracket 0, R - 1\rrbracket^{c \: f(n)}$ où $R$ désigne le nombre de choix possibles à chaque étape (il dépend de $M$).
+
+    \begin{algorithmic}[1]
+      \State Calculer $f(n)$ en espace $\mathrm{O}(f(n))$ 
+      \ForAll{$y$ de taille $c\:f(n)$}
+      \State{Simuler $M$ sur $x$ en suivant les choix donnés par $y$}
+      \If{la simulation accepte}
+      \State \textbf{Accepter}
+      \EndIf
+      \EndFor
+      \State \textbf{Rejeter} 
+    \end{algorithmic}
+    On a un algorithme en espace $f(n)$ qui teste l'appartenance au langage $L$.
+
+    Sans l'hypothèse $(*)$, on peut obtenir la même inclusion avec une légère modification de l'argument. On fait fonctionner le même algorithme pour des chemins de calcul de longueur $t = 1, 2, \ldots$ jusqu'à ce que la simulation de $M$ sur l'entrée de $x$ s'arrête (ce qui arrive forcément si $x \in L$). On s'arrête pour $t = c \: f(n)$ au plus.
+  \end{prv}
+
+  \begin{prop}
+    On a l'inclusion
+    \[
+      \dspace{s(n)} \subseteq \dtime{2^{\mathrm{O}(s(n))}}
+    ,\]
+    dès lors que $s(n) \ge \log n$.
+  \end{prop}
+
+  \begin{prv}
+    Soit $N$ tel que, si un calcul prend un temps  plus long que $N$, alors il boucle.
+    Nous allons montrer que $N = 2^{\mathrm{O}(s(n))}$.
+    On compte le nombre de configurations distinctes possibles d'une machine $M$ sur l'entrée $x$ de taille $n$.
+    Une configuration est donnée\footnote{On oublie la position de la tête de lecture sur le ruban de sortie, vu qu'elle n'influe pas le calcul (car écriture uniquement).} par :
+    \begin{itemize}
+      \item l'état courant (il y a au plus $|Q|$ possibilités) ;
+      \item la position de la tête de lecture sur le ruban d'entrée (il y a au plus $n$ possibilités) ;
+      \item le contenu des cases utilisées sur les rubans de travail (il y a au plus $|\Gamma|^{s(n)}$ possibilités) ;
+      \item la position des têtes de lecture sur les rubans de travail (il y a au plus $s(n)^k$ possibilités où $k$ est le nombre de rubans de travail).
+    \end{itemize}
+    D'où la borne annoncée.
+  \end{prv}
+
+  \begin{rmk}
+    A-t-on $\dspace{1} \subseteq \dtime{1}$ ?
+    Non ! En effet, retourner le dernier caractère de l'entrée se fait en espace $\mathrm{O}(1)$ mais pas en temps $\mathrm{O}(1)$.
+  \end{rmk}
+
+  \begin{defn}
+    On définit $\intro*\ls = \dspace{\log n}$.
+  \end{defn}
+  \begin{crlr}
+    On a les inclusions
+    \[
+    \ls \subseteq \p \subseteq \np \subseteq \pspace
+    ,\]
+    où $\pspace$ est l'ensemble des problèmes définis en espace polynomial (défini plus tard).
+    \qed
+  \end{crlr}
+
+  \begin{thm}
+    Si deux fonctions $f, g : \{\texttt{0}, \texttt{1}\}^\star \to \{\texttt{0}, \texttt{1}\}^\star$ sont calculables en espace $s(n) \ge \log n$ alors leur composée $g \circ f$ est calculable en espace $\mathrm{O}(s(|x|)) + s(|f(x)|)$.
+  \end{thm}
+
+  \begin{prv}
+    L'idée est de calculer un bit de $f(x)$ uniquement quand on en a besoin pour calculer $g(f(x))$.
+
+     \begin{lem}
+      Étant donné $i$, on peut calculer le $i$-ème bit de $f(x)$ en espace $\mathrm{O}(s(|x|))$.
+    \end{lem}
+    \begin{prv}
+      Faire fonctionner $M_f$ (la machine calculant $f$ en espace logarithmique) sans écrire sur le ruban de sortie, mais simplement en comptant le nombre de bits que l'on voulait écrire.
+      Dès lors que $i$ est atteint, on renvoie le bit courant : c'est le $i$-ème bit de $f(x)$.
+    \end{prv}
+
+    On utilise ensuite l'algorithme suivant :
+
+    \begin{algorithmic}[1]
+      \State $i \gets 0$
+      \While{$M_g$ ne s'est pas arrêtée} 
+      \State Calculer le $i$-ème bit de $f(x)$ (par le lemme)
+      \State L'écrire sur le ruban d'entrée de $M_g$
+      \State Effectuer un pas de calcul de $M_g$ 
+      \If{la tête \texttt{→} sur le ruban d'entrée de $M_g$}
+      \State $i \gets i +1$ 
+      \ElsIf{la tête \texttt{←} sur le ruban d'entrée de $M_g$}
+      \State $i \gets i -1$ 
+      \EndIf
+      \EndWhile
+    \end{algorithmic}
+  \end{prv}
+
+  \begin{crlr}
+    Si $f$ et $g$ sont calculables en espace $\mathrm{O}(\log n)$ alors $g \circ f$ est calculable en espace $\mathrm{O}(\log n)$.
+    \qed
+  \end{crlr}
+
+  \section{Hiérarchie en espace.}
+
+  \begin{thm}
+    Si $s$ est constructible en espace et $s \ge \log n$ alors il existe un langage reconnaissable en espace $\mathrm{O}(s(n))$ mais pas en espace $\mathrm{o}(s(n))$.
+  \end{thm}
+
+  \begin{crlr}
+    On a les inclusions strictes suivantes :\[
+      \underbrace{\dspace{{\log n}}}_{\ls} \subsetneq \dspace{n} \subsetneq \dspace{n^2} \subsetneq \cdots \subsetneq \pspace
+    .\] 
+  \end{crlr}
+
+  \clearpage
+
+  \begin{note}
+    Il manque une partie du cours ici\ldots\ mais, promis, je la recopie bientôt.
+  \end{note}
+
+  \clearpage
+
   \begin{rmk}[Rappels]
     On a que
     \begin{itemize}
-      \item $\mathrm{NSPACE}(s(n)) \subseteq \mathrm{DTIME}(2^{\mathrm{O}(s(n))})$
-      \item et $\mathrm{NSPACE}(s(n)) \subseteq \mathrm{DSPACE}(s(n)^2)$ (Savitch)
+      \item $\nspace{s(n)} \subseteq \dtime{2^{\mathrm{O}(s(n))}}$
+      \item et $\nspace{s(n)} \subseteq \dspace{s(n)^2}$ (Savitch)
     \end{itemize}
     lorsque $s(n) \ge \log n$.
     On a
     \[
-    \mathsf{L} \subseteq \mathsf{NL} \subseteq \mathsf{P} \subseteq \mathsf{PSPACE}
+    \ls \subseteq \nls \subseteq \p \subseteq \np \subseteq \pspace
     ,\] et avec Savitch et la hiérarchie en espace, on a 
     \[
-    \mathsf{NL} \subsetneq \mathsf{PSPACE}
+    \nls \subsetneq \pspace
     .\] 
   \end{rmk}
 
   \begin{defn}
     On définit
     \[
-    \mathsf{PSPACE} := \bigcup_{k \ge 1} \mathrm{DSPACE}(n^k)
-    .\] 
+      \intro*\pspace := \bigcup_{k \ge 1} \dspace{n^k}
+    .\]
   \end{defn}
 
   \begin{rmk}
-    On peut aussi définir la classe $\mathsf{NPSPACE}$ mais cette classe est égale à $\mathsf{PSPACE}$ par Savitch.
+    On peut aussi définir la classe $\mathsf{NPSPACE}$ mais cette classe est égale à $\pspace$ par Savitch.
     On a donc
     \[
-      \mathsf{P} \subseteq \mathsf{NP} \underset {(*)} \subseteq \mathsf{PSPACE} \underset {(**)} \subseteq \mathsf{EXPTIME} = \bigcup_{k \ge 1} \mathrm{DTIME}(2^{n^k})
+      \p \subseteq \np \underset {(*)} \subseteq \pspace \underset {(**)} \subseteq \intro*\exptime = \bigcup_{k \ge 1} \dtime{2^{n^k}}
     ,\] 
     où 
     \begin{itemize}
-      \item $(*)$ est vraie car $\mathrm{NTIME}(t(n)) \subseteq \mathrm{DSPACE}(t(n))$ ;
-      \item $(**)$ est vraie car $\mathrm{DSPACE}(s(n)) \subseteq \mathrm{DTIME}(2^{\mathrm{O}(s(n))})$.
+      \item $(*)$ est vraie car $\ntime{t(n)} \subseteq \dspace{t(n)}$ ;
+      \item $(**)$ est vraie car $\dspace{s(n)} \subseteq \dtime{2^{\mathrm{O}(s(n))}}$.
     \end{itemize}
-    On sait, de plus, que $\mathsf{P} \subsetneq \mathsf{EXPTIME}$ par la hiérarchie en temps (variante (vue en TD) de la hiérarchie en espace vue avant).
+    On sait, de plus, que $\p \subsetneq \exptime$ par la hiérarchie en temps (variante (vue en TD) de la hiérarchie en espace vue avant).
   \end{rmk}
 
   \section{Formules booléennes quantifiés.}
@@ -56,36 +205,34 @@
   \end{exm}
 
   \begin{defn}
-    On définit le problème
-    \problem[QBF]{pb:qbf}{Une formule booléenne quantifiée $F$ (close)}{Est-ce que $F$ est vraie ?}
-
-    \pbQBF
+    On définit le problème \pbQBF\ comme 
+    \showQBF
   \end{defn}
 
   \begin{prop}
-    On a $\pbQBF \in \mathsf{PSPACE}$.
+    On a $\pbQBF \in \pspace$.
   \end{prop}
   \begin{prv}
     On utilise l'algorithme suivant.
     \begin{enumerate}
       \item Si $F$ ne contient pas de quantificateurs, accepter si $F$ s'évalue à vrai et rejeter si $F$ s'évalue à faux.
-      \item Si $F = \exists x \: G$, on décide récursivement avec  $G[x := 0]$ et  $G[x := 1]$
+      \item Si $F = \exists x \: G$, on décide récursivement avec  $G[x := 0]$ et  $G[x := 1]$.
         Si une de ces formules s'évalue à vrai, accepter sinon rejeter.
-      \item Si $F = \forall x \: G$, on décide récursivement avec  $G[x := 0]$ et  $G[x := 1]$
+      \item Si $F = \forall x \: G$, on décide récursivement avec  $G[x := 0]$ et  $G[x := 1]$.
         Si une de ces formules s'évalue à faux, rejeter sinon accepter.
     \end{enumerate}
     Cet algorithme utilise un espace linéaire.
   \end{prv}
 
   \begin{thm}
-    Le problème \pbQBF\ est $\mathsf{PSPACE}$-complet.
+    Le problème \pbQBF\ est $\pspace$-complet.
   \end{thm}
   \begin{prv}
     Supposons que $A$ est résolu en espace $n^k$ par une machine~$M$ à un ruban.
-    On va montrer que $A \le_\mathrm{P} \pbQBF$.
+    On va montrer que $A \redP \pbQBF$.
     
     On considère le diagramme espace-temps de taille $n^k$ en espace et $2^{c \cdot n^k}$ en temps.
-    On ne peut pas simplement utiliser la même preuve que pour \textsc{sat} car le diagramme est exponentiel.
+    On ne peut pas simplement utiliser la même preuve que pour \pbSat car le diagramme est exponentiel.
 
     On construit une formule $\phi_t(c_1, c_2)$ qui exprime qu'on peut aller de la configuration $c_1$ en la configuration $c_2$ en au plus $2^t$ étapes de calcul.
 
@@ -105,32 +252,31 @@
     Au final, on est de taille $\mathrm{O}(n^{2k})$.\footnote{Le passage quadratique est similaire au théorème de Savitch.}
   \end{prv}
 
-  Le problème \pbQBF\ est "le" problème $\mathsf{PSPACE}$-complet. En TD, on fera des réductions de certains problèmes à \pbQBF.
+  Le problème \pbQBF\ est "le" problème $\pspace$-complet. En TD, on fera des réductions de certains problèmes à \pbQBF.
 
   \begin{thm}[Savitch]
-    On a $\mathrm{NSPACE}(s(n)) \subseteq \mathrm{DSPACE}(s(n)^2)$ si $s(n) \ge \log n$.\footnote{Depuis sa preuve, on n'a jamais réussi à améliorer ce résultat, ni montrer qu'un facteur carré est nécessaire.}
+    On a $\nspace{s(n)} \subseteq \dspace{s(n)^2}$ si $s(n) \ge \log n$.\footnote{Depuis sa preuve, on n'a jamais réussi à améliorer ce résultat, ni montrer qu'un facteur carré est nécessaire.}
     \qed
   \end{thm}
 
   \begin{crlr}
-    On a $\mathsf{NL} \subseteq \mathrm{DSPACE}(\log^2 n)$.
+    On a $\nls \subseteq \dspace{\log^2 n}$.
   \end{crlr}
 
   \begin{prop}
-    \problem[Path]{pb:path}
-    {Un graphe $G$ orienté, et $s, t \in \mathrm{V}(G)$}
-    {Existe-t-il un chemin de $s$ à $t$ dans $G$ ?}
-    On a que $\pbPath \in \mathrm{DSPACE}(\log^2 n)$, où
+    On a que $\pbPath \in \dspace{\log^2 n}$, où
+
+    \showPath
   \end{prop}
 
   \begin{rmk}
-    En TD, on a vu que \pbPath\ est $\mathsf{NL}$-complet, et donc la proposition implique le corollaire.
-    En effet, soit $A \in \mathsf{NL}$ et $x \in \{0,1\}^n$, on a 
+    En TD, on a vu que \pbPath\ est $\nls$-complet, et donc la proposition implique le corollaire.
+    En effet, soit $A \in \nls$ et $x \in \{\texttt{0},\texttt{1}\}^n$, on a 
     \[
     x \in A \iff f(x) \in \pbPath
     ,\]
-    où $f : A \le_\mathrm{L} \pbPath$ est la réduction en espace logarithmique (car le problème \pbPath\ est $\mathsf{NL}$-complet).
-    La construction de $f(x)$ se fait en espace $\mathrm{O}(\log n)$ et décider si $f(x) \in \textsc{Path}$ ou non peut se faire en espace $\mathrm{O}(\log^2 |f(x)|$, or $|f(x)|$ est polynomial en $|x| = n$, d'où la borne annoncée.
+    où $f : A \redL \pbPath$ est la réduction en espace logarithmique (car le problème \pbPath\ est $\nls$-complet).
+    La construction de $f(x)$ se fait en espace $\mathrm{O}(\log n)$ et décider si $f(x) \in \pbPath$ ou non peut se faire en espace $\mathrm{O}(\log^2 |f(x)|)$, or $|f(x)|$ est polynomial en $|x| = n$, d'où la borne annoncée.
   \end{rmk}
 
   \vspace{12pt}
@@ -170,8 +316,8 @@
   \vspace{12pt}
 
   \begin{prv}[du théorème de Savitch]
-    Supposons que $A$ peut être résolu par une machine non-déterministe $M$ en espace $\mathrm{O}(s(n))$ où est $s(n)$ constructible en espace.
-    Soit $x \in \{0,1\}^n$  une instance de~$A$.
+    Supposons que $A$ peut être résolu par une machine non-déterministe $M$ en espace $\mathrm{O}(s(n))$ où $s(n)$ est constructible en espace.
+    Soit $x \in \{\texttt{0},\texttt{1}\}^n$  une instance de~$A$.
 
     On considère le graphe $G_x$ des \textit{\textbf{configurations potentielles}} de la machine $M$ sur l'entrée $x$, c'est-à-dire l'ensemble des configurations avec $x$ en entrée et au plus $c \cdot s(n)$ cases utilisées sur chaque ruban de travail.
 
@@ -184,7 +330,7 @@
     \[
     x \in A \quad\quad \iff \quad \quad (G_x, s, t) \in \pbPath
     ,\] 
-    où $s$ est la configuration initiale de $M$ sur l'entrée $x$ et $t$ la configuration acceptante (qu'on supposera unique, \textit{c.f.}\ preuve de la $\mathsf{PSPACE}$-complétude de \pbQBF).
+    où $s$ est la configuration initiale de $M$ sur l'entrée $x$ et $t$ la configuration acceptante (qu'on supposera unique, \textit{c.f.}\ preuve de la $\pspace$-complétude de \pbQBF).
     Par le lemme, on a que $(G_x, s, t)$ se fait en espace $\mathrm{O}(s(n))$. Décider si $(G_x, s, t) \in \pbPath$ se fait en espace $\mathrm{O}(\log^2 |G_x|)$ donc $\mathrm{O}(s(n)^2)$.
   \end{prv}
 
@@ -206,7 +352,7 @@
   \end{rmk}
 
   \begin{rmk}
-    Le problème \pbPath\ dans les graphes non-orientés est dans $\mathsf{L}$ ! C'est un résultat récent (2005).
+    Le problème \pbPath\ dans les graphes non-orientés est dans $\ls$ ! C'est un résultat récent (2005).
   \end{rmk}
 
   La prochaine fois, on s'intéresse aux oracles.
