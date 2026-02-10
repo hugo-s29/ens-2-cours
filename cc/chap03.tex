@@ -135,38 +135,106 @@
   \section{Hiérarchie en espace.}
 
   \begin{thm}
-    Si $s$ est constructible en espace et $s \ge \log n$ alors il existe un langage reconnaissable en espace $\mathrm{O}(s(n))$ mais pas en espace $\mathrm{o}(s(n))$.
+    Si $s$ est constructible en espace et $s(n) \ge \log n$ alors il existe un langage reconnaissable en espace $\mathrm{O}(s(n))$ mais pas en espace $\mathrm{o}(s(n))$.
   \end{thm}
+
+  \begin{prv}
+    L'idée est de faire une preuve par diagonalisation.
+    On construit une machine $D$ qui fonctionne en espace $\mathrm{O}(s(n))$ et qui reconnaît un langage $A$ différent de tous les langages reconnus en espace $\mathrm{o}(s(n))$.
+    Pour cela, $D$ simule une machine tournant en espace au plus $\mathrm{o}(s(n))$ et on a que $D(\code{M})$ accepte ssi $M(\code{M})$ rejette (et inversement).
+
+    \begin{lem}
+      Si $L \in \dspace{s(n)}$  alors $L$ est reconnaissable en $\mathrm{O}(s(n))$ par une machine à un ruban de travail dont l'alphabet est $\{\texttt{0},\texttt{1},\blank,\start\}$.
+      \qed
+    \end{lem}
+
+    \begin{lem}
+      Il existe une machine de Turing universelle $U$ qui prend en entrée $\code{M, x}$ avec  $x \in \{\texttt{0},\texttt{1}\}^\star$ et $M$ une machine à un ruban de travail et dont l'alphabet est $\{\texttt{0},\texttt{1},\blank,\start\}$, et qui simule $M$ sur l'entrée $x$ en espace $\mathrm{O}(s(n))$ si $M$ fonctionne en espace $s(n)$.
+      On peut même supposer que $U$ ne possède qu'un seul ruban de travail.
+      \qed
+    \end{lem}
+
+    À l'aide de ces deux lemmes, on donne l'algorithme suivant (machine $D$).
+
+    \begin{algorithmic}[1]
+      \State Lire l'entrée $w \in \{\texttt{0},\texttt{1}\}^\star$ (notons $n$ sa taille)
+      \State Calculer $s(n)$ en espace $\mathrm{O}(s(n))$
+      \State Réserver $s(n)$ cases sur le ruban de travail
+      \If{$w$ n'est pas de la forme $\code{M}\texttt{1}\texttt{0}^\star$\footnote{Pour une certaine machine $M$}}
+      \State \textbf{Rejeter}
+      \EndIf
+      \State Simuler $M$ sur l'entrée $w$
+      \If{on dépasse $2^{2 \cdot s(n)}$ étapes ou $s(n)$ cases mémoires}
+      \State \textbf{Rejeter}
+      \EndIf
+      \If{$M$ accepte}
+      \textbf{Rejeter}
+      \Else
+      \textbf{ Accepter}
+      \EndIf
+    \end{algorithmic}
+
+    On a que la machine $D$ s'arrête sur toute entrée et fonctionne en espace $\mathrm{O}(s(n))$.
+
+    De plus, si $B$ est un langage décidable en $\mathrm{o}(s(n))$ par une machine $M$, alors $B$ est différent du langage de $A$.
+    En effet, $D$ simule $M$ en espace $\mathrm{o}(s(n))$.
+    \begin{itemize}
+      \item Ainsi, il existe $n_0$ tel que, pour $n \ge n_0$, $D$ fera une simulation en espace strictement plus petit que $\mathrm{s(n)}$, donc ne manquera pas d'espace.
+      \item Aussi, comme $M$ fonctionne en temps $2^{\mathrm{o}(s(n))}$ alors la simulation sera en temps strictement plus petit que $2^{s(n)}$ pour $n \ge n_1$ pour un certain $n_1$, donc ne manquera pas de temps.
+    \end{itemize}
+    En posant $n_2 := \max(n_0, n_1)$, on a que sur l'entrée $\code{M}\texttt{1}\texttt{0}^{n_2}$, la simulation de $M$ se fera jusqu'au bout et $D$ donne une réponse différente de $M$ sur la même entrée.
+    D'où les deux langages $B$ et $A$ sont différents.
+
+  \end{prv}
+
+
+
+
 
   \begin{crlr}
     On a les inclusions strictes suivantes :\[
-      \underbrace{\dspace{{\log n}}}_{\ls} \subsetneq \dspace{n} \subsetneq \dspace{n^2} \subsetneq \cdots \subsetneq \pspace
+      \ls \subsetneq \dspace{n} \subsetneq \dspace{n^2} \subsetneq \cdots \subsetneq \pspace
     .\] 
   \end{crlr}
 
-  \clearpage
 
-  \begin{note}
-    Il manque une partie du cours ici\ldots\ mais, promis, je la recopie bientôt.
-  \end{note}
 
-  \clearpage
 
-  \begin{rmk}[Rappels]
-    On a que
-    \begin{itemize}
-      \item $\nspace{s(n)} \subseteq \dtime{2^{\mathrm{O}(s(n))}}$
-      \item et $\nspace{s(n)} \subseteq \dspace{s(n)^2}$ (Savitch)
-    \end{itemize}
-    lorsque $s(n) \ge \log n$.
-    On a
-    \[
-    \ls \subseteq \nls \subseteq \p \subseteq \np \subseteq \pspace
-    ,\] et avec Savitch et la hiérarchie en espace, on a 
-    \[
-    \nls \subsetneq \pspace
-    .\] 
+  \section{Complexité en espace non-déterministe.}
+
+  \begin{defn}
+    Une machine non-déterministe $M$ fonctionne en espace au plus $s(n)$ si, sur toute entrée de taille $n$, chaque chemin de calcul utilise un espace au plus $s(n)$ (sur les rubans de travail).
+
+    On note $\intro*\nspace{s(n)}$ l'ensemble des langages reconnus par une machine de Turing non-déterministe en espace  $\mathrm{O}(s(n))$.
+  \end{defn}
+
+  \begin{defn}
+    On définit $\intro*\nls := \nspace{\log n}$.
+  \end{defn}
+
+  On a prouvé précédemment que $\dspace{s(n)} \subseteq \dtime{2^{s(n)}}$ (lorsque l'on a que $s(n) \ge \log n$).
+  On peut améliorer cette inclusion avec $\nspace{s(n)}$, comme $\dspace{s(n)} \subseteq \nspace{s(n)}$.
+
+  \begin{prop}
+    On a \[
+    \nspace{s(n)} \subseteq \dtime{2^{\mathrm{O}(s(n))}}
+    ,\]  pour $s(n) \ge \log n$.
+  \end{prop}
+  \begin{prv}
+    On considère $G_x$ le \textit{\textbf{graphe}} (orienté) \textit{\textbf{des configurations}}  de $M$ sur l'entrée $x$ de taille $n$, où $c_1 c_2 \in \mathrm{E}(G_x)$ ssi $M$ peut passer de la configuration $c_1$ à la configuration $c_2$ en un seul pas de calcul.
+
+    \begin{lem}
+      Le graphe $G_x$ a $2^{\mathrm{O}(s(n))}$ sommets, et on peut le construire en espace $\mathrm{O}(s(n))$. \qed
+    \end{lem}
+
+    On explore $G_x$ à partir de la configuration initiale $c_\text{initiale}$ et on accepte si on atteint une configuration d'acceptation.
+  \end{prv}
+
+  \begin{rmk}
+    On n'a pas utilisé l'hypothèse que $M$ s'arrête sur toutes ses entrées.
   \end{rmk}
+
+  \section{Formules booléennes quantifiés, $\pspace$.}
 
   \begin{defn}
     On définit
@@ -175,11 +243,15 @@
     .\]
   \end{defn}
 
+  \begin{thm}[Savitch]
+    On a $\nspace{s(n)} \subseteq \dspace{s(n)^2}$ si $s(n) \ge \log n$.\footnote{Depuis sa preuve, on n'a jamais réussi à améliorer ce résultat, ni montrer qu'un facteur carré est nécessaire.}
+  \end{thm}
+
   \begin{rmk}
     On peut aussi définir la classe $\mathsf{NPSPACE}$ mais cette classe est égale à $\pspace$ par Savitch.
     On a donc
     \[
-      \p \subseteq \np \underset {(*)} \subseteq \pspace \underset {(**)} \subseteq \intro*\exptime = \bigcup_{k \ge 1} \dtime{2^{n^k}}
+      \ls \subseteq \nls \subseteq \p \subseteq \np \underset {(*)} \subseteq \pspace \underset {(**)} \subseteq \overbrace{\intro*\exptime}^{\bigcup_{k \ge 1} \dtime{2^{n^k}}}
     ,\] 
     où 
     \begin{itemize}
@@ -187,9 +259,8 @@
       \item $(**)$ est vraie car $\dspace{s(n)} \subseteq \dtime{2^{\mathrm{O}(s(n))}}$.
     \end{itemize}
     On sait, de plus, que $\p \subsetneq \exptime$ par la hiérarchie en temps (variante (vue en TD) de la hiérarchie en espace vue avant).
+    Et, que $\ls \subsetneq \pspace$ par le théorème de Savitch et la hiérarchie en espace.
   \end{rmk}
-
-  \section{Formules booléennes quantifiés.}
 
   On autorise des quantificateurs universels et existentiels aux formules vues précédemment.
 
@@ -230,9 +301,27 @@
   \begin{prv}
     Supposons que $A$ est résolu en espace $n^k$ par une machine~$M$ à un ruban.
     On va montrer que $A \redP \pbQBF$.
+
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}
+        \directlua{draw_spacetime_diagram({
+          tape_width = 7,
+          steps = {
+            {content = {'1', '0', '1'}, head_pos = 1},
+            {content = {'1', '1', '1'}, head_pos = 2},
+            {content = {'1', '1', '0'}, head_pos = 3},
+            {content = {'1', '1', '0', '0'}, head_pos = 4},
+            {content = {'1', '1', '1', '0'}, head_pos = 3}
+          }
+        })}
+      \end{tikzpicture}
+      \caption{Exemple de diagramme espace-temps}
+      \label{fig:space-time-diagram2}
+    \end{figure}
     
     On considère le diagramme espace-temps de taille $n^k$ en espace et $2^{c \cdot n^k}$ en temps.
-    On ne peut pas simplement utiliser la même preuve que pour \pbSat car le diagramme est exponentiel.
+    On ne peut pas simplement utiliser la même preuve que pour \pbSat\ car le diagramme est exponentiel.
 
     On construit une formule $\phi_t(c_1, c_2)$ qui exprime qu'on peut aller de la configuration $c_1$ en la configuration $c_2$ en au plus $2^t$ étapes de calcul.
 
@@ -254,10 +343,8 @@
 
   Le problème \pbQBF\ est "le" problème $\pspace$-complet. En TD, on fera des réductions de certains problèmes à \pbQBF.
 
-  \begin{thm}[Savitch]
-    On a $\nspace{s(n)} \subseteq \dspace{s(n)^2}$ si $s(n) \ge \log n$.\footnote{Depuis sa preuve, on n'a jamais réussi à améliorer ce résultat, ni montrer qu'un facteur carré est nécessaire.}
-    \qed
-  \end{thm}
+
+  \section{Problème {\textrm{\textmd{\pbPath}}}\ et théorème de Savitch.}
 
   \begin{crlr}
     On a $\nls \subseteq \dspace{\log^2 n}$.
