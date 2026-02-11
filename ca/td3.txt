@@ -1,0 +1,107 @@
+solve(C^2*z - C + 1 = 0, C);
+
+            (1/2)          (1/2)
+       1 + (1 - 4 z)     -1 + (1 - 4 z)   
+       ------------------, - -------------------
+          2 z          2 z    
+
+C := (1 - sqrt(1 - 4*z))/(2*z);
+
+series(C, z, 101);
+
+Cn := n -> coeff(series(C, z, 101), z, n);
+seq(Cn(n), n = 0 .. 100);
+
+1, 1, 2, 5, 14, 42, 132, 429, 1430, 4862, 16796, 58786, 208012,  ...
+
+
+NewtonCatalan := proc(n)
+  local m, C, F, dF;
+
+  if n = 1 then
+    return 1;   # C = 1 mod x
+  end if;
+
+  m := ceil(n/2);
+
+  # recursive call
+  C := thisproc(m);
+
+  # Newton correction
+  F  := x*C^2 - C + 1;
+  dF := 2*x*C - 1;
+
+  return convert(series(C - F/dF, x, n), polynom);
+end proc:
+
+
+Cseries := NewtonCatalan(100);
+seq(coeff(Cseries, x, k), k = 0 .. 100);
+
+
+NewtonQuintaryTrees := proc(n)
+  local m, B, F, dF;
+
+  if n = 1 then
+    return 1;   # C = 1 mod x
+  end if;
+
+  m := ceil(n/2);
+
+  # recursive call
+  B := thisproc(m);
+
+  # Newton correction
+  F  := x*B^5 - B + 1;
+  dF := 5*x*B - 1;
+
+  return convert(series(B - F/dF, x, n), polynom);
+end proc:
+
+
+Bseries := NewtonQuintaryTrees(100);
+seq(coeff(Bseries, x, k), k = 0 .. 100);
+
+
+with(VectorCalculus):
+
+F := Vector([
+  B - z - z*G/((1-G)*(1-B)),
+  G - z - z*B^2/((1-G)*(1-B))
+]):
+
+J := simplify(Jacobian(F, [B, G]));
+
+
+truncate := (f,n) -> convert(series(f, z, n), polynom):
+
+NewtonBG := proc(n)
+  local m, X, Fv, Jv, Delta;
+
+  if n = 1 then
+    return Vector([0, 0]);   # B=0, G=0 mod z
+  end if;
+
+  m := ceil(n/2);
+
+  X := NewtonBG(m);
+
+  Fv := map(truncate, eval(F, [B=X[1], G=X[2]]), n);
+
+  Jv := map(truncate, eval(J, [B=X[1], G=X[2]]), n);
+
+  Delta := LinearAlgebra:-LinearSolve(Jv, Fv);
+
+  return map(truncate, X - Delta, n);
+end proc:
+
+
+X := NewtonBG(101):
+Bser := X[1]:
+
+seq(coeff(Bser, z, n), n=0..100);
+0, 1, 1, 2, 5, 16, 55, 193, 692, 2542, 9535, 36346, 140308, 547360, 2154679, 8548441, ...
+
+
+
+

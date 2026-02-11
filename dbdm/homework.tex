@@ -1,0 +1,703 @@
+\documentclass[fontsize=16pt,a4paper,DIV=17,parskip=half]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hyperindex]{hyperref}
+\usepackage{lastpage}
+\usepackage{tikz}
+\usepackage{tikzpagenodes}
+\usepackage{pgfplots}
+\usepackage{enumitem}
+\usepackage{scrlayer-scrpage}
+\usepackage{xspace}
+\usepackage{float}
+\usepackage{amsfonts,amsmath,amsthm}
+\usepackage{thmtools}
+\usepackage[english]{babel}
+\usepackage[autostyle, style=english]{csquotes}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage{mleftright}
+%\usepackage{BOONDOX-calo}
+%\usepackage{dsfont}
+\usepackage{tikz-cd}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{soulutf8}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{nameref}
+\usepackage{stmaryrd}
+\usepackage{fvextra}
+\usepackage{adjustbox}
+\usepackage{fontawesome}
+\usepackage{fontspec}
+\usepackage{mathpartir}
+\usepackage{etoolbox}
+\usepackage{todonotes}
+\usepackage{verbatim}
+\usepackage{algorithm}
+\usepackage[rightComments=false,beginComment=$\qquad\triangleright$~]{algpseudocodex}
+\usepackage{ebproof}
+\usepackage[makeroom, thicklines]{cancel}
+\renewcommand{\CancelColor}{\color{nicered}}
+\usepackage{setspace}
+\usepackage{fourier-otf}
+\setmathfont{Erewhon-Math.otf}[CharacterVariant={20}]
+%\usepackage{pxfonts}
+%\usepackage[scaled=0.92]{mathpazo}
+\usepackage{juliamono}
+\usepackage[osf]{Alegreya}
+\usepackage[osf]{AlegreyaSans}
+\let\mathds\mathbb
+%\DeclareMathAlphabet{\mathsf}{OT1}{cmss}{m}{n}
+
+\renewcommand{\mathsf}[1]{\text{\normalfont\sffamily#1}}
+\renewcommand{\texttt}[1]{\text{\normalfont\ttfamily#1}}
+
+\ebproofset{right label template=$\inserttext$, left label template=\tiny$\inserttext$, center=false}
+
+\RedeclareSectionCommand[beforeskip=0.10em, afterskip=0.10em]{section}
+\RedeclareSectionCommand[beforeskip=0.05em, afterskip=0.001em plus 0em]{subsection}
+
+
+\fvset{bgcolor=lightgray!10,backgroundcolorpadding=3pt}
+
+\MakeOuterQuote{"}
+
+\newcommand\redQuestionBox{
+  \tikz[baseline]{
+    \node[rectangle,fill=nicered,anchor=base,rounded corners=2pt] (A) {\color{white}\textsf{\textbf{?}}\ensuremath{\,}};
+  }
+}
+
+\colorlet{deeppurple}{DarkOrchid}
+\colorlet{deepgreen}{ForestGreen!70!black}
+\colorlet{deepblue}{NavyBlue!70!black}
+\colorlet{deepred}{RawSienna!70!black}
+\colorlet{nicered}{BrickRed!70!white}
+
+\makeatletter
+\g@addto@macro\bfseries{\boldmath}
+\makeatother
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  captionpos=b,
+  escapeinside={@}{@},
+  mathescape=true,
+  language=sql,
+  frame=leftline,
+  framesep=1em,
+  backgroundcolor=\color{gray!10},
+  morekeywords={with, over, rank, partition}
+}
+
+\hypersetup{
+  colorlinks,
+  citecolor=deepgreen,
+  filecolor=nicered,
+  linkcolor=deepblue,
+  pdfencoding=auto,
+  psdextra,
+  urlcolor=deepred
+}
+
+\usetikzlibrary{positioning,shadings,arrows.meta,fit}
+
+\clearpairofpagestyles
+
+\newcommand\showpage{\itshape\hfill--~\thepage/\pageref*{LastPage}~--\hfill}
+\cofoot[\showpage]{\showpage} \cefoot[\showpage]{\showpage}
+
+\setlist[enumerate]{font={\bfseries\color{deepblue}}}
+\AtBeginDocument{
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+\newcommand\separatorBlock{
+  \raisebox{-0.2em}{
+    \tikz{ \draw[deepblue,ultra thick, line cap=round] (0,0) -- (0,1em); }
+  }
+}
+
+\newcommand\vertical[1]{
+  \rotatebox[origin=c]{270}{\ensuremath{#1}}
+}
+
+\mdfsetup{skipabove=1em,skipbelow=0em,linewidth=0pt,rightline=false, topline=false, bottomline=false}
+
+
+\theoremstyle{definition}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=ForestGreen, % backgroundcolor=ForestGreen!5,
+% },
+]{thmgreenbox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont\sffamily\itshape,
+% mdframed={
+%   linecolor=NavyBlue,% backgroundcolor=NavyBlue!5,
+% },
+]{thmbluebox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
+  mdframed={
+    linecolor=deepblue,
+    linewidth=2pt,
+  },
+  numbered=no,
+]{thmblueline}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!5,
+% },
+]{thmredbox}
+
+\declaretheoremstyle[
+  headfont=\itshape\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!1,
+%   linewidth=0pt,
+% },
+  numbered=no,
+  qed=\qedsymbol,
+]{thmproofbox}
+
+\newcommand\defineMarkerColor[2]{
+  \AtBeginEnvironment{#1}{
+    \setlist[enumerate]{font={\color{#2}}}
+    \renewcommand{\labelitemi}{\color{#2}\small$\triangleright$}
+    \renewcommand{\labelitemii}{\color{#2}–}
+    \renewcommand{\labelitemiii}{\color{#2}•}
+    \renewcommand\emph[1]{{\bfseries\em\color{#2}##1}}
+  }
+}
+
+
+\AtBeginDocument{
+  \setlist[enumerate]{font={\bfseries\color{deepblue}}}
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}\small$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+
+\setlist[enumerate]{font={\color{deepblue}}}
+\renewcommand{\labelitemi}{\color{deepblue}\small$\triangleright$}
+\renewcommand{\labelitemii}{\color{deepblue}–}
+\renewcommand{\labelitemiii}{\color{deepblue}•}
+
+\declaretheorem[style=thmgreenbox, name=Axiom, numbered=no]{axi} \defineMarkerColor{axi}{deepgreen}
+\declaretheorem[style=thmgreenbox, name=Definition]{defn} \defineMarkerColor{defn}{deepgreen}
+\declaretheorem[style=thmbluebox, name=Example]{exm}      \defineMarkerColor{exm}{deepblue}
+\declaretheorem[style=thmbluebox, name=Exercise]{exo}     \defineMarkerColor{exo}{deepblue}
+\declaretheorem[style=thmbluebox, name=Question, parent=section]{que}     \defineMarkerColor{que}{deepblue}
+\declaretheorem[style=thmredbox, name=Proposition]{prop}  \defineMarkerColor{prop}{deepred}
+\declaretheorem[style=thmredbox, name=Theorem]{thm}      \defineMarkerColor{thm}{deepred}
+\declaretheorem[style=thmredbox, name=Lemma]{lem}         \defineMarkerColor{lem}{deepred}
+\declaretheorem[style=thmredbox, name=Corollary]{crlr}   \defineMarkerColor{crlr}{deepred}
+\declaretheorem[style=thmblueline, name=Remark]{rmk}    \defineMarkerColor{rmk}{deepblue}
+\declaretheorem[style=thmblueline, name=Note]{note}       \defineMarkerColor{note}{deepblue}
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
+\newenvironment{prv}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementproof}}{\end{replacementproof}} \defineMarkerColor{prv}{deepred}
+\declaretheorem[style=thmproofbox, name=Proof idea]{replacementideaproof}
+\newenvironment{prvid}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementideaproof}}{\end{replacementideaproof}} \defineMarkerColor{prvid}{deepred}
+
+\RequirePackage{caption}
+\DeclareCaptionLabelFormat{labelformat}{\textbf{#1~#2}\separatorBlock}
+\captionsetup{labelformat=labelformat,labelsep=none,textfont=sl}
+
+\DeclareMathSizes{11}{9}{7}{5}
+
+\title{Compilation and Program Analysis -- \textit{Homework}}
+\author{Hugo \textsc{Salou}}
+
+\let\emph\relax
+\DeclareTextFontCommand{\emph}{\bfseries\em\color{deepblue}}
+
+\renewcommand{\thefootnote}{\alph{footnote}}
+
+\tikzcdset{arrow style=math font}
+\tikzset{
+  equiv/.style={-,preaction={draw,double equal sign distance}},
+  >=Straight Barb,
+}
+
+\newcommand\heart{{\small\faHeart}}
+\newcommand\At{\text{\normalfont\sffamily Att}}
+
+\newenvironment{intro}{\begin{sffamily}\begin{itshape}\begin{bfseries}}{\end{bfseries}\end{itshape}\end{sffamily}}
+
+\usepackage{colortbl}
+\usepackage{nicematrix}
+
+\newcommand\problem[4][\relax]{
+  \begin{figure}[H]
+    \centering
+    \arrayrulecolor{deepblue}
+    \setlength\arrayrulewidth{1pt}
+    \begin{NiceTabular}{r|p{10cm}}
+      \Block{2-1}{\textsc{#1}} & \textbf{Input.} #3\\
+                          & \textbf{Output.} #4
+    \end{NiceTabular}
+    \label{#2}
+  \end{figure}
+}
+
+\begin{document}
+  \begin{center}
+    \bfseries
+    \sffamily
+
+    {\large\itshape ---\hspace{1em}Homework\hspace{1em}---}
+
+    {\huge Data Bases and Data Mining}
+
+    {\large \itshape Hugo SALOU}
+  \end{center}
+
+  \section{Exercise 2.3: \textit{Window functions} [\heart].}
+
+  \begin{que}
+    For each evaluation, return the name of the reviewer, the title of the film evaluated, the rating given to the film by the reviewer and the average of all the scores assigned by this reviewer.
+  \end{que}
+
+  We can use the following query:
+
+  \begin{lstlisting}
+select name_reviewer, title_movie, stars_rating,
+  avg(stars_rating) over (partition by id_reviewer) as average
+from ratings natural join reviewers natural join movies 
+  \end{lstlisting}
+
+  \begin{que}
+     For each evaluator, give the number of films reported, the average rating they gave, the smallest and the best note. Order the result by the number of films reported.
+  \end{que}
+
+  We can use the following query:
+
+  \begin{lstlisting}
+select name_reviewer, count(id_movie), avg(stars_rating),
+  min(stars_rating), max(stars_rating)
+from ratings natural join reviewers
+group by id_reviewer
+order by count(id_movie) desc
+  \end{lstlisting}
+
+  \begin{que}
+    For each film, display its average rating and ranking rank in order of average ratings among all the films.
+  \end{que}
+
+  We can use the following query:
+
+  \begin{lstlisting}
+with movie_avg as (
+  select id_movie, avg(stars_rating) as avg_rating
+  from ratings group by id_movie
+)
+select id_movie, avg_rating,
+  rank() over (order by avg_rating desc) as ranking
+from movie_avg
+  \end{lstlisting}
+
+  \begin{que}
+    For each reviewer, and each film they rated, display the highest rating they gave to that film, as well as the average of all the ratings that were given to this film. The response will be ordered by reviewer name and movie title.
+  \end{que}
+
+  We can use the following query:
+
+  \begin{lstlisting}
+select name_reviewer, title_movie, max(stars_rating) as max_rating,
+  avg(stars_rating) over (partition by id_movie) as avg_rating
+from ratings natural join reviewers natural join movies
+group by id_reviewer, id_movie
+order by name_reviewer, title_movie
+  \end{lstlisting}
+
+  \section{Exercise 3.9 [\heart].}
+
+  \begin{intro}
+    Let $R(\At_R)$, $S(\At_S)$ with $\At_S \subseteq \At_R$. Let $\Delta := \At_R \setminus \At_S$.
+  \end{intro}
+
+  \begin{note}
+    I also tried this exercise, by using Codd's theorem for the first question as $R \div S \equiv q_{\forall \At_S, R \wedge S}$ (as the $\forall$ is transformed into a $\lnot \exists \lnot$).
+    Unfortunately, I was not able to completely simplify the resulting query to the one expected.
+  \end{note}
+
+  \begin{que}
+    Prove the identity $R \div S = \pi_\Delta(R) \setminus \pi_\Delta\big( (\pi_\Delta(R) \bowtie S) \setminus R \big)$.
+  \end{que}
+
+  I will say that a tuple $x \in D^\Delta$ is \textit{invalid} when $xy \not\in R$ for all $y \in S$.
+  The set of invalid values is given by
+  \[
+    P := \pi_\Delta((\pi_\Delta(R) \times S) \setminus R)
+  .\]
+  The tuples in the division $R \div S$ are exactly the valid tuples (the not invalid ones) of $\pi_\Delta(R)$.
+  Thus:
+  \[
+  R \div S = \pi_\Delta(R) \setminus P
+  .\] 
+
+  \begin{que}
+    Prove the identity $R \div S = \bigcap_{t \in S} \pi_\Delta(\sigma_{S = t}(R))$.
+  \end{que}
+
+  By definition,
+  \[
+  R \div S := \mleft\{\,u \in D^\Delta \;\middle|\; \forall t' \in S, \exists t \in R, t_{|\Delta} = u \text{ and } t_{|\At_S} = t'\,\mright\} 
+  .\]
+
+  We have that
+  \begin{align*}
+    \bigcap_{t \in S} \pi_\Delta (\sigma_{S = t}(R))
+    &= \mleft\{\,u \in D^\Delta \;\middle|\; \forall t \in S, u \in \pi_{\Delta}^{~}(\sigma_{S = t}(R))\,\mright\} \\
+    &= \mleft\{\,u \in D^\Delta \;\middle|\; \forall t \in S, \exists t' \in \sigma_{S = t}(R), t'_{|\Delta} = u\,\mright\} \\
+    &= \mleft\{\,u \in D^\Delta \;\middle|\; \forall t \in S, \exists t' \in R, t'_{|\Delta} = u \text{ and } t_{|\At_S} = t'\,\mright\} \\
+    &= R \div S
+  .\end{align*}
+
+  \section{Exercise 3.10 [\heart].}
+
+  \begin{intro}
+    Define by induction a function $\mathsf{sch}$ that takes an relation algebra query and outputs the relation schema of a corresponding relation.
+  \end{intro}
+
+  A relation schema is given by a relation name and its attributes' names. However, for queries, the relation name really does not matter, so we can always use a fresh relation name (except, for example, for $R$ where we use $R$).
+  So, I will only define the names of attributes in the output of a relational algebra query.
+
+  Define $\mathsf{sch}(q)$ by induction on query $q$:
+  \begin{itemize}
+    \item $\mathsf{sch}(\langle j : d \rangle) := \{j\}$;
+    \item $\mathsf{sch}(R) := \At_R$;
+    \item $\mathsf{sch}(\sigma_{j = j'}(q)) := \mathsf{sch}(q)$;
+    \item $\mathsf{sch}(\pi_I(q)) := I \cap \mathsf{sch}(q)$;
+    \item $\mathsf{sch}(\rho_f(q)) := f(\mathsf{sch}(q)) = \{f(j)  \mid j \in \mathsf{sch}(q)\} $;
+    \item $\mathsf{sch}(q \cup q') := \mathsf{sch}(q) = \mathsf{sch}(q')$;
+    \item $\mathsf{sch}(q \setminus q') := \mathsf{sch}(q) = \mathsf{sch}(q')$;
+    \item $\mathsf{sch}(q \bowtie q') := \mathsf{sch}(q) \cup \mathsf{sch}(q')$.
+  \end{itemize}
+
+  In the above, I assumed a well-written query (\textit{e.g.}\ no $\langle j : d \rangle \cup \langle j' : d' \rangle$ with $j \neq j'$).
+
+  \section{Exercise 4.5: \textit{Query evaluation} [\heart].}
+
+  \begin{intro}
+    In this exercise, we study the theoretical complexity of query evaluation.
+  \end{intro}
+
+  \begin{que}
+    Write an algorithm running in polynomial space for FO query evaluation.
+  \end{que}
+
+  Firstly, assuming the database instance is available globally, we can use the following algorithm for FO query evaluation (algorithm~\ref{alg:eval}).
+
+  \begin{algorithm}
+    \centering
+    \begin{algorithmic}[1]
+      \Procedure{Eval}{$\lambda, \phi$}
+      \If{$\phi = R(\tau_1, \ldots, \tau_n)$}
+      \Return \texttt{true} iff $\big(\lambda(\tau_1), \ldots, \lambda(\tau_n)\big) \in R^I$
+      \ElsIf{$\phi = \psi \vee \vartheta$}
+      \Return \Call{Eval}{$\lambda, \psi$} \texttt{||} \Call{Eval}{$\lambda, \vartheta$}
+      \ElsIf{$\phi = \psi \wedge \vartheta$}
+      \Return \Call{Eval}{$\lambda, \psi$} \texttt{\&\&} \Call{Eval}{$\lambda, \vartheta$}
+      \ElsIf{$\phi = \lnot\psi$}
+      \Return \texttt{not} \Call{Eval}{$\lambda, \psi$}
+      \ElsIf{$\phi = \exists x, \psi$}
+      \ForAll{$v \in D$}
+      \If{\Call{Eval}{$\lambda[x := v], \psi$} $=$ \texttt{true}}
+      \State\Return \texttt{true}
+      \EndIf
+      \EndFor
+      \State\Return \texttt{false}
+      \Else \Comment{\quad$\phi = \forall x, \psi$}
+      \ForAll{$v \in D$}
+      \If{\Call{Eval}{$\lambda[x := v], \psi$} $=$ \texttt{false}}
+      \State\Return \texttt{false}
+      \EndIf
+      \EndFor
+      \State\Return \texttt{true}
+      \EndIf
+      \EndProcedure
+    \end{algorithmic}
+    \caption{FO query Evaluation}
+    \label{alg:eval}
+  \end{algorithm}
+
+  Here $\lambda$ is a valuation, and \Call{Eval}{$\lambda, \phi$} returns \texttt{true} iff $I, \lambda \models \phi$. Thus, for closed formulas, we simply have to use the "empty" valuation.
+
+  The space complexity of algorithm~\ref{alg:eval} is $\mathrm{O}\left(|\phi| \log |D|\right)$ as we simply consider one path in the evaluation tree (and we wait for the first path to finish before going to a different branch), and for the "\textbf{for all}" instructions, we can use binary counting, thus only requiring $\mathrm{O}(\log|D|)$ space.
+
+  \begin{que}
+    Show that FO query evaluation is \textbf{PSPACE}-hard.
+  \end{que}
+
+  To do that, we will use that the Quantified Boolean Formula problem (QBF) is \textbf{PSPACE}-hard and we will proceed by reduction.
+
+  Consider $\phi$ a quantified boolean formula, and consider the following database instance $I$:
+  \begin{itemize}
+    \item $D := \{\texttt{true}, \texttt{false}\}$;
+    \item $\textsc{True}^I = \{(v : \texttt{true})\}$ with only one attribute $v$ such that $v$ does not occur (not even as a bound variable) in $\phi$.
+  \end{itemize}
+  Then we transform $\phi$ into $\tilde{\phi}$ by replacing all occurrences of variables $x$ by the relational algebra query $\textsc{True}(v : x)$.
+  This can be done in polynomial time.
+  We have the following equivalence:
+  \[
+    I, \lambda \models \tilde{\phi} \quad\quad \iff \quad\quad \lambda \models \phi
+  ,\]
+  which can be proven by a simple induction on $\phi$.
+  The only interesting case in this induction is for variables and we have
+  \[
+    I, \lambda \models \underbrace{\textsc{True}(v : x)}_{\tilde x} \iff (v : \lambda(x)) \in \textsc{True}^I
+  \iff \lambda(x) = \texttt{true}
+  \iff \lambda \models x
+  .\]
+
+  We can thus conclude by reduction that first-order query evaluation is \textbf{PSPACE}-hard, and thus, \textbf{PSPACE}-complete with the first question.
+
+  \section{Exercise 4.7: \textit{Trakhtenbrot's theorem} [\heart\,\heart].}
+
+  \newcommand\halte{\hyperref[pb:halte]{\textsc{Halt${}_\varepsilon$}}}
+  \newcommand\satrc{\hyperref[pb:satrc]{\textsc{SatRC}}}
+
+  \begin{intro}
+    We consider the halting problem of a deterministic Turing machine on the empty word~$\varepsilon$:
+  \end{intro}
+
+  \vspace{-12pt}
+
+  \problem[Halt${}_\varepsilon$]{pb:halte}{A deterministic Turing machine $M$}{Does $M$ halt on input $\varepsilon$?}
+
+  \begin{thm}
+    The \satrc\ problem is undecidable where
+    \problem[SatRC]{pb:satrc}{A closed first-order formula $\phi$}{Does $\phi$ admit a finite model?}
+  \end{thm}
+
+  \begin{que}
+    Explain which reduction to apply for proving the Trakhtenbrot’s theorem (give a diagram if that helps).
+  \end{que}
+
+  We will construct a reduction $\halte \le \satrc$:
+
+  \begin{figure}[H]
+  \begin{adjustbox}{center}
+    \begin{tikzpicture}[shorten >=0.2cm,shorten <=0.2cm]
+      \node[rectangle,rounded corners,color=white,fill=deepblue] (f) {Reduction $f$};
+      \node[right=of f, inner sep=0pt] (fM) {$f(M)$};
+      \node[draw,rectangle,right=of fM] (satrc) {\Large\satrc};
+      \node[above=of f.north west] (tmp) {~};
+      \node[right of=tmp] (halte) {\LARGE\halte};
+      \draw[very thick,-] (f) to (fM);
+      \draw[very thick,->] (fM) to (satrc);
+      \node[above=0.5cm of satrc] (fMsat) {$f(M)$ sat};
+      \node[fit=(tmp)(satrc)(f)(fM)(tmp), draw, rectangle, inner sep=1.5em] (box) {};
+      \node[right=4em of satrc] (tmp) {};
+      \draw[very thick,->] (satrc) to (tmp);
+      \node[left=4em of f] (M) {$M$};
+      \draw[very thick,->] (M) to (f);
+      \node[right=3.5em of fMsat] (Mhalts) {$M$ halts on $\varepsilon$};
+      \path (fMsat) to node[midway]{$\iff$} (Mhalts);
+      \node[fit=(box), inner xsep=4cm] {};
+    \end{tikzpicture}
+  \end{adjustbox}
+  \caption{Diagram for a reduction $\halte \le \satrc$}
+  \label{fig:red-satrc}
+  \end{figure}
+
+  In figure~\ref{fig:red-satrc}, we write "$f(M)$ sat" to say that first-order formula $f(M)$ admits a finite model.
+
+  \begin{que}
+    Write a formula saying that the relation symbol $<$ is interpreted as a strict linear order $<^I$.
+  \end{que}
+
+  \begin{note}
+    In the rest, I will use $\Rightarrow$ to denote implication.
+    It'll behave greedily on the right (like $\forall$ and $\exists$), but not on the left.
+    For example, 
+     \[
+    a \wedge b \Rightarrow c \vee \exists u, d(u)
+    \]
+    means
+    \[
+    a \wedge (b \Rightarrow (c \vee (\exists u, d(u))))
+    .\]
+  \end{note}
+
+  Writing $x \not< y$ for $\lnot (x < y)$, we define the following formulae:
+  \begin{itemize}
+    \item $\mathsf{irreflexive} := \forall x, x \not< x$,
+    \item $\mathsf{asymmetric} := \forall a\: b, a < b \Rightarrow b \not< a$,
+    \item $\mathsf{transitive} := \forall a\: b\: c, a < b \wedge b < c \Rightarrow a < c$,
+    \item $\mathsf{linear} := \forall x\:y, x < y \vee x = y \vee x > y$,
+  \end{itemize}
+  and finally define
+  \[
+    \textsf{strict-linear-order} := \underbrace{\mathsf{irreflexive} \wedge \mathsf{asymmetric} \wedge \mathsf{transtive}}_{\textsf{strict-order}} \wedge \mathsf{linear}
+  .\]
+
+  \begin{que}
+    Write a formula saying that the constant symbol $0$ represents the minimum of $<$.
+  \end{que}
+
+  We can use the formula:
+  \[
+    \mathsf{minimum} := \forall x, \underbrace{x \neq 0}_{\lnot (x = 0)} \Rightarrow 0 < x
+  .\]
+
+  \begin{que}
+    We now introduce the relation symbols $T_0(\cdot,\cdot)$, $T_1(\cdot,\cdot)$, $H_q(\cdot,\cdot)$ for all states $q$ of $M$. The intuitive meaning of $T_i(x, t)$ is that there is the letter $i$ at cell $x$ at time $t$. The predicate $H_q(x, t)$ means that the machine is in the state $q$ at time $t$ and the head is at position $x$ at time $t$. Write a formula saying that there is an terminating execution of $M$ on $\varepsilon$.
+  \end{que}
+
+  \let\blank\square
+
+  For every transition $\tau := [(q, a) \to_M (q', a'), m]$,\footnote{This notation means that $M$ was in state $q \in Q$ and its head read $a \in \{0,1,\blank\} $ and that, after the transition, $M$ will write $a' \in \{0,1,\blank\} $ at the head position, then move its head according to $m \in \{x \mapsto x-1, x \mapsto x+1\}$, and finally switch to state $q' \in Q$.} we define the formula:
+  \[
+  \textsf{move}(t, \tau) := \textsf{update}(t, \tau) \wedge \textsf{keep-others}(t, \tau)
+  \]
+  where
+  \begin{itemize}
+    \item $\displaystyle\textsf{update}(t, \tau) := \forall x, H_q(x, t) \wedge T_a(x, t) \Rightarrow T_{a'}(x, t+1) \wedge H_q(m(x), t+1)$
+    \item $\displaystyle\textsf{keep-others}(t, \tau) := \forall x, \lnot  H_q(x, a) \Rightarrow \bigwedge_{\tilde a \in \{0,1, \blank\}} T_{\tilde a}(x, t) \Leftrightarrow T_{\tilde a}(x, t+1)$
+    \item $T_\blank(x, t) := \lnot T_0(x, t) \wedge \lnot T_1(x, t)$.
+  \end{itemize}
+
+  The intuitive meaning of these formulae is: formula \textsf{update} updates the state of the Turing machine and the value on the tape at the head's position; and formula \textsf{keep-others} states that all other cells on the tape are preserved (and no new cell is created).
+
+  We will define a formula
+  \[
+    \textsf{valid}(t) := \textsf{head}(t) \wedge \textsf{head-unique}(t) \wedge \forall x, \textsf{cell-valid}(t,x)
+  \] 
+  where
+  \begin{itemize}
+    \item $\displaystyle\textsf{head}(t) := \exists x, \bigvee_{q \in Q} H_q(x, t)$;
+    \item $\displaystyle \textsf{head-unique}(t) := \forall x\:x', \bigwedge_{q, q' \in Q} H_q(x, t) \wedge H_{q'}(x', t) \Rightarrow x = x' \wedge \textsf{eq}_{q,q'}$;
+    \item $\textsf{eq}_{q, q'} := \begin{cases}
+          \top & \text{ if } q = q'\\
+          \bot& \text{ otherwise;}
+      \end{cases}$ 
+    \item $\textsf{cell-valid}(x, t) := \lnot \big(T_0(x, t) \wedge T_1(x, t)\big)$.
+  \end{itemize}
+
+  The meaning of \textsf{valid} is to ensure that the Turing machine stays in a valid state: 
+  \begin{itemize}
+    \item the Turing machine is in some state $q$ and the head is somewhere on the tape (ensured by $\textsf{head}(t)$),
+    \item the Turing machine cannot be in two states at once nor have a head at two different positions (ensured by $\textsf{head-unique}(t)$),
+    \item the cells on the tape can either be $0$, $1$ or $\blank$, and cannot be have both $0$ and $1$ written (ensured by $\textsf{cell-valid}(x, t)$).
+  \end{itemize}
+
+  We also define a formula
+  \[
+    \textsf{init} := H_{q_\text{initial}}(0, 0) \wedge \forall x, T_\blank(x, 0)
+  \]
+  defining the initial state of the Turing machine.
+
+  We used $x + 1$, $x - 1$ previously (with functions $(-) + 1$ and  $(-) - 1$), but we need to define a few axioms saying that they behave according to $+_{\mathds{N}}$ and $-_{\mathds{N}}$:
+  \[
+  \mathsf{coh}_+ := \forall x, x < x + 1 \wedge \forall y, x < y \Rightarrow x + 1 \le y
+  \] 
+  and
+  \[
+  \mathsf{coh}_- := \big(\forall x, x \neq 0 \Rightarrow x - 1 < x \wedge \forall y, y < x \Rightarrow y \le x - 1\big) \wedge 0 -1 = 0
+  ,\]
+  where we write $x \le y$ for $x < y \vee x = y$.
+  These definitions come from:
+  \[
+    x+_{\mathds{N}}1 = \min \{y \mid x < y\} \quad\quad 0-_{\mathds{N}}1 = 0 \quad\quad \underbrace{x -_{\mathds{N}} 1 = \max \{y  \mid y < x \}}_{\text{if $x \neq 0$}}
+  .\]
+
+  \begin{note}
+    Rereading the course notes, it seems that we do not allow functions in terms.
+    But, there is an easy fix: whenever we have $T_a(x, t+1)$, it suffices to replace $t+1$ by a fresh variable $u$, and to append the coherence rule for $(-)+1$ specialized at $x$/$u$:
+    \[
+      T_a(x, t+1) \quad\quad \leadsto \quad\quad \exists u, T_a(x, u) \wedge \widetilde{\mathsf{coh}_+}[t,u]
+    ,\] 
+    where $\widetilde{\mathsf{coh}_+}[t, u] = \mathsf{coh}_+[t,u] \wedge \forall v, v \neq u \Rightarrow \lnot \mathsf{coh}_+[t, u]$.
+    Formula $\mathsf{coh}_+[t,u]$ is obtained by removing the $\forall x$ and replace $x$ by $t$ and $x+1$ by $u$ in the rest of the formula.
+
+    Intuitively, $\mathsf{coh}_+[t, u]$ says that $u$ behaves like $t + 1$, and $\widetilde{\mathsf{coh}_+}[t,u]$ states that $u$ is the unique element behaving like $t + 1$.
+  \end{note}
+
+  We can finally define a formula saying that there is an execution of $M$ on $\varepsilon$ that halts.
+
+  \[
+    \textsf{exec-halt} := \exists T, \mathsf{init} \wedge \textsf{make-moves}(T) \wedge \textsf{all-valid}(T) \wedge \textsf{halts}(T)
+  \] 
+  where (in the following, $\tau, \tau'$ are transitions of $M$)
+  \begin{itemize}
+    \item $\textsf{make-moves}(T) := \forall t, t < T \Rightarrow \textsf{has-move}(t) \wedge \textsf{move-unique}(t)$;
+    \item $\textsf{has-move}(t) := \bigvee_\tau \mathsf{move}(t, \tau)$;
+    \item $\textsf{move-unique}(t) := \bigwedge_{\tau, \tau'} \mathsf{move}(t, \tau) \wedge \mathsf{move}(t, \tau') \Rightarrow \mathsf{eq}_{\tau, \tau'}$;
+    \item $\textsf{all-valid}(T) := \forall t, t \le T \Rightarrow \mathsf{valid}(t)$;
+    \item $\textsf{halts}(T) := \lnot \bigvee_\tau \textsf{move}(T, \tau)$.
+  \end{itemize}
+
+  \begin{que}
+    Conclude.
+  \end{que}
+
+  We define 
+  \[
+    f(M) := \textsf{strict-linear-order} \wedge \textsf{minimum} \wedge \textsf{exec-halt}
+  \]
+  and we have the equivalence:
+  \[
+    \text{$f(M)$ admits a finite model} \iff  \text{$M$ has a execution that halts on $\varepsilon$}
+  .\]
+  The fact that we have a \textit{finite} model tells us that we do not consider an execution whose length is infinite.
+
+  To prove "$\implies$", we would have to prove that all the previous formulae have the correct behaviour in a finite model, and thus we can use the sequence of moves satisfying \textsf{make-moves}, to obtain the execution.
+  
+  To prove "$\impliedby$", we would have to show that $\llbracket 0, T\rrbracket$ is a finite model of $f(M)$ where $T$ is the length of the execution that halts on $\varepsilon$.
+
+  This concludes the reduction $\halte \le \satrc$, and as \halte\ is undecidable, so is \satrc.
+
+  \section{Exercise 5.9 [\heart].}
+
+  \begin{intro}
+    Prove that testing that a FO query is domain independent is undecidable.
+  \end{intro}
+
+  \newcommand\domind{\hyperref[pb:domind]{\textsc{DomInd}}}
+  \newcommand\domdep{\hyperref[pb:domdep]{\textsc{DomDep}}}
+
+  Firstly, we can clearly see that both problems \domdep\ and \domind\ are equivalent: if one is decidable, so is the other (we simply negate the output).
+  Thus we will show that \domdep\ is undecidable, proving the undecidability of \domind in the process.
+
+  \problem[DomInd]{pb:domind}{A database query $q$}{Is $q$ domain independent?}
+
+  \problem[DomDep]{pb:domdep}{A database query $q$}{Is $q$ domain dependent?}
+
+  We will proceed by reduction to show that $\satrc \le \domdep$.
+  Consider a closed first-order formula $\phi$.
+  Define $f(\phi) := q_{\phi} \bowtie \pi_x (x = y)$ where $q_\phi$ is defined in the proof of Codd's theorem (the definition of $q_\phi$ does not use the hypothesis of domain-independence: it is only used in the proof that $\phi$ and $q_\phi$ have the same semantics).
+
+  Let us show
+  \[
+  \text{$\phi$ admits a finite model} \iff \text{$f(\phi)$ is domain dependent}
+  .\]
+
+  Firstly, we will show the implication "$\implies$".
+  \begin{itemize}
+    \item If $\phi$ is satisfiable, then $\llbracket f(\phi) \rrbracket^I = \{(x : v)  \mid  v \in I\}$ for all $I$ satisfying $\phi$, and $\llbracket f(\phi)\rrbracket^I = \emptyset$ otherwise.
+    \item If $\phi$ is unsatisfiable, then for all $I$, $\llbracket f(\phi)\rrbracket^I = \emptyset$. Thus $f(\phi)$ is domain independent.
+  \end{itemize}
+  Secondly, we show the opposite implication "$\impliedby$".
+  \begin{itemize}
+    \item If $\phi$ is domain dependant, then necessarily there is an instance satisfying $q_\phi$ and thus $\phi$.
+    \item If $\phi$ is domain independent, then necessarily $q_\phi$ is always false, thus $\phi$ does not admit a finite model.
+  \end{itemize}
+
+  Thus $\satrc \le \domdep$ and $\satrc$ is undecidable thus so is $\domdep$, and so is $\domind$.
+\end{document}

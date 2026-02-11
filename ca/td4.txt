@@ -1,0 +1,75 @@
+R := x^2 + x + 1;
+                              2        
+                        R := x  + x + 1
+
+
+ReduceAlpha := proc(P, Q)
+  local R, u, v, g, T, a, b;
+
+  # Compute u*Q + v*R = g = gcd(Q, R)
+  g, u, v := gcdex(Q, R, x);
+
+  if g <> 1 then
+      error "Q(α) is not invertible modulo R(x)";
+  end if;
+
+  rem(rem(P, R, x)*u, R, x)
+end proc:
+
+
+
+P := randpoly(x, degree = 10, dense);
+Q := randpoly(x, degree = 10, dense);
+T := series(ReduceAlpha(P, Q), x);
+
+_, alpha := fsolve(R, x, complex);
+alpha;
+                 -0.5000000000 + 0.8660254038 I
+
+
+eval(P/Q, x = alpha);
+                 -0.4973746191 - 0.2160619140 I
+
+eval(T, x = alpha);
+                 -0.4973746191 - 0.2160619139 I
+
+evala(eval(P/Q, x = RootOf(R, x)));
+
+                11546       /  2         \   28791
+              - ----- RootOf\_Z  + _Z + 1/ - -----
+                46279                        46279
+
+
+
+denum:=proc(L,n)
+option remember;
+local i;
+	if L=[] then if n=0 then 1 else 0 fi
+	else add(denum(L[1..-2],n-i*L[-1]),i=0..iquo(n,L[-1]))
+	fi
+end:
+
+
+Coin := 1/((1 - z)*(-z^2 + 1)*(-z^5 + 1)*(-z^10 + 1));
+
+
+T := series(Coin, z, 50);
+seq(coeff(T, z, n), n = 0 .. 50);
+
+1, 1, 2, 2, 3, 4, 5, 6, 7, 8, 11, 12, 15, 16, 19, 22, 25, 28, 31, 
+
+  34, 40, 43, 49, 52, 58, 64, 70, 76, 82, 88, 98, 104, 114, 120, 
+
+  130, 140, 150, 160, 170, 180, 195, 205, 220, 230, 245, 260, 
+
+  275, 290, 305, 320, O(1)
+
+
+
+expand(denom(Coin));
+ 18    17    16    15    13    12    11    10    8    7    6    5
+z   - z   - z   + z   - z   + z   + z   - z   - z  + z  + z  - z 
+
+      3    2        
+   + z  - z  - z + 1
+
