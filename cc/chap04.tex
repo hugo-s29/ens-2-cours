@@ -1,0 +1,232 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Oracles et fonctions de conseil.}
+
+  Une machine de Turing avec un oracle pour $L$ peut décider en un pas de calcul si un mot donné appartient à $L$.
+
+  \begin{defn}
+    Une \textit{machine de Turing à oracle} dispose d'un ruban particulier et de trois états particuliers : $q_\textsf{?}$, $q_\mathsf{oui}$ et $q_\mathsf{non}$.
+
+    Soit $L \subseteq \Gamma^\star$.
+    La machine $\intro*\oraclem M L$ se comporte comme  une machine de Turing normale, sauf quand elle entre dans l'état $q_\textsf{?}$.
+    Dans ce cas, en notant $u$ le mot sur le ruban de l'oracle,
+    \begin{itemize}
+      \item si $u \in L$ alors l'état suivant est $q_\mathsf{oui}$ ;
+      \item si $u \not\in  L$ alors l'état suivant est $q_\mathsf{non}$.
+    \end{itemize}
+  \end{defn}
+
+  \begin{rmk}
+    On peut définir aussi des machines \textit{non déterministes} à oracle.
+  \end{rmk}
+
+  \begin{exm}
+    \begin{enumerate}
+      \item Étant donnée une formule booléenne
+        \[
+        \phi(x_1, \ldots, x_n)
+        ,\] 
+        on voudrait former une assignation qui satisfait $\phi$ s'il y en a.
+        On peut le faire avec un oracle pour \pbSat\ avec l'algorithme de \textit{\textbf{recherche préfixe}} :
+    \end{enumerate}
+
+    \begin{algorithmic}
+      \State $a \gets \varepsilon$
+      \While{$|a| < n$} 
+      \State On demande à l'oracle si $\phi(a, \texttt{0}, x_{|a|+2}, \ldots, x_n) \in \pbSat$.
+      \If{l'oracle dit "oui"} $a \gets a \texttt{0}$
+      \Else\ $a \gets a \texttt{1}$
+      \EndIf
+      \EndWhile
+      \State\Return $a$
+    \end{algorithmic}
+
+    \begin{enumerate}
+      \item[] Si $\phi \in \pbSat$ alors l'algorithme renvoie une assignation qui satisfait $\phi$.
+        Sinon, on renvoie $\texttt{1}^n$.
+
+      \item Soit $A \subseteq \Sigma^\star$.
+        On voudrait reconnaitre \[
+        L_A :=  \{\texttt{1}^n  \mid A^{=n} \neq \emptyset\}
+        ,\] 
+        où $A^{=n} := \{w \in A  \mid |w| = n\} = A \cap \Sigma^n$.
+
+        On peut le faire en temps polynomial avec une machine non-déterministe équipée d'un oracle pour $A$.
+    \end{enumerate}
+
+    \begin{algorithmic}
+      \If{ $x \neq \texttt{1}^{|x|}$ }
+      \textbf{Rejeter}
+      \EndIf
+      \State Choisir $y \in \Sigma^{|x|}$ de manière non-déterministe.
+      \State Demander à l'oracle si $y \in L$.
+      \If{l'oracle dit "oui"}
+      \State \textbf{Accepter}
+      \Else
+      \State \textbf{Rejeter}
+      \EndIf
+    \end{algorithmic}
+  \end{exm}
+
+  \section{Relativisation.}
+
+  On a prouvé les théorèmes de hiérarchie en utilisant la méthode de diagonalisation.
+  On peut étudier les limites de cette méthode grâce à la \textit{\textbf{relativisation}}.
+
+  \begin{thm}[Baker, Gill, Solovay]
+    Il existe des oracles $A$ et $B$ tels que
+    $\oracle \p A = \oracle \np A$ et  $\oracle \p B \neq \oracle \np B$.
+  \end{thm}
+
+  On prouvera ce théorème dans la suite de cette section.
+
+  \begin{defn}
+    Soit $A$ un oracle.
+
+    On note $\intro* \oracle \p A$ la classe des langages reconnaissable en temps polynomial par une machine déterministe avec un oracle pour $A$.
+
+    On note $\oracle \np A$ la classe des langages reconnaissable en temps polynomial par une machine non-déterministe avec un oracle pour~$A$.
+
+    On étend cette notation avec $\mathcal{C}$ une classe de langages, on définit
+    \[
+    \oracle \p {\mathcal{C}} := \bigcup_{L \in \mathcal{C}} \oracle \p L
+    \quad\quad
+    \oracle \np {\mathcal{C}} := \bigcup_{L \in \mathcal{C}} \oracle \np L
+    .\]
+  \end{defn}
+
+  On peut ainsi défini $\oracle \p \np$,  $\oracle \np \np$, \textit{etc}.
+
+  \begin{rmk}
+    On a $\p \neq \exptime$ par le théorème de hiérarchie en temps.
+    La preuve relativise $\oracle \p A \neq \oracle \exptime A$ pour tout oracle $A$.
+    C'est une propriété des preuves par diagonalisation.
+  \end{rmk}
+
+  \begin{rmk}
+    L'interprétation du théorème de Baker-Gill-Solovay est que l'on ne peut pas résoudre "$\p$ \textit{vs.}\ $\np$" par une méthode de diagonalisation.
+
+    La preuve que $\ip = \pspace$ ne se relativise pas : il existe $A$ tel que $\oracle \ip A \neq \oracle \pspace A$.
+  \end{rmk}
+
+  \begin{prop}
+    Il existe un oracle $A$ tel que $\oracle \p A = \oracle \np A$ .
+  \end{prop}
+  \begin{prv}
+    On choisit $A = \pbQBF$, et on a bien $\oracle \p \pbQBF = \pspace$.
+    \begin{itemize}
+      \item On a $\pspace \subseteq \oracle \p \pbQBF$ par $\pspace$-complétude de $\pbQBF$.
+      \item Supposons  $L \in \oracle \p \pbQBF$.
+        On a $L \in \pspace$ car on peut répondre aux questions posées à l'oracle en espace polynomial puisque $\pbQBF \in \pspace$. D'où $\oracle \p \pbQBF \subseteq \pspace$.
+    \end{itemize}
+
+    Et, on a $\oracle \np \pbQBF = \pspace$. On doit juste montrer que  $\oracle \np\pbQBF \subseteq \pspace$.
+    On énumère tous les chemins de calcul d'une machine~$\np$.
+  \end{prv}
+
+  \begin{prop}
+    Il existe un oracle $A$ tel que $\oracle \p A \neq \oracle \np A$.
+  \end{prop}
+  \begin{prv}
+    Pour tout $A$, on note $L_A := \{\texttt{1}^n  \mid A^{=n} \neq \emptyset\}$.
+    On a que~$L_A \in \oracle \np A$. On va construire $A$ tel que $L_A \not\in \oracle \p A$.
+
+    Soit $(M_i)_{i \ge 1}$ une énumération des machines à oracle telle que $M_i$ fonctionne en temps au plus $p_i(n)$ sur les entrées de taille $n$, pour un certain polynôme $p_i$.\footnote{On énumère les machines polynomiales à horloge, c'est-à-dire que l'on énumère toutes les machines qui s'arrêtent en temps $n^k$ pour tout $k \in \mathds{N}$. On force l'arrêt au bout de $n^k$ étapes de calculs. On parle de "\textit{clocked Turing machines}" en anglais.}
+    On va construire $A$ tel que $L_A$ n'est pas reconnu par $\oraclem {M_i} A$.
+    Construisons ce $A$ par étapes, où l'étape $i$ assurera que $L_A$ n'est pas reconnu par $\oraclem{M_i} A$.
+
+    On part de $A = \emptyset$.
+    À chaque étape, on peut ajouter des éléments dans $A$ ou $\bar{A}$ :
+    pour un mot $w \in \Sigma^\star$, à l'étape $i$, il est soit dans $A$, soit dans $\bar{A}$, soit on ne sait pas encore.
+    "À la fin" (étape $\omega$), les mots non-décidés sont mis dans $\bar{A}$.
+
+    À l'étape $i$, on s'assure que $\oraclem{M_i}A$ donne la mauvaise réponse sur l'entrée $\texttt{1}^{n_i}$.
+    On choisit $n_i$ de sorte que :
+    \begin{enumerate}
+      \item on ait $2^{n_i} > p_i(n_i)$ (ce qui est toujours vrai pour un $n_i$ assez grand) ;
+      \item l'entier $n_i$ est strictement supérieur à la longueur de tous les mots pour lesquels on a déjà fait une décision $(*)$.
+    \end{enumerate}
+    On simule $M_i$ sur l'entrée $\texttt{1}^{n_i}$.
+    Pour chaque requête à l'oracle, on donne une réponse consistante avec les décisions précédentes.
+    Plus précisément, on répond "oui" uniquement pour les chaînes~$w$ qu'on a déjà décidé dans $A$ (sinon, on ne répond "non" et $w$ est placé dans $\bar{A}$).
+    À la fin du calcul sur $\texttt{1}^{n_i}$,
+    \begin{enumerate}
+      \item si $M_i$ rejette, on décide de mettre dans $A$ un mot de longueur $n_i$ sur lequel $M_i$ n'a fait aucune réponse (possible car $2^{n_i} > p_i(n_i)$) ;
+      \item si $M_i$ accepte $\texttt{1}^{n_i}$, on décide que $A^{=n_i} = \emptyset$, ce qui est consistant avec les décisions précédentes par $(*)$, la seconde propriété pour le choix de $n_i$.
+    \end{enumerate}
+  En conclusion, $\oraclem {M_i} A(\texttt{1}^{n_i})$ accepte ssi $A^{=n_i} = \emptyset$.
+  Et donc $\oraclem {M_i} A$ se trompe sur  $\texttt{1}^{n_i}$.
+  \end{prv}
+
+  On en conclut le théorème de Baker-Gill-Solovay.
+
+  \section{Fonctions de conseil.}
+
+
+  \begin{defn}
+    Une \textit{fonction de conseil} est une fonction $f : \mathds{N} \to \{\texttt{0}, \texttt{1}\}^\star$ où, sur l'entrée $x \in \{\texttt{0}, \texttt{1}\}^n$ le "conseil" $f(n)$ est donné à la machine de Turing (en plus de l'entrée).
+  \end{defn}
+
+  \begin{defn}
+    Soit $\mathcal{C}$ une classe de langages, et $\mathcal{F}$ une classe de fonctions de conseil.
+    On définit $\intro*\advice{\mathcal{C}}{\mathcal{F}}$ l'ensemble des langages $A$ tels qu'il existe $B \in \mathcal{C}$ et une fonction de conseil $f \in \mathcal{F}$ telle que :
+    \[
+      \forall x \in \{\texttt{0},\texttt{1}\}^\star, \quad\quad x \in A \quad \iff \quad \code{x, f(|x|)} \in B
+    .\] 
+  \end{defn}
+
+  % TODO Diagramme de ruban avec ...x...#...f(|x|)...
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+      %\directlua{draw_tape({name = 'in', label='', n = 15, content = {'$x_1$', '$x_2$', '...', '$x_n$', '\\texttt{\\#}', '$f(n)_1$',  '$f(n)_2$', '...', '$f(n)_k$'}, head_pos = 1}, 0)}
+    \end{tikzpicture}
+    \caption{Machine avec fonction de conseil\footnote{où on construit $\code{\cdot,\cdot}$ avec un séparateur $\texttt{\#}$.}}
+  \end{figure}
+
+  \begin{exm}
+    On note
+    \[
+    \intro*\advicepoly := \mleft\{\,f \;\middle|\;
+      \begin{array}{l}
+        \text{il existe $p$ un polynôme tel}\\
+        \text{que $|f(n)| \le p(n)$ pour tout $n$}
+      \end{array}
+    \,\mright\}  
+    ,\]
+    et
+    \[
+    \intro*\advicelog := \mleft\{\,f \;\middle|\;
+      \begin{array}{l}
+        \text{il existe $c$ une constante telle}\\
+        \text{que $|f(n)| \le c \cdot \log n$ pour tout $n \ge 1$}
+      \end{array}
+    \,\mright\}  
+    .\]
+    On obtient donc des classes $\advice \p \advicepoly$, $\advice \np \advicepoly$, $\advice \p \advicelog$, $\advice \np \advicelog$, \textit{etc}.
+  \end{exm}
+
+  \begin{thm}
+    Pour un problème $A \subseteq \{\texttt{0}, \texttt{1}\}^{\star}$, les deux propriétés suivantes sont équivalentes :
+    \begin{enumerate}
+      \item $A \in \advice \p \advicepoly$ ;
+      \item $A$ peut être résolu par une famille de circuits booléens de taille polynomiale.
+    \end{enumerate}
+  \end{thm}
+  \begin{prv}
+    Pour "1.\ $\implies$ 2.", soit $A \in \advice \p \advicepoly$, et $x \in \{\texttt{0}, \texttt{1}\}^n$ avec
+    \[
+      x \in A \quad\quad \iff \quad\quad \code{x, f(n)} \in B
+    ,\] 
+    où $B \in \p$.
+    On a que $B$ peut être résolu par une famille de circuits booléens $(C_n)_{n \ge 1}$.
+    Supposons que $\code{x, y} = \texttt{1}^{|x|} \texttt{0} x y$.
+    Avec $y = f(n)$, cette chaîne est de longueur $2n + 1 + |f(n)|$, et il suffit de considérer $C_{2n + 1 + |f(n)|}$.
+
+    Pour "2.\ $\implies$ 1.", soit $A$ résolu par une famille de circuits $(C_n)_{n \ge 1}$ de taille polynomiale.
+    On donne comme conseil $f(n)$ une description du circuit $C_n$.
+    On peut conclure que $A \in \advice \p \advicepoly$ puisque le problème d'évaluation \pbValCirc\ est dans $\p$.
+  \end{prv}
+\end{document}
