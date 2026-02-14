@@ -1,8 +1,15 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{notes}[2025 Lecture notes class]
 
-\LoadClass[a5paper,12pt,DIV=calc,oneside,parskip=half]{scrreprt}
+\let\maybeAP\relax
+\let\importKnowledge\relax
+\DeclareOption{knowledge}{
+  \gdef\maybeAP{\AP}
+  \gdef\importKnowledge{\usepackage[notion,hyperref]{knowledge}}
+}
+\ProcessOptions\relax
 
+\LoadClass[a5paper,12pt,DIV=calc,oneside,parskip=half]{scrreprt}
 
 \RequirePackage[a5paper,margin=1.2cm,footskip=0cm,headsep=0.4cm]{geometry}
 \RequirePackage[utf8]{inputenc}
@@ -43,6 +50,7 @@
 \RequirePackage{fontspec}
 \RequirePackage{yhmath}
 \RequirePackage{fitbox}
+\importKnowledge
 \RequirePackage{tablefootnote}
 
 \newcommand\removefootnoteinside[1]{
@@ -150,7 +158,7 @@
 \theoremstyle{definition}
 
 \declaretheoremstyle[
-    headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont,
+    headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont, postheadhook=\maybeAP,
     mdframed={
         linewidth=2pt,
         rightline=false, topline=false, bottomline=false,
@@ -160,7 +168,7 @@
 ]{thmgreenbox}
 
 \declaretheoremstyle[
-    headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
+    headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont, postheadhook=\maybeAP,
     mdframed={
         linewidth=2pt,
         rightline=false, topline=false, bottomline=false,
@@ -170,7 +178,7 @@
 ]{thmbluebox}
 
 \declaretheoremstyle[
-    headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
+    headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont, postheadhook=\maybeAP,
     mdframed={
         linewidth=2pt,
         rightline=false, topline=false, bottomline=false,
@@ -180,7 +188,7 @@
 ]{thmblueline}
 
 \declaretheoremstyle[
-    headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
+    headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont, postheadhook=\maybeAP,
     mdframed={
         linewidth=2pt,
         rightline=false, topline=false, bottomline=false,
@@ -190,7 +198,7 @@
 ]{thmredbox}
 
 \declaretheoremstyle[
-    headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
+    headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont, postheadhook=\maybeAP,
     numbered=no,
     mdframed={
         linewidth=2pt,
@@ -202,7 +210,7 @@
 ]{thmproofbox}
 
 \declaretheoremstyle[
-    headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
+    headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont, postheadhook=\maybeAP,
     numbered=no,
     mdframed={
         linewidth=2pt,
