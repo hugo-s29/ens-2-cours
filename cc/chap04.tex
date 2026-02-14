@@ -176,14 +176,15 @@
     .\] 
   \end{defn}
 
-  % TODO Diagramme de ruban avec ...x...#...f(|x|)...
-
-  \begin{figure}
+  \begin{figure}[H]
     \centering
     \begin{tikzpicture}
-      %\directlua{draw_tape({name = 'in', label='', n = 15, content = {'$x_1$', '$x_2$', '...', '$x_n$', '\\texttt{\\#}', '$f(n)_1$',  '$f(n)_2$', '...', '$f(n)_k$'}, head_pos = 1}, 0)}
+      \directlua{draw_tape({name = 'in', label='', n = 10, content = {'$x_1$', '$x_2$', dots, '$x_n$', spacer, '$y_1$',  '$y_2$', dots, '$y_k$'}, head_pos = 1}, 0, 0.65, {
+          {from=0, to=3, text=[[entrée $x$]]},
+          {from=5, to=8, text=[[conseil $f(x) = y$]]},
+      })}
     \end{tikzpicture}
-    \caption{Machine avec fonction de conseil\footnote{où on construit $\code{\cdot,\cdot}$ avec un séparateur $\texttt{\#}$.}}
+    \caption{Ruban d'entrée d'une machine avec fonction de conseil\footnote{où on construit $\code{\cdot,\cdot}$ avec un séparateur $\texttt{\#}$.}}
   \end{figure}
 
   \begin{exm}

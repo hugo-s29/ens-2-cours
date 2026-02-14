@@ -31,7 +31,7 @@
 \RequirePackage{mathtools}
 \RequirePackage{tikz}
 \RequirePackage{tikz-network}
-\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations.pathmorphing, graphdrawing, graphs, chains}
+\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations.pathmorphing, graphdrawing, graphs, chains, calligraphy}
 \usegdlibrary{force}
 \RequirePackage{svg}
 \RequirePackage{multirow}
