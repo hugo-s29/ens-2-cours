@@ -39,6 +39,7 @@
 \RequirePackage{soulutf8}
 \RequirePackage{adjustbox}
 \RequirePackage{tikz-cd}
+\RequirePackage{tikz-3dplot}
 \RequirePackage{lmodern}
 \RequirePackage{xfrac}
 \RequirePackage{tabularx}

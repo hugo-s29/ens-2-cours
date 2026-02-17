@@ -104,4 +104,5 @@ function draw_spacetime_diagram(config)
 end
 
 spacer = "\\texttt{\\#}"
-dots = "\\ldots"
+dots = "$\\cdots$"
+

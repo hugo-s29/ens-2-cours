@@ -1,0 +1,489 @@
+\documentclass[fontsize=16pt,a4paper,DIV=17,parskip=half]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hyperindex]{hyperref}
+\usepackage{lastpage}
+\usepackage{tikz}
+\usepackage{tikzpagenodes}
+\usepackage{pgfplots}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{scrlayer-scrpage}
+\usepackage{xspace}
+\usepackage{float}
+\usepackage{amsfonts,amsmath,amsthm}
+\usepackage{thmtools}
+\usepackage[english]{babel}
+\usepackage[autostyle, style=english]{csquotes}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage{mleftright}
+%\usepackage{BOONDOX-calo}
+%\usepackage{dsfont}
+\usepackage{tikz-cd}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{soulutf8}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{nameref}
+\usepackage{stmaryrd}
+\usepackage{fvextra}
+\usepackage{adjustbox}
+\usepackage{fontawesome}
+\usepackage{fontspec}
+\usepackage{tikz-3dplot}
+\usepackage{mathpartir}
+\usepackage{etoolbox}
+\usepackage{todonotes}
+\usepackage{verbatim}
+\usepackage{algorithm}
+\usepackage[rightComments=false,beginComment=$\qquad\triangleright$~]{algpseudocodex}
+\usepackage{ebproof}
+\usepackage[makeroom, thicklines]{cancel}
+\renewcommand{\CancelColor}{\color{nicered}}
+\usepackage{setspace}
+\usepackage{fourier-otf}
+\setmathfont{Erewhon-Math.otf}[CharacterVariant={20}]
+%\usepackage{pxfonts}
+%\usepackage[scaled=0.92]{mathpazo}
+\usepackage{juliamono}
+\usepackage[osf]{Alegreya}
+\usepackage[osf]{AlegreyaSans}
+\let\mathds\mathbb
+
+\usepackage{juliamono}
+\usepackage[notion,hyperref]{knowledge}
+
+\knowledgedirective {problem}{notion,style=problem,intro style=intro problem}
+\knowledgestyle{intro problem}{smallcaps, ensuretext, color=deepblue!70}
+\knowledgestyle{problem}{smallcaps, ensuretext, color=deepblue}
+
+\input{notions.tex}
+
+%\DeclareMathAlphabet{\mathsf}{OT1}{cmss}{m}{n}
+
+\renewcommand{\mathsf}[1]{\text{\normalfont\sffamily#1}}
+\renewcommand{\texttt}[1]{\text{\normalfont\ttfamily#1}}
+
+\ebproofset{right label template=$\inserttext$, left label template=\tiny$\inserttext$, center=false}
+
+\RedeclareSectionCommand[beforeskip=0.10em, afterskip=0.10em]{section}
+\RedeclareSectionCommand[beforeskip=0.05em, afterskip=0.001em plus 0em]{subsection}
+
+
+\fvset{bgcolor=lightgray!10,backgroundcolorpadding=3pt}
+
+\MakeOuterQuote{"}
+
+\newcommand\redQuestionBox{
+  \tikz[baseline]{
+    \node[rectangle,fill=nicered,anchor=base,rounded corners=2pt] (A) {\color{white}\textsf{\textbf{?}}\ensuremath{\,}};
+  }
+}
+
+\definecolor{blue}{HTML}{5aa9e6}
+\colorlet{deeppurple}{DarkOrchid}
+\colorlet{deepgreen}{ForestGreen!70!black}
+\colorlet{deepblue}{NavyBlue!70!black}
+\colorlet{deepred}{RawSienna!70!black}
+\colorlet{nicered}{BrickRed!70!white}
+
+\makeatletter
+\g@addto@macro\bfseries{\boldmath}
+\makeatother
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  captionpos=b,
+  escapeinside={@}{@},
+  mathescape=true,
+  language=sql,
+  frame=leftline,
+  framesep=1em,
+  backgroundcolor=\color{gray!10},
+  morekeywords={with, over, rank, partition}
+}
+
+\hypersetup{
+  colorlinks,
+  citecolor=deepgreen,
+  filecolor=nicered,
+  linkcolor=deepblue,
+  pdfencoding=auto,
+  psdextra,
+  urlcolor=deepred
+}
+
+\usetikzlibrary{positioning,shadings,arrows.meta,fit}
+
+\clearpairofpagestyles
+
+\newcommand\showpage{\itshape\hfill--~\thepage/\pageref*{LastPage}~--\hfill}
+\cofoot[\showpage]{\showpage} \cefoot[\showpage]{\showpage}
+
+\setlist[enumerate]{font={\bfseries\color{deepblue}}}
+\AtBeginDocument{
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+\newcommand\separatorBlock{
+  \raisebox{-0.2em}{
+    \tikz{ \draw[deepblue,ultra thick, line cap=round] (0,0) -- (0,1em); }
+  }
+}
+
+\newcommand\vertical[1]{
+  \rotatebox[origin=c]{270}{\ensuremath{#1}}
+}
+
+\mdfsetup{skipabove=1em,skipbelow=0em,linewidth=0pt,rightline=false, topline=false, bottomline=false}
+
+
+\theoremstyle{definition}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=ForestGreen, % backgroundcolor=ForestGreen!5,
+% },
+]{thmgreenbox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont\sffamily\itshape,
+% mdframed={
+%   linecolor=NavyBlue,% backgroundcolor=NavyBlue!5,
+% },
+]{thmbluebox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
+  mdframed={
+    linecolor=deepblue,
+    linewidth=2pt,
+  },
+  numbered=no,
+]{thmblueline}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!5,
+% },
+]{thmredbox}
+
+\declaretheoremstyle[
+  headfont=\itshape\sffamily\color{deepred}, bodyfont=\normalfont,
+% mdframed={
+%   linecolor=RawSienna,% backgroundcolor=RawSienna!1,
+%   linewidth=0pt,
+% },
+  numbered=no,
+  qed=\qedsymbol,
+]{thmproofbox}
+
+\newcommand\defineMarkerColor[2]{
+  \AtBeginEnvironment{#1}{
+    \setlist[enumerate]{font={\color{#2}}}
+    \renewcommand{\labelitemi}{\color{#2}\small$\triangleright$}
+    \renewcommand{\labelitemii}{\color{#2}–}
+    \renewcommand{\labelitemiii}{\color{#2}•}
+    \renewcommand\emph[1]{{\bfseries\em\color{#2}##1}}
+  }
+}
+
+
+\AtBeginDocument{
+  \setlist[enumerate]{font={\bfseries\color{deepblue}}}
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}\small$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+
+\setlist[enumerate]{font={\color{deepblue}}}
+\renewcommand{\labelitemi}{\color{deepblue}\small$\triangleright$}
+\renewcommand{\labelitemii}{\color{deepblue}–}
+\renewcommand{\labelitemiii}{\color{deepblue}•}
+
+\declaretheorem[style=thmgreenbox, name=Axiom, numbered=no]{axi} \defineMarkerColor{axi}{deepgreen}
+\declaretheorem[style=thmgreenbox, name=Definition]{defn} \defineMarkerColor{defn}{deepgreen}
+\declaretheorem[style=thmbluebox, name=Example]{exm}      \defineMarkerColor{exm}{deepblue}
+\declaretheorem[style=thmbluebox, name=Exercise]{exo}     \defineMarkerColor{exo}{deepblue}
+\declaretheorem[style=thmbluebox, name=Question, parent=subsection]{que}     \defineMarkerColor{que}{deepblue}
+\declaretheorem[style=thmredbox, name=Proposition]{prop}  \defineMarkerColor{prop}{deepred}
+\declaretheorem[style=thmredbox, name=Theorem]{thm}      \defineMarkerColor{thm}{deepred}
+\declaretheorem[style=thmredbox, name=Lemma]{lem}         \defineMarkerColor{lem}{deepred}
+\declaretheorem[style=thmredbox, name=Corollary]{crlr}   \defineMarkerColor{crlr}{deepred}
+\declaretheorem[style=thmblueline, name=Remark]{rmk}    \defineMarkerColor{rmk}{deepblue}
+\declaretheorem[style=thmblueline, name=Note]{note}       \defineMarkerColor{note}{deepblue}
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
+\newenvironment{prv}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementproof}}{\end{replacementproof}} \defineMarkerColor{prv}{deepred}
+\declaretheorem[style=thmproofbox, name=Proof idea]{replacementideaproof}
+\newenvironment{prvid}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementideaproof}}{\end{replacementideaproof}} \defineMarkerColor{prvid}{deepred}
+
+\RequirePackage{caption}
+\DeclareCaptionLabelFormat{labelformat}{\textbf{#1~#2}\separatorBlock}
+\captionsetup{labelformat=labelformat,labelsep=none,textfont=sl}
+
+\DeclareMathSizes{11}{9}{7}{5}
+
+\title{Computational Complexity -- \textit{Homework 1}}
+\author{Hugo \textsc{Salou}}
+
+\let\emph\relax
+\DeclareTextFontCommand{\emph}{\bfseries\em\color{deepblue}}
+
+\renewcommand{\thefootnote}{\alph{footnote}}
+
+\tikzcdset{arrow style=math font}
+\tikzset{
+  equiv/.style={-,preaction={draw,double equal sign distance}},
+  >=Straight Barb,
+}
+
+\usepackage{colortbl}
+\usepackage{nicematrix}
+
+\NewDocumentCommand{\problem}{ommm}{
+  \csgdef{intro#2}{
+    \begin{figure}[H]
+      \centering
+      \arrayrulecolor{deepblue}
+      \setlength\arrayrulewidth{1pt}
+      \begin{NiceTabular}{r|p{10cm}}
+        \Block{2-1}{\textsc{#1}} & \textbf{Input.} #3\\
+                            & \textbf{Output.} #4
+      \end{NiceTabular}
+      \label{pb:#2}
+    \end{figure}
+  }
+
+  \csgdef{pb#2}{\hyperref[pb:#2]{\textsc{#1}}}
+
+  \csgdef{recall#2}{
+    \begin{figure}[H]
+      \centering
+      \arrayrulecolor{deepblue}
+      \setlength\arrayrulewidth{1pt}
+      \begin{NiceTabular}{r|p{10cm}}
+        \Block{2-1}{\hyperref[pb:#2]{\textsc{#1}}} & \textbf{Input.} #3\\
+                            & \textbf{Output.} #4
+      \end{NiceTabular}
+    \end{figure}
+  }
+
+  \csgdef{show#2}{%
+    \ifcsname introduced@#2\endcsname
+      \csname recall#2\endcsname
+    \else
+      \csname intro#2\endcsname
+      \expandafter\gdef\csname introduced@#2\endcsname{}%
+    \fi
+  }
+}
+
+\directlua{dofile("../turing.lua")}
+
+\begin{document}
+  \begin{center}
+    \bfseries
+    \sffamily
+
+    {\large\itshape ---\hspace{1em}Homework I\hspace{1em}---}
+
+    {\huge Computational Complexity}
+
+    {\large \itshape Hugo SALOU}
+  \end{center}
+
+  \section{Palindromes.}
+
+  \begin{que}
+    Let $y, z \in \mathsf{PaddedPal}_k$ and assume for some $i,j \in \llbracket k+1, 2k\rrbracket$, $C_i(y) = C_j(z)$. Show that $y = z$.
+  \end{que}
+
+  As $y, z \in \mathsf{PaddedPal}_k$, we can write $y = u 0^k \bar{u}$ and $z = v 0^k \bar{v}$ with $u, v \in \Sigma^k$.
+  Consider an accepting execution $r$ for $y$, and $s$ for $z$.
+
+  \begin{figure}[H]
+    \centering
+    \begin{adjustbox}{center}
+      \includegraphics[width=0.85\textwidth]{crossing.pdf}
+    \end{adjustbox}
+    \caption{Intersection of two crossing sequences}
+  \end{figure}
+
+  We can assume that $r$ will accept while its head is before $i$, or $s$ after $j$ (if that is not the case, swap $y$ and $z$).
+
+  We can create an accepting execution $t$ for $w := u 0^\ell \bar{v}$ where $\ell = (i-k)+(2k -j) = k+i-j$: start like $r$, and whenever you cross from cell $i$ to cell $i+1$, act like $s$, and whenever you cross from $j+1$ to $j$, act like $s$ again.
+  This execution is, indeed, accepting, as either $r$ will accept while its head is before $i$ (and so the execution $t$ behaves like $r$), either $t$ will accept while its head is after $j$ (and so $t$ behaves like $s$).
+  Thus $w$ is a palindrome, and so $u = v$, and we can finally conclude $y = z$.
+
+  \begin{que}
+    Show that for any $y \in \mathsf{PaddedPal}_k$, there is an $i \in \llbracket k+1, 2k\rrbracket$ such that $|C_i(y)| \le T(3k) / k$.
+  \end{que}
+
+  As each element of some $C_i(y)$ is a step (and we don't have duplicates when considering different $i$s), we know that
+   \[
+  \sum_{i=k+1}^{2k} |C_i(y)| \le T(3k)
+  ,\]
+  and if we take the average, we know at least one element will be less than or equal to the average:
+  there is some $i \in \llbracket k+1, 2k\rrbracket$ such that
+  \[
+  |C_i(y)| \le T(3k) / k
+  .\] 
+
+  \begin{que}
+    Conclude by observing that for each $y \in \mathsf{PaddedPal}_k$, we can associate a distinct sequence of states of size at most $T(3k) / k$.
+  \end{que}
+
+  By question 2, we can associate some $i = i(y)$ such that $|C_{i(y)}| \le T(3k) / k$ to every $y \in \mathsf{PaddedPal}_k$.
+  Then, the mapping $y \mapsto C_{i(y)}(y)$ is injective by question 1, thus giving a distinct sequence of states of size at most $T(3k) / k$ to every $y \in \mathsf{PaddedPal}_k$.
+
+  We know that $|\mathsf{PaddedPal}_k| = |\Sigma|^k$ and that the number of state sequences of length at most $\ell$ is less than $\sum_{i=0}^\ell |Q|^i \le |Q|^{\ell+1}$.
+  Therefore, with the association made previously, we know that $|\Sigma|^k \le |Q|^{(T(3k) / k) + 1}$, and thus \[
+  k \log |\Sigma| \le \left( \frac{T(3k)}{k} + 1 \right) \log |Q|, \quad\quad \text{ so }\quad\quad
+  k^2 \underbrace{\left( \frac{\log |\Sigma|}{\log|Q|} - \frac{1}{k} \right)}_{9\alpha} \le T(3k)
+  .\]
+  
+  Writing $n = 3k$, we can finally conclude that $T(n) \ge \alpha n^2$ for infinitely many~$n$.
+
+  \section{\texttt{\#\#\#} The Padding Technique \texttt{\#\#\#}.}
+
+  \subsection{Problem 1.}
+
+  \begin{que}
+    Show that if $\p = \np$ then  $\exptime = \nexptime$.\footnote{\AP $\intro*\exptime = \bigcup_{k \in \mathds{N}} \dtime{2^{n^k}}$ and $\intro*\nexptime = \bigcup_{k \in \mathds{N}} \ntime{2^{n^k}}$.}
+  \end{que}
+
+  Let us assume $\p = \np$.
+  We already know $\exptime \subseteq \nexptime$, so let us show the converse.
+  Consider $L \in \nexptime$, and $M$ a non-deterministic Turing machine recognizing $M$ and that runs in time $C \cdot 2^{n^k}$ for some integer $k$ and some constant $C$.
+  Then, consider the following language on $\{\texttt{0}, \texttt{1}, \texttt{\#}\}$:
+  \[
+    L' := \mleft\{\,w \texttt{\#}^{C \cdot 2^{{|w|}^k}} \;\middle|\; w \in L \,\mright\}.
+  \]
+  We use the \texttt{\#}s as fuel for $M$ to run in polynomial time in the length of
+  \[
+    \bar{w} := w \texttt{\#}^{C \cdot 2^{{|w|}^k}}
+  .\] 
+
+  Define $M'$ to be the non-deterministic machine that follows exactly $M$'s behaviour except that it consider \texttt{\#} as a blank character \blank\ (so it'll only read the~"$w$ part" of $\bar{w}$).
+  Therefore, the language recognized by $M'$ is exactly $L'$, and its runtime is in polynomial time (as the "extra length" of $\bar{w}$ allows the execution of $M$ on $w$ to happen in polynomial time in $|\bar{w}|$).
+  Thus,
+  \[
+  L' \in \np = \p
+  .\] 
+
+  As $L' \in \p$, there exists some deterministic poly-time Turing machine $N$ recognizing $L'$.
+  Let us deduce a exponential-time deterministic Turing machine $N'$ recognizing $L$:
+  start by writing $w$ on $N$'s input tape, compute $C \cdot 2^{n^k}$ (which is time-constructible by Tutorial 3, Exercise 2) in unary (using the \texttt{\#} character), adding that on the input tape after $w$, and finally start the execution of~$N$.
+
+  The input tape of $N$ contains $\bar{w}$ and so we have that $N$ will test whether $\bar{w} \in L'$, \textit{i.e.}\ whether $w \in L$.
+  Furthermore, $N$ runs in exponential time and is deterministic.
+  Therefore, $L \in \exptime$.
+
+  We can conclude that $\nexptime \subseteq \exptime$.
+
+  \subsection{Problem 2.}
+
+  \begin{que}
+    Suppose $\nspace{n^4} \subseteq \nspace{n^3}$.
+    Let $M$ be a Turing machine running in $\mathrm{O}(n^5)$ space.
+    Show that there is a Turing machine $N$ accepting the language $L(M)$ and running in $\mathrm{O}(n^4)$ space.
+    Consequently, $\nspace{n^5} \subseteq \nspace{n^4}$.
+  \end{que}
+
+  Let $M$ be a non-deterministic Turing machine that runs in $\mathrm{O}(n^5)$ space.
+  We define the language
+  \[
+  A := \mleft\{\,w \texttt{\#}^{\lceil n^{5 / 4} \rceil - n} \;\middle|\; w \in L(M), n = |w|\,\mright\} 
+  .\]
+  In the following, we will write $\bar{w}$ the word associated with $w \in L(M)$ in language $A$, and $m = \mathrm{O}(n^{5 / 4})$ its length.
+
+  We have that $A \in \nspace{m^4}$ as we can simply ignore the \texttt{\#} and run $M$ on the input tape.
+  The extra \texttt{\#}s allows $M$ to use more space, and $m^4 = \mathrm{O}(n^5)$.
+
+  Thus we have that $A \in \nspace{m^3}$ by the assumption that $\nspace{m^4} \subseteq \nspace{m^3}$.
+  Also, the computation of $\lceil n^{5 / 4} \rceil - n$ can be done in space $\mathrm{O}(n)$ (non-output tapes only), and thus, so is the computation of $\bar{w}$.
+  Therefore, considering $N$ the non-deterministic Turing machine that:
+  \begin{enumerate}
+    \item computes $\bar{w}$ in space $\mathrm{O}(n)$ ;
+    \item simulates $P$ on $\bar{w}$ in space $m^3 = \mathrm{O}(n^{15 / 4}) = \mathrm{O}(n^4)$,
+  \end{enumerate}
+  where $P$ is a non-deterministic Turing machine that recognizes $A'$ in space $\mathrm{O}(m^3)$.
+  We have that $N$ runs in space $\mathrm{O}(n^4)$ and its language is exactly $L(M)$.
+  So, $L(M) \in \nspace{n^4}$.
+
+  We can conclude that \[
+    \nspace{n^5} \subseteq \nspace{n^4}
+  .\]
+
+  \begin{que}
+    Using Savitch’s theorem and the previous result, show that $\nspace{n^3} \subsetneq \nspace{n^4}$ has to be true.
+  \end{que}
+
+  By induction on $k \in \mathds{N}$, and with a proof very similar to the one in the previous question, we can show that if $\nspace{n^4} \subseteq \nspace{n^3}$, then \[
+    \nspace{n^{k+4}} \subseteq \nspace{n^{k+3}} \subseteq \cdots \subseteq \nspace{n^3}
+  ,\]
+  and the reverse inclusions are clearly true, we have the equality of all these classes of languages.
+  Also, by Savitch's theorem (for the right inclusion), we have that 
+  \[
+    \nspace{n^3} \subseteq \dspace{n^6} \subseteq \nspace{n^6} = \nspace{n^3}
+  ,\] 
+  thus $\dspace{n^6} = \nspace{n^6}$.
+  Similarly, we have that $\dspace{n^8} = \nspace{n^8}$ as
+  \[
+    \nspace{n^4} \subseteq \dspace{n^8} \subseteq \nspace{n^8} = \nspace{n^4}
+  .\]
+  Thus $\dspace{n^6} = \dspace{n^8}$ which is absurd as $n^6 = \mathrm{o}(n^8)$ (and $n^8$ is space-constructible) using the space hierarchy.
+
+  \begin{que}
+    Can you now show that $\nspace{n^s} \subsetneq \nspace{n^t}$ for all $0 \le s < t$, $s, t \in \mathds{N}$?
+  \end{que}
+
+  Assume, by contradiction, that $\nspace{n^s} = \nspace{n^t}$ for some integers $s < t$.
+  As
+  \[
+    \nspace{n^s} = \nspace{n^t} \subseteq \nspace{n^{t+1}} \subseteq \cdots \subseteq \nspace{n^s}
+  \]
+  form a chain of equalities, we have that
+  \[
+    \nspace{n^{t+1}} = \nspace{n^t}
+  .\]
+  Very similarly to the previous questions, we can show that 
+  \[
+    A := \mleft\{\,w \texttt{\#}^{n^{(t + 2)/(t + 1)} - n} \;\middle|\; w \in L(M), n = |w|\,\mright\} 
+  \] is in $\nspace{m^{t+1}}$ where $M$ is a non-deterministic Turing machine that uses at most $\mathrm{O}(n^{t+1})$ space.
+  Thus, we can show that $L(M) \in \nspace{n^{t+1}}$ as we can simulate $M$ on $\bar{w}$ using
+  \[
+    \mathrm{O}(m^{t+1}) = \mathrm{O}\big((n^{(t+1) / (t+2)})^{t+1}\big) = \mathrm{O}(n^{t+1})
+  \] 
+  space.
+  Doing this for $s = t+1, t+2, t+3, \ldots$, we obtain that 
+  \begin{equation}
+    \nspace{n^t} = \nspace{n^{t+1}} = \cdots = \nspace{n^{t + k}} = \cdots,
+    \tag{$*$}
+    \label{eq:pb2-contra}
+\end{equation}
+  and thus $\dspace{n^{2t}} = \dspace{n^{2(t+1)}}$ which contradicts the space hierarchy ($n^{2(t+1)}$ is space-contractible and $n^{2t} = \mathrm{o}(n^{2(t+1)})$).
+
+  We can conclude that
+  \[
+    \nspace{n^s} \subsetneq \nspace{n^t}
+  ,\] 
+  for all integers $s < t$.
+
+  \begin{note}
+    After (\ref{eq:pb2-contra}), we could conclude that
+    \[
+      \pspace = \bigcup_{k \in \mathds{N}} \dspace{n^k} \subseteq \bigcup_{k \in \mathds{N}} \nspace{n^k} = \nspace{n^t}
+    ,\] 
+    and thus we get the contradiction $\pspace = \dspace{n^t}$.
+  \end{note}
+\end{document}
