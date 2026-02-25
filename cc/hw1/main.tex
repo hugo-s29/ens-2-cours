@@ -437,28 +437,28 @@
   Assume, by contradiction, that $\nspace{n^s} = \nspace{n^t}$ for some integers $s < t$.
   As
   \[
-    \nspace{n^s} = \nspace{n^t} \subseteq \nspace{n^{t+1}} \subseteq \cdots \subseteq \nspace{n^s}
+    \nspace{n^t} = \nspace{n^s} \subseteq \nspace{n^{s+1}} \subseteq \cdots \subseteq \nspace{n^t}
   \]
   form a chain of equalities, we have that
   \[
-    \nspace{n^{t+1}} = \nspace{n^t}
+    \nspace{n^{s+1}} = \nspace{n^s}
   .\]
   Very similarly to the previous questions, we can show that 
   \[
-    A := \mleft\{\,w \texttt{\#}^{n^{(t + 2)/(t + 1)} - n} \;\middle|\; w \in L(M), n = |w|\,\mright\} 
-  \] is in $\nspace{m^{t+1}}$ where $M$ is a non-deterministic Turing machine that uses at most $\mathrm{O}(n^{t+1})$ space.
-  Thus, we can show that $L(M) \in \nspace{n^{t+1}}$ as we can simulate $M$ on $\bar{w}$ using
+    A := \mleft\{\,w \texttt{\#}^{n^{(s + 2)/(s + 1)} - n} \;\middle|\; w \in L(M), n = |w|\,\mright\} 
+  \] is in $\nspace{m^{s+1}}$ where $M$ is a non-deterministic Turing machine that uses at most $\mathrm{O}(n^{s+1})$ space.
+  Thus, we can show that $L(M) \in \nspace{n^{s+1}}$ as we can simulate $M$ on $\bar{w}$ using
   \[
-    \mathrm{O}(m^{t+1}) = \mathrm{O}\big((n^{(t+1) / (t+2)})^{t+1}\big) = \mathrm{O}(n^{t+1})
+    \mathrm{O}(m^{s+1}) = \mathrm{O}\big((n^{(s+1) / (s+2)})^{s+1}\big) = \mathrm{O}(n^{s+1})
   \] 
   space.
-  Doing this for $s = t+1, t+2, t+3, \ldots$, we obtain that 
+  Doing this for $t = s+1, s+2, s+3, \ldots$, we obtain that 
   \begin{equation}
-    \nspace{n^t} = \nspace{n^{t+1}} = \cdots = \nspace{n^{t + k}} = \cdots,
+    \nspace{n^s} = \nspace{n^{s+1}} = \cdots = \nspace{n^{s + k}} = \cdots,
     \tag{$*$}
     \label{eq:pb2-contra}
-\end{equation}
-  and thus $\dspace{n^{2t}} = \dspace{n^{2(t+1)}}$ which contradicts the space hierarchy ($n^{2(t+1)}$ is space-contractible and $n^{2t} = \mathrm{o}(n^{2(t+1)})$).
+  \end{equation}
+  and thus $\dspace{n^{2s}} = \dspace{n^{2(s+1)}}$ which contradicts the space hierarchy ($n^{2(s+1)}$ is space-contractible and $n^{2s} = \mathrm{o}(n^{2(s+1)})$).
 
   We can conclude that
   \[
@@ -469,8 +469,8 @@
   \begin{note}
     After (\ref{eq:pb2-contra}), we could conclude that
     \[
-      \pspace = \bigcup_{k \in \mathds{N}} \dspace{n^k} \subseteq \bigcup_{k \in \mathds{N}} \nspace{n^k} = \nspace{n^t}
+      \pspace = \bigcup_{k \in \mathds{N}} \dspace{n^k} \subseteq \bigcup_{k \in \mathds{N}} \nspace{n^k} = \nspace{n^s}
     ,\] 
-    and thus we get the contradiction $\pspace = \dspace{n^t}$.
+    and thus we get the contradiction $\pspace = \dspace{n^{2s}}$.
   \end{note}
 \end{document}
