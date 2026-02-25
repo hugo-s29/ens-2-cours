@@ -19,8 +19,6 @@
 \usepackage{subfigure}
 \usepackage{listings}
 \usepackage{mleftright}
-%\usepackage{BOONDOX-calo}
-%\usepackage{dsfont}
 \usepackage{tikz-cd}
 \usepackage[framemethod=TikZ]{mdframed}
 \usepackage{soulutf8}
@@ -45,8 +43,6 @@
 \usepackage{setspace}
 \usepackage{fourier-otf}
 \setmathfont{Erewhon-Math.otf}[CharacterVariant={20}]
-%\usepackage{pxfonts}
-%\usepackage[scaled=0.92]{mathpazo}
 \usepackage{juliamono}
 \usepackage[osf]{Alegreya}
 \usepackage[osf]{AlegreyaSans}
@@ -60,8 +56,6 @@
 \knowledgestyle{problem}{smallcaps, ensuretext, color=deepblue}
 
 \input{notions.tex}
-
-%\DeclareMathAlphabet{\mathsf}{OT1}{cmss}{m}{n}
 
 \renewcommand{\mathsf}[1]{\text{\normalfont\sffamily#1}}
 \renewcommand{\texttt}[1]{\text{\normalfont\ttfamily#1}}
@@ -146,16 +140,10 @@
 
 \declaretheoremstyle[
   headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont,
-% mdframed={
-%   linecolor=ForestGreen, % backgroundcolor=ForestGreen!5,
-% },
 ]{thmgreenbox}
 
 \declaretheoremstyle[
   headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont\sffamily\itshape,
-% mdframed={
-%   linecolor=NavyBlue,% backgroundcolor=NavyBlue!5,
-% },
 ]{thmbluebox}
 
 \declaretheoremstyle[
@@ -169,17 +157,10 @@
 
 \declaretheoremstyle[
   headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
-% mdframed={
-%   linecolor=RawSienna,% backgroundcolor=RawSienna!5,
-% },
 ]{thmredbox}
 
 \declaretheoremstyle[
   headfont=\itshape\sffamily\color{deepred}, bodyfont=\normalfont,
-% mdframed={
-%   linecolor=RawSienna,% backgroundcolor=RawSienna!1,
-%   linewidth=0pt,
-% },
   numbered=no,
   qed=\qedsymbol,
 ]{thmproofbox}
@@ -312,23 +293,29 @@
 
   \begin{figure}[H]
     \centering
+    \vspace{-1em}
     \begin{adjustbox}{center}
       \includegraphics[width=0.85\textwidth]{crossing.pdf}
     \end{adjustbox}
+    \vspace{-3em}
     \caption{Intersection of two crossing sequences}
+
+    \vspace{1em}
+
+    \footnotesize\textsf{\textbf{Note:} Here, it is shown for the initial tape, but we have\\ a similar situation throughout the execution.}
   \end{figure}
 
   We can assume that $r$ will accept while its head is before $i$, or $s$ after $j$ (if that is not the case, swap $y$ and $z$).
 
-  We can create an accepting execution $t$ for $w := u 0^\ell \bar{v}$ where $\ell = (i-k)+(2k -j) = k+i-j$: start like $r$, and whenever you cross from cell $i$ to cell $i+1$, act like $s$, and whenever you cross from $j+1$ to $j$, act like $s$ again.
-  This execution is, indeed, accepting, as either $r$ will accept while its head is before $i$ (and so the execution $t$ behaves like $r$), either $t$ will accept while its head is after $j$ (and so $t$ behaves like $s$).
+  We can create an accepting execution $t$ for $w := u 0^\ell \bar{v}$ where $\ell = (i-k)+(2k -j) = k+i-j$: start like $r$, and whenever you try to cross from cell $i$ to cell $i+1$, jump to cell $j+1$ and act like $s$ (we have the same state as the crossing sequences are equal), and whenever you try to cross from $j+1$ to $j$, jump to $i$ act like $s$ again.
+  This execution is, indeed, accepting, as either $r$ will accept while its head is before $i$ (as, in this case, the execution $t$ behaves like $r$), either $t$ will accept while its head is after $j$ (as, in this case, $t$ behaves like $s$).
   Thus $w$ is a palindrome, and so $u = v$, and we can finally conclude $y = z$.
 
   \begin{que}
     Show that for any $y \in \mathsf{PaddedPal}_k$, there is an $i \in \llbracket k+1, 2k\rrbracket$ such that $|C_i(y)| \le T(3k) / k$.
   \end{que}
 
-  As each element of some $C_i(y)$ is a step (and we don't have duplicates when considering different $i$s), we know that
+  As each element of some $C_i(y)$ is a step during the execution of $M$ on a $y$ whose length is $3k$ (and we don't have duplicates when considering different $i$s), we know that
    \[
   \sum_{i=k+1}^{2k} |C_i(y)| \le T(3k)
   ,\]
@@ -342,13 +329,13 @@
     Conclude by observing that for each $y \in \mathsf{PaddedPal}_k$, we can associate a distinct sequence of states of size at most $T(3k) / k$.
   \end{que}
 
-  By question 2, we can associate some $i = i(y)$ such that $|C_{i(y)}| \le T(3k) / k$ to every $y \in \mathsf{PaddedPal}_k$.
+  By question 2, we can associate some $i = i(y)$ such that $|C_{i(y)}(y)| \le T(3k) / k$ to every $y \in \mathsf{PaddedPal}_k$.
   Then, the mapping $y \mapsto C_{i(y)}(y)$ is injective by question 1, thus giving a distinct sequence of states of size at most $T(3k) / k$ to every $y \in \mathsf{PaddedPal}_k$.
 
   We know that $|\mathsf{PaddedPal}_k| = |\Sigma|^k$ and that the number of state sequences of length at most $\ell$ is less than $\sum_{i=0}^\ell |Q|^i \le |Q|^{\ell+1}$.
   Therefore, with the association made previously, we know that $|\Sigma|^k \le |Q|^{(T(3k) / k) + 1}$, and thus \[
   k \log |\Sigma| \le \left( \frac{T(3k)}{k} + 1 \right) \log |Q|, \quad\quad \text{ so }\quad\quad
-  k^2 \underbrace{\left( \frac{\log |\Sigma|}{\log|Q|} - \frac{1}{k} \right)}_{9\alpha} \le T(3k)
+  k^2 \underbrace{\left( \frac{\log |\Sigma|}{\log|Q|} - \frac{1}{k} \right)}_{9\alpha\text{\footnote{This is constant, except for the $\frac{1}{k}$ term, which is bounded by $1$, thus getting a constant $\alpha$.}}} \le T(3k)
   .\]
   
   Writing $n = 3k$, we can finally conclude that $T(n) \ge \alpha n^2$ for infinitely many~$n$.
@@ -364,7 +351,7 @@
   Let us assume $\p = \np$.
   We already know $\exptime \subseteq \nexptime$, so let us show the converse.
   Consider $L \in \nexptime$, and $M$ a non-deterministic Turing machine recognizing $M$ and that runs in time $C \cdot 2^{n^k}$ for some integer $k$ and some constant $C$.
-  Then, consider the following language on $\{\texttt{0}, \texttt{1}, \texttt{\#}\}$:
+  Then, consider the following language on $\{\texttt{0}, \texttt{1}, \texttt{\#}\}$:\footnote{We can always encode such an alphabet with the binary alphabet using twice as many cells.}
   \[
     L' := \mleft\{\,w \texttt{\#}^{C \cdot 2^{{|w|}^k}} \;\middle|\; w \in L \,\mright\}.
   \]
@@ -382,7 +369,7 @@
 
   As $L' \in \p$, there exists some deterministic poly-time Turing machine $N$ recognizing $L'$.
   Let us deduce a exponential-time deterministic Turing machine $N'$ recognizing $L$:
-  start by writing $w$ on $N$'s input tape, compute $C \cdot 2^{n^k}$ (which is time-constructible by Tutorial 3, Exercise 2) in unary (using the \texttt{\#} character), adding that on the input tape after $w$, and finally start the execution of~$N$.
+  start by writing $w$ on $N$'s input tape, compute $C \cdot 2^{n^k}$ (which is time-constructible by a construction similar to Tutorial 3, Exercise 2) in unary (using the \texttt{\#} character), adding that on the input tape after $w$, and finally start the execution of~$N$.
 
   The input tape of $N$ contains $\bar{w}$ and so we have that $N$ will test whether $\bar{w} \in L'$, \textit{i.e.}\ whether $w \in L$.
   Furthermore, $N$ runs in exponential time and is deterministic.
