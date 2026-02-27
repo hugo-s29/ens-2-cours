@@ -1,0 +1,227 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Hiérarchie polynomiale.}
+
+  \begin{defn}
+    Étant donnée une classe de langages $\mathcal{C}$, on définit
+    \[
+      \intro* \co{\mathcal{C}} := \mleft\{\,A \subseteq \Sigma^\star \;\middle|\; \Sigma^\star \setminus A \in \mathcal{C}\,\mright\}
+    .\]
+  \end{defn}
+
+  \begin{defn}
+    Les classes $\intro* \phSigma i$, pour $i \ge 0$, sont définies par induction :
+    \begin{itemize}
+      \item $\phSigma 0 := \p$ ;
+      \item $\phSigma {i+1} := \oracle{\np}{\phSigma i}$.
+    \end{itemize}
+    
+    On pose $\intro*\ph := \bigcup_{i\ge 0} \phSigma i$.
+
+    On définit aussi $\intro*\phPi i = \co {\phSigma i}$ et $\intro*\phDelta i := \oracle \p {\phSigma {i-1}}$.
+  \end{defn}
+
+  \begin{exm}
+    On a
+    \begin{itemize}
+      \item $\phSigma 1 = \oracle \np \p = \np$,
+      \item $\phPi 1 = \conp$,
+      \item $\phDelta 2 = \oracle \p \np$,
+      \item $\phSigma 2 = \oracle \np \np$,
+      \item \textit{etc}.
+    \end{itemize}
+  \end{exm}
+
+  En général, on a les inclusions suivantes :
+  \[
+  \begin{tikzcd}[column sep={35,between origins}, row sep={25, between origins}]
+    & \phSigma 1 \arrow[marking,phantom]{dr}{\subseteq} = \np && \phSigma 2 \arrow[marking,phantom]{dr}{\subseteq} && \phSigma 3\arrow[marking,phantom]{dr}{\subseteq}\\
+    \p \arrow[marking,phantom]{ur}{\subseteq} \arrow[marking,phantom]{dr}{\subseteq} && \phDelta 2 \arrow[marking,phantom]{ur}{\subseteq} \arrow[marking,phantom]{dr}{\subseteq} && \phDelta 3 \arrow[marking,phantom]{ur}{\subseteq} \arrow[marking,phantom]{dr}{\subseteq} && \cdots \arrow[marking,phantom]{rr}{\subseteq} && \pspace\\
+    & \phPi 1 \arrow[marking,phantom]{ur}{\subseteq} = \np && \phPi 2 \arrow[marking,phantom]{ur}{\subseteq} && \phPi 3 \arrow[marking,phantom]{ur}{\subseteq}\\
+  \end{tikzcd}
+  .\]
+
+  \begin{rmk}
+    On a que $\phDelta i = \oracle\p{\phSigma {i-1}} = \oracle\p{\phPi {i-1}}$.
+    Par exemple, on a que $\phDelta 2 = \oracle \p \np = \oracle \p \conp$.
+
+    Les classes $\phDelta i$ sont closes par complément. Par exemple, $\phDelta 2 \subseteq \phPi 2$ découle de la clôture par complément et de $\phDelta 2 \subseteq \phSigma 2$.
+
+    On omet parfois l'exposant $\mathrm{P}$ (mais attention, il existe une hiérarchie $\Sigma_i$ en calculabilité).
+  \end{rmk}
+
+  \begin{prop}
+    On a $\ph \subseteq \pspace$.
+  \end{prop}
+  \begin{prv}
+    On montre par récurrence sur $i$ que $\phSigma i \subseteq \pspace$.
+    \begin{itemize}
+      \item On a $\phSigma 0 = \p \subseteq \pspace$.
+      \item Supposons $\phSigma {i-1} \subseteq \pspace$.
+        On a
+        \[
+          \phSigma i = \oracle \np {\phSigma {i-1}} \subseteq \oracle \np \pspace = \pspace
+        ,\] 
+        car $\oracle \np \pbQBF = \pspace$.
+    \end{itemize}
+  \end{prv}
+
+  \begin{prop}
+    Si $\p = \np$ alors  $\ph = \p$.
+
+    Plus généralement, pour tout  $i \ge 0$, si 
+    \[
+      \phSigma i = \phSigma {i+1}
+    ,\]
+    alors $\ph = \phSigma i$.
+    On dit alors que "\textit{la hiérarchie polynomiale s'effondre au $i$-ème niveau}".
+  \end{prop}
+  \begin{prv}
+    Supposons $\phSigma i = \phSigma {i+1}$.
+
+    On montre par récurrence que  $\phSigma j = \phSigma i$ pour tout $j \ge i+1$.
+    L'initialisation est vraie par hypothèse.
+    L'étape de récurrence est : supposons $\phSigma {j-1} = \phSigma i$ alors 
+     \[
+     \phSigma j = \oracle \np {\phSigma {j-1}} = \oracle \np {\phSigma i} = \phSigma {i+1} = \phSigma i
+    .\]
+  \end{prv}
+
+  \section{Caractérisation par quantificateurs.}
+
+  \begin{thm}
+    Un langage $A$ est dans $\phSigma i$ si, et seulement si, il existe  $B \in \p$ et un polynôme $p$ tel que, pour tout  $x \in \{\texttt{0},\texttt{1}\}^\star$,
+    \[
+      x \in A \iff
+      \begin{pmatrix}
+      \exists y_1 \in \{\texttt{0},\texttt{1}\}^{p(n)} \\
+      \forall y_2 \in \{\texttt{0},\texttt{1}\}^{p(n)} \\
+      \exists y_3 \in \{\texttt{0},\texttt{1}\}^{p(n)} \\
+      \vdots\\
+      \mathsf{Q}_i y_i \in \{\texttt{0},\texttt{1}\}^{p(n)} \\
+      \code{x, y_1, y_2, \ldots, y_i} \in B
+      \end{pmatrix}
+    .\]\qed
+  \end{thm}
+
+  \begin{rmk}
+    \begin{enumerate}
+      \item Cette caractérisation est similaire (c'est une généralisation) à la caractérisation de $\np$ avec des certificats.
+      \item On peut quantifier sur des blocs de taille variables (des chaînes de tailles $p_1(n), p_2(n), \ldots, p_i(n)$).
+        On peut aussi enchaîner plusieurs blocs existentiels sans augmenter le $i$ (il suffit de concaténer les chaînes).
+      \item On pourrait aussi quantifier sur $y_k \in \{\texttt{0},\texttt{1}\}^{\le p(n)}$.
+      \item On a une caractérisation similaire pour la classe $\phPi i$ où on commence par "$\forall y_1 \in \{\texttt{0},\texttt{1}\}^{p(n)}$".
+    \end{enumerate}
+  \end{rmk}
+
+  \begin{prop}
+    Si $\phSigma i = \phPi i$ alors on a que  $\phSigma i = \ph$.
+  \end{prop}
+  \begin{prv}
+    Montrons $\phSigma i = \phSigma {i+1}$.
+    Soit $A \in \phSigma {i+1}$.
+    On a
+    \[
+      x \in A \iff
+      \exists y_1 \: \forall y_2 \ldots \mathsf{Q}_{i+1} y_{i+1} \code{x, y_1, \ldots, y_{i+1} \in B}
+    ,\]
+    avec $B \in \p$. Et, le langage
+    \[
+      \mleft\{\, \code{x, y_1} \;\middle|\; \forall y_2 \ldots \mathsf{Q}_{i+1} y_{i+1} \code{x, y_1, \ldots, y_{i+1} \in B} \,\mright\} 
+    \]
+    est dans $\phPi i$, donc dans $\phSigma i$.
+    D'où, par caractérisation,
+     \[
+       x \in A \iff \exists y_1 \: \exists z_1 \: \forall z_2 \: \ldots \: \mathsf{Q}_i z_i \: \code{x, y_1, z_1, \ldots, z_i} \in C
+    ,\]
+    et ainsi $A$ est un problème de $\phSigma i$ avec la remarque précédente.
+  \end{prv}
+
+  \begin{rmk}[Propriétés supplémentaires]
+    \begin{enumerate}
+      \item La classe $\phSigma i$ est  \textit{close par réduction polynomiale}, c'est-à-dire si $B \in \phSigma i$ et $A \redP B$ alors $A \in \phSigma i$.
+      \item Le problème de décision \pbQBFSigma\ est $\phSigma i$-complet, où
+        \showQBFSigma
+      \item De même, le problème de décision \pbQBFPi\ est $\phPi i$-complet, où
+        \showQBFPi
+    \end{enumerate}
+  \end{rmk}
+
+  \section{Théorème de Karp-Lipton.}
+
+  \begin{thm}[Karp-Lipton]
+    Si $\np \subseteq \advice \p \advicepoly$, alors $\phSigma 2 = \phPi 2$.
+  \end{thm}
+
+  \begin{defn}
+    Un circuit booléen à $s$ entrées décide \pbSat\ si, étant donnée une formule booléenne $F$ de taille  $s$, le circuit $C$ décide si $F$ est satisfiable.
+  \end{defn}
+
+  La preuve de ce théorème repose sur deux lemmes.
+
+  \begin{lem}
+    L'ensemble des (codages de) circuits qui décident \pbSat\ est dans \conp.
+    \label{lem:karp-lipton-lem1}
+  \end{lem}
+  \begin{prv}
+    On utilise le fait que \pbSat\ est auto-réductible\footnote{\textit{self-reductible} en anglais.} : une formule booléenne $F(v_1, \ldots, v_n)$ est satisfiable si et seulement si l'une des deux formules booléennes
+    \[
+    F(v_1, \ldots, v_{n-1}, \texttt{0}) \quad \text{ ou } \quad F(v_1, \ldots, v_{n-1}, \texttt{1})
+    \]
+    est satisfiable.
+
+    Un circuit $C$ décide \pbSat\ ssi pour toute formule $F$ de taille $s$ 
+    \begin{enumerate}
+      \item si $F$ n'a pas de variable, alors $C(F) = \texttt{1}$ ssi $F \equiv \texttt{1}$ ;
+      \item si $F$ dépend de $n \ge 1$ variables $v_1, \ldots, v_n$ alors $C(F) = \texttt{1}$ ssi
+        \[
+          C(F[v_n := \texttt{0}]) = \texttt{1} \text{ ou } C(F[v_n := \texttt{1}]) = \texttt{1}
+        .\]
+    \end{enumerate}
+    Étant donnée $F$, les conditions ci-dessous peuvent être vérifiées en temps polynomial (car \pbValCirc\ est dans $\p$).
+
+    Cette caractérisation commence par un "pour toute formule" et on considère ensuite un problème dans \p, d'où le langage est bien dans \conp.
+  \end{prv}
+
+  \begin{lem}
+    Si $\np \subseteq \advice \p \advicepoly$, alors \pbSat\ peut être décidé par une famille de circuits booléens de taille polynomiale.
+    \qed
+    \label{lem:karp-lipton-lem2}
+  \end{lem}
+
+  \vspace{12pt}
+
+  \begin{prv}[du théorème de Karp-Lipton]
+    On suppose avoir l'inclusion des classes~$\np \subseteq \advice \p \advicepoly$.
+    Il suffit de montrer que $\phPi 2 \subseteq \phSigma 2$.
+    En effet, avec ça on a que
+    \[
+      \phSigma 2 = \co {\phPi 2} \subseteq \co {\phSigma 2} = \phPi 2
+    .\]
+
+    \renewcommand\vali{2}%
+
+    Il suffit de montrer que le problème de décision~\pbQBFPi\ est dans $\phSigma 2$.
+    Soit $F$ une formule booléen de taille $s$, alors
+    \[
+    \forall u \: \exists v \: F(u, v)
+    ,\] 
+    est équivalente à 
+    \[
+    \exists C \: \forall u \: C(F(u, \cdot)) = \texttt{1} \quad \text{ et $C$ décide \pbSat}
+    ,\]
+    où $C$ est un circuit booléen avec $s$ entrées.
+    Il suffit de quantifier sur des circuits de taille polynomiale d'après le lemme~\ref{lem:karp-lipton-lem2}.
+    Ceci est équivalent à 
+    \[
+      \exists C \: \forall u \: C(F(u, \cdot)) = \texttt{1} \text{ et } \forall y \in \{\texttt{0},\texttt{1}\}^{p(s)} \: \code{C, y} \in A
+    ,\] 
+    avec $A \in \p$ d'après le lemme~\ref{lem:karp-lipton-lem1}.
+    On en déduit que ceci est équivalent à 
+    \[
+      \exists C \: \forall u \: \forall y \: C(F(u, \cdot )) = \texttt{1} \text{ et } \code{C, y} \in A
+    ,\]
+    qui est vérifiable en temps polynomial, donc dans $\phSigma 2$ grâce à la caractérisation par quantificateurs.
+  \end{prv}
+\end{document}

@@ -24,6 +24,15 @@
 \knowledgenewrobustcmd\advicepoly{\ensuremath{\cmdkl{\mathsf{poly}}}}
 
 
+\knowledgenewrobustcmd\phSigma[1]{\ensuremath{\cmdkl{\Sigma^\mathrm{P}_{#1}}}}
+\knowledgenewrobustcmd\phDelta[1]{\ensuremath{\cmdkl{\Delta^\mathrm{P}_{#1}}}}
+\knowledgenewrobustcmd\phPi[1]{\ensuremath{\cmdkl{\Pi^\mathrm{P}_{#1}}}}
+\knowledgenewrobustcmd\ph{\ensuremath{\cmdkl{\mathsf{PH}}}}
+
+\knowledgenewrobustcmd\co[1]{\ensuremath{\cmdkl{\mathsf{co} #1}}}
+
+\newcommand\conp{\co{\np}}
+
 \problem[Sat]{Sat}{Une formule booléenne $\phi$}{La formule $\phi$ est-elle satisfiable?}
 \problem[3-Sat]{ThreeSat}{Une formule booléenne $\phi$ sous 3-CNF}{La formule $\phi$ est-elle satisfiable?}
 \problem[CircuitSat]{CircuitSat}{Une circuit booléen $C$ avec $n$ variables}{Existe-t-il $a$ tel que $C(a) = \texttt{1}$ ?}
@@ -31,3 +40,8 @@
 
 \problem[QBF]{QBF}{Une formule booléenne quantifiée $F$ (close)}{Est-ce que $F$ est vraie ?}
 \problem[Path]{Path}{Un graphe $G$ orienté, et $s, t \in \mathrm{V}(G)$}{Existe-t-il un chemin de $s$ à $t$ dans $G$ ?}
+
+\newcommand\vali{i}
+
+\problem[QBF-$\phSigma {\vali}$]{QBFSigma}{Une formule booléenne quantifiée $F$ avec ${\vali}$ quantificateurs et commençant par un bloc existentiel}{Est-ce que $F$ est vraie ?}
+\problem[QBF-$\phPi {\vali}$]{QBFPi}{Une formule booléenne quantifiée $F$ avec ${\vali}$ quantificateurs et commençant par un bloc universel}{Est-ce que $F$ est vraie ?}
