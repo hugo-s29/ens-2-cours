@@ -29,8 +29,11 @@ function draw_tape(t, y, cell_size, braces)
     x = x + cell_w
   end
 
-  tex.print(string.format("\\draw[very thick, white] (%f,%f) -- (%f,%f);", x, y, x, y + cell_h))
-  tex.print(string.format("\\draw[decorate,decoration={zigzag,segment length=3pt,amplitude=1pt}] (%f,%f) -- (%f,%f);", x, y, x, y + cell_h))
+  local xshift = x + cell_w / 3
+
+  tex.print(string.format("\\draw (%f,%f) -- (%f,%f);", x, y, xshift, y))
+  tex.print(string.format("\\draw (%f,%f) -- (%f,%f);", x, y + cell_h, xshift, y + cell_h))
+  tex.print(string.format("\\draw[decorate,decoration={zigzag,segment length=3pt,amplitude=1pt}] (%f,%f) -- (%f,%f);", xshift, y, xshift, y + cell_h))
 
   if t.label ~= nil and t.label ~= "" then
     tex.print(string.format("\\node[right=4mm] at (%f,%f) {%s};", x, y + cell_h/2, t.label))
