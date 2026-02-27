@@ -200,28 +200,30 @@
       \phSigma 2 = \co {\phPi 2} \subseteq \co {\phSigma 2} = \phPi 2
     .\]
 
-    \renewcommand\vali{2}%
+    \renewcommand\vali{2}% Magic
 
     Il suffit de montrer que le problème de décision~\pbQBFPi\ est dans $\phSigma 2$.
     Soit $F$ une formule booléen de taille $s$, alors
     \[
-    \forall u \: \exists v \: F(u, v)
+    \forall u \: \exists v \quad F(u, v)
     ,\] 
     est équivalente à 
     \[
-    \exists C \: \forall u \: C(F(u, \cdot)) = \texttt{1} \quad \text{ et $C$ décide \pbSat}
+    \exists C \: \forall u \quad C(F(u, \cdot)) = \texttt{1} \quad \text{ et }\quad \text{$C$ décide \pbSat}
     ,\]
     où $C$ est un circuit booléen avec $s$ entrées.
     Il suffit de quantifier sur des circuits de taille polynomiale d'après le lemme~\ref{lem:karp-lipton-lem2}.
     Ceci est équivalent à 
     \[
-      \exists C \: \forall u \: C(F(u, \cdot)) = \texttt{1} \text{ et } \forall y \in \{\texttt{0},\texttt{1}\}^{p(s)} \: \code{C, y} \in A
+      \exists C \: \forall u \quad C(F(u, \cdot)) = \texttt{1} \quad \text{ et } \quad \forall y \in \{\texttt{0},\texttt{1}\}^{p(s)} \: \code{C, y} \in A
     ,\] 
     avec $A \in \p$ d'après le lemme~\ref{lem:karp-lipton-lem1}.
     On en déduit que ceci est équivalent à 
     \[
-      \exists C \: \forall u \: \forall y \: C(F(u, \cdot )) = \texttt{1} \text{ et } \code{C, y} \in A
+      \exists C \: \forall u \: \forall y \quad C(F(u, \cdot )) = \texttt{1} \quad \text{ et } \quad \code{C, y} \in A
     ,\]
     qui est vérifiable en temps polynomial, donc dans $\phSigma 2$ grâce à la caractérisation par quantificateurs.
   \end{prv}
+
+  \renewcommand\vali{i}% Magic
 \end{document}
