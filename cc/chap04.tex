@@ -8,7 +8,7 @@
   \begin{defn}
     Une \textit{machine de Turing à oracle} dispose d'un ruban particulier et de trois états particuliers : $q_\textsf{?}$, $q_\mathsf{oui}$ et $q_\mathsf{non}$.
 
-    Soit $L \subseteq \Gamma^\star$.
+    Soit $L \subseteq \Sigma^\star$.
     La machine $\intro*\oraclem M L$ se comporte comme  une machine de Turing normale, sauf quand elle entre dans l'état $q_\textsf{?}$.
     Dans ce cas, en notant $u$ le mot sur le ruban de l'oracle,
     \begin{itemize}
@@ -60,7 +60,7 @@
       \textbf{Rejeter}
       \EndIf
       \State Choisir $y \in \Sigma^{|x|}$ de manière non-déterministe.
-      \State Demander à l'oracle si $y \in L$.
+      \State Demander à l'oracle si $y \in A$.
       \If{l'oracle dit "oui"}
       \State \textbf{Accepter}
       \Else

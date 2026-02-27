@@ -35,21 +35,23 @@
 
   En général, on a les inclusions suivantes :
   \[
-  \begin{tikzcd}[column sep={35,between origins}, row sep={25, between origins}]
+  \begin{tikzcd}[column sep={38,between origins}, row sep={35, between origins}]
     & \phSigma 1 \arrow[marking,phantom]{dr}{\subseteq} = \np && \phSigma 2 \arrow[marking,phantom]{dr}{\subseteq} && \phSigma 3\arrow[marking,phantom]{dr}{\subseteq}\\
-    \p \arrow[marking,phantom]{ur}{\subseteq} \arrow[marking,phantom]{dr}{\subseteq} && \phDelta 2 \arrow[marking,phantom]{ur}{\subseteq} \arrow[marking,phantom]{dr}{\subseteq} && \phDelta 3 \arrow[marking,phantom]{ur}{\subseteq} \arrow[marking,phantom]{dr}{\subseteq} && \cdots \arrow[marking,phantom]{rr}{\subseteq} && \pspace\\
+    \mathclap{\p} \arrow[marking,phantom]{ur}{\subseteq} \arrow[marking,phantom]{dr}{\subseteq} && \mathclap{\phDelta 2} \arrow[marking,phantom]{ur}{\subseteq} \arrow[marking,phantom]{dr}{\subseteq} && \mathclap{\phDelta 3} \arrow[marking,phantom]{ur}{\subseteq} \arrow[marking,phantom]{dr}{\subseteq} && \mathclap{\cdots} \arrow[marking,phantom]{r}{\subseteq} &\mathclap{\ph} \arrow[marking,phantom]{r}{\subseteq}& \quad\;\mathclap{\pspace}\\
     & \phPi 1 \arrow[marking,phantom]{ur}{\subseteq} = \np && \phPi 2 \arrow[marking,phantom]{ur}{\subseteq} && \phPi 3 \arrow[marking,phantom]{ur}{\subseteq}\\
   \end{tikzcd}
-  .\]
+  \]
 
   \begin{rmk}
     On a que $\phDelta i = \oracle\p{\phSigma {i-1}} = \oracle\p{\phPi {i-1}}$.
     Par exemple, on a que $\phDelta 2 = \oracle \p \np = \oracle \p \conp$.
 
-    Les classes $\phDelta i$ sont closes par complément. Par exemple, $\phDelta 2 \subseteq \phPi 2$ découle de la clôture par complément et de $\phDelta 2 \subseteq \phSigma 2$.
+    Les classes $\phDelta i$ sont closes par complément. Par exemple, l'inclusion $\phDelta i \subseteq \phPi i$ découle de la clôture par complément et de l'inclusion $\phDelta i \subseteq \phSigma i$.
 
-    On omet parfois l'exposant $\mathrm{P}$ (mais attention, il existe une hiérarchie $\Sigma_i$ en calculabilité).
+    On omet parfois l'exposant "$\mathrm{P}$", mais attention, il existe une hiérarchie similaire (avec $\Sigma_i$, $\Pi_i$ et $\Delta_i$) en calculabilité.
   \end{rmk}
+
+  Il ne reste que l'inclusion $\ph \subseteq \pspace$ à démontrer.
 
   \begin{prop}
     On a $\ph \subseteq \pspace$.
@@ -102,7 +104,9 @@
       \mathsf{Q}_i y_i \in \{\texttt{0},\texttt{1}\}^{p(n)} \\
       \code{x, y_1, y_2, \ldots, y_i} \in B
       \end{pmatrix}
-    .\]\qed
+    ,\]
+    avec une alternance de $\forall$ et de $\exists$.\footnote{On note ici $\mathsf{Q}_i := \exists$ si $i$ est impair et $\mathsf{Q}_i := \forall$ si $i$ est pair.}
+    \qed
   \end{thm}
 
   \begin{rmk}
@@ -128,14 +132,14 @@
     ,\]
     avec $B \in \p$. Et, le langage
     \[
-      \mleft\{\, \code{x, y_1} \;\middle|\; \forall y_2 \ldots \mathsf{Q}_{i+1} y_{i+1} \code{x, y_1, \ldots, y_{i+1} \in B} \,\mright\} 
+      C := \mleft\{\, \code{x, y_1} \;\middle|\; \forall y_2 \ldots \mathsf{Q}_{i+1} y_{i+1} \code{x, y_1, \ldots, y_{i+1} \in B} \,\mright\} 
     \]
     est dans $\phPi i$, donc dans $\phSigma i$.
     D'où, par caractérisation,
      \[
-       x \in A \iff \exists y_1 \: \exists z_1 \: \forall z_2 \: \ldots \: \mathsf{Q}_i z_i \: \code{x, y_1, z_1, \ldots, z_i} \in C
+       x \in A \iff \exists y_1 \: \underbrace{\exists z_1 \: \forall z_2 \: \ldots \: \mathsf{Q}_i z_i \: \code{x, y_1, z_1, \ldots, z_i} \in D}_{\code{x, y_1} \in C}
     ,\]
-    et ainsi $A$ est un problème de $\phSigma i$ avec la remarque précédente.
+    avec $D \in \p$. Et ainsi $A$ est un problème de $\phSigma i$ en combinant les deux "$\exists$" (avec la remarque précédente).
   \end{prv}
 
   \begin{rmk}[Propriétés supplémentaires]
@@ -155,7 +159,7 @@
   \end{thm}
 
   \begin{defn}
-    Un circuit booléen à $s$ entrées décide \pbSat\ si, étant donnée une formule booléenne $F$ de taille  $s$, le circuit $C$ décide si $F$ est satisfiable.
+    Un circuit booléen à $s$ entrées \textit{décide \pbSat}\ si, étant donnée une formule booléenne $F$ de taille  $s$, le circuit $C$ décide si $F$ est satisfiable.
   \end{defn}
 
   La preuve de ce théorème repose sur deux lemmes.
@@ -165,7 +169,7 @@
     \label{lem:karp-lipton-lem1}
   \end{lem}
   \begin{prv}
-    On utilise le fait que \pbSat\ est auto-réductible\footnote{\textit{self-reductible} en anglais.} : une formule booléenne $F(v_1, \ldots, v_n)$ est satisfiable si et seulement si l'une des deux formules booléennes
+    On utilise le fait que \pbSat\ est \textit{\textbf{auto-réductible}}\footnote{\textit{self-reductible} en anglais.} : une formule booléenne $F(v_1, \ldots, v_n)$ est satisfiable si et seulement si l'une des deux formules booléennes
     \[
     F(v_1, \ldots, v_{n-1}, \texttt{0}) \quad \text{ ou } \quad F(v_1, \ldots, v_{n-1}, \texttt{1})
     \]
@@ -176,7 +180,7 @@
       \item si $F$ n'a pas de variable, alors $C(F) = \texttt{1}$ ssi $F \equiv \texttt{1}$ ;
       \item si $F$ dépend de $n \ge 1$ variables $v_1, \ldots, v_n$ alors $C(F) = \texttt{1}$ ssi
         \[
-          C(F[v_n := \texttt{0}]) = \texttt{1} \text{ ou } C(F[v_n := \texttt{1}]) = \texttt{1}
+          C(F[v_n := \texttt{0}]) = \texttt{1} \quad \text{ ou }\quad C(F[v_n := \texttt{1}]) = \texttt{1}
         .\]
     \end{enumerate}
     Étant donnée $F$, les conditions ci-dessous peuvent être vérifiées en temps polynomial (car \pbValCirc\ est dans $\p$).
@@ -217,13 +221,13 @@
     \[
       \exists C \: \forall u \quad C(F(u, \cdot)) = \texttt{1} \quad \text{ et } \quad \forall y \in \{\texttt{0},\texttt{1}\}^{p(s)} \: \code{C, y} \in A
     ,\] 
-    avec $A \in \p$ d'après le lemme~\ref{lem:karp-lipton-lem1}.
+    avec $A \in \p$ d'après le lemme~\ref{lem:karp-lipton-lem1} et la caractérisation de \conp.
     On en déduit que ceci est équivalent à 
     \[
-      \exists C \: \forall u \: \forall y \quad C(F(u, \cdot )) = \texttt{1} \quad \text{ et } \quad \code{C, y} \in A
+      \exists C \: \forall u \: \forall y \quad \underbrace{C(F(u, \cdot )) = \texttt{1} \quad \text{ et } \quad \code{C, y} \in A}_{\text{vérifiable en temps polynomial}}
     ,\]
-    qui est vérifiable en temps polynomial, donc dans $\phSigma 2$ grâce à la caractérisation par quantificateurs.
+    et est donc vérifiable dans $\phSigma 2$ grâce à la caractérisation par quantificateurs.
   \end{prv}
 
-  \renewcommand\vali{i}% Magic
+  \renewcommand\vali{i}% (co)Magic
 \end{document}
