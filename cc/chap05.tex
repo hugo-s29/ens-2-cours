@@ -105,7 +105,7 @@
       \code{x, y_1, y_2, \ldots, y_i} \in B
       \end{pmatrix}
     ,\]
-    avec une alternance de $\forall$ et de $\exists$.\footnote{On note ici $\mathsf{Q}_i := \exists$ si $i$ est impair et $\mathsf{Q}_i := \forall$ si $i$ est pair.}
+    avec une alternance de $\forall$ et de $\exists$, commençant par un $\exists$.\footnote{On note ici $\mathsf{Q}_i := \exists$ si $i$ est impair et $\mathsf{Q}_i := \forall$ si $i$ est pair.}
     \qed
   \end{thm}
 
@@ -128,11 +128,11 @@
     On a
     \[
       x \in A \iff
-      \exists y_1 \: \forall y_2 \ldots \mathsf{Q}_{i+1} y_{i+1} \code{x, y_1, \ldots, y_{i+1} \in B}
+      \exists y_1 \: \forall y_2 \ldots \mathsf{Q}_{i+1} y_{i+1} \code{x, y_1, \ldots, y_{i+1}} \in B
     ,\]
     avec $B \in \p$. Et, le langage
     \[
-      C := \mleft\{\, \code{x, y_1} \;\middle|\; \forall y_2 \ldots \mathsf{Q}_{i+1} y_{i+1} \code{x, y_1, \ldots, y_{i+1} \in B} \,\mright\} 
+      C := \mleft\{\, \code{x, y_1} \;\middle|\; \forall y_2 \ldots \mathsf{Q}_{i+1} y_{i+1} \code{x, y_1, \ldots, y_{i+1}}  \in B \,\mright\} 
     \]
     est dans $\phPi i$, donc dans $\phSigma i$.
     D'où, par caractérisation,
