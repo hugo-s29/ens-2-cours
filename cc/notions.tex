@@ -15,10 +15,10 @@
 \knowledgenewrobustcmd\redP{\ensuremath{\mathrel{\cmdkl{\le_\mathrm{P}}}}}
 \knowledgenewrobustcmd\redL{\ensuremath{\mathrel{\cmdkl{\le_\mathrm{L}}}}}
 
-\knowledgenewrobustcmd\oracle[2]{\ensuremath{\cmdkl{{#1}^{#2}}}}
-\knowledgenewrobustcmd\oraclem[2]{\ensuremath{\cmdkl{{#1}^{#2}}}}
+\knowledgenewrobustcmd\oracle[2]{\ensuremath{{#1}\cmdkl{{}^{#2}}}}
+\knowledgenewrobustcmd\oraclem[2]{\ensuremath{{#1}\cmdkl{{}^{#2}}}}
 
-\knowledgenewrobustcmd\advice[2]{\ensuremath{\cmdkl{{#1}/{#2}}}}
+\knowledgenewrobustcmd\advice[2]{\ensuremath{{#1}\cmdkl{/}{#2}}}
 
 \knowledgenewrobustcmd\advicelog{\ensuremath{\cmdkl{\mathsf{log}}}}
 \knowledgenewrobustcmd\advicepoly{\ensuremath{\cmdkl{\mathsf{poly}}}}
@@ -29,7 +29,7 @@
 \knowledgenewrobustcmd\phPi[1]{\ensuremath{\cmdkl{\Pi^\mathrm{P}_{#1}}}}
 \knowledgenewrobustcmd\ph{\ensuremath{\cmdkl{\mathsf{PH}}}}
 
-\knowledgenewrobustcmd\co[1]{\ensuremath{\cmdkl{\mathsf{co} #1}}}
+\knowledgenewrobustcmd\co[1]{\ensuremath{\cmdkl{\mathsf{co}} #1}}
 
 \newcommand\conp{\co{\np}}
 
@@ -41,7 +41,7 @@
 \problem[QBF]{QBF}{Une formule booléenne quantifiée $F$ (close)}{Est-ce que $F$ est vraie ?}
 \problem[Path]{Path}{Un graphe $G$ orienté, et $s, t \in \mathrm{V}(G)$}{Existe-t-il un chemin de $s$ à $t$ dans $G$ ?}
 
-\newcommand\vali{i}
+\newcommand\vali{i} % Magic variable
 
 \problem[QBF-$\phSigma {\vali}$]{QBFSigma}{Une formule booléenne quantifiée $F$ avec ${\vali}$ quantificateurs et commençant par un bloc existentiel}{Est-ce que $F$ est vraie ?}
 \problem[QBF-$\phPi {\vali}$]{QBFPi}{Une formule booléenne quantifiée $F$ avec ${\vali}$ quantificateurs et commençant par un bloc universel}{Est-ce que $F$ est vraie ?}
