@@ -152,7 +152,7 @@
     Plus précisément, on répond "oui" uniquement pour les chaînes~$w$ qu'on a déjà décidé dans $A$ (sinon, on ne répond "non" et $w$ est placé dans $\bar{A}$).
     À la fin du calcul sur $\texttt{1}^{n_i}$,
     \begin{enumerate}
-      \item si $M_i$ rejette, on décide de mettre dans $A$ un mot de longueur $n_i$ sur lequel $M_i$ n'a fait aucune réponse (possible car $2^{n_i} > p_i(n_i)$) ;
+      \item si $M_i$ rejette, on décide de mettre dans $A$ un mot de longueur $n_i$ sur lequel $M_i$ n'a fait aucune réponse, c'est possible car il y a $2^{n_i}$ mots de taille $n_i$ et la machine n'a pu faire que $p_i(n_i)$ requêtes à l'oracle (et donc il n'y a qu'au plus $p_i(n_i)$ mots de taille $n_i$ fixés comme dans $A$) ;
       \item si $M_i$ accepte $\texttt{1}^{n_i}$, on décide que $A^{=n_i} = \emptyset$, ce qui est consistant avec les décisions précédentes par $(*)$, la seconde propriété pour le choix de $n_i$.
     \end{enumerate}
   En conclusion, $\oraclem {M_i} A(\texttt{1}^{n_i})$ accepte ssi $A^{=n_i} = \emptyset$.
