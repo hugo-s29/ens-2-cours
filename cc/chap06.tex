@@ -30,8 +30,8 @@
   \begin{defn}
     Pour $0 \le \varepsilon < 1/2$, une machine probabiliste \textit{reconnait} un langage $A$ avec probabilité d'erreur $\varepsilon$ si
     \begin{enumerate}
-      \item si $w \in A$ alors $\Pr[\text{$w$ est accepté}] \le 1 - \varepsilon$ ;
-      \item si $w \not\in A$ alors $\Pr[\text{$w$ est rejeté}] \le 1 - \varepsilon$.
+      \item si $w \in A$ alors $\Pr[\text{$w$ est accepté}] \ge 1 - \varepsilon$ ;
+      \item si $w \not\in A$ alors $\Pr[\text{$w$ est rejeté}] \ge 1 - \varepsilon$.
     \end{enumerate}
   \end{defn}
 
@@ -116,16 +116,22 @@
     \begin{axis}[
         domain=0:1,
         axis lines = left,
-        xlabel={$x$},
-        ylabel={$4x(1-x)$},
+        xlabel={$z$},
+        ylabel={$4z(1-z)$},
         ymin=0, ymax=1.15,
       ]
     \addplot[color=deepgreen, samples=100, thick]{4 * x * (1 - x)};
     \addplot +[mark=none,color=deepgreen,thick,dashed] coordinates {(0.5, 0) (0.5, 1)};
-    \addplot +[mark=none,color=deepgreen,thick,dashed] coordinates {(0.3, 0) (0.3, 0.84)};
+    \node[fill=white] (a) at (axis cs:0.5,0.3) {$1/2$};
+    \addplot +[mark=none,color=deepgreen,thick,dashed] coordinates {(0.2, 0) (0.2, 0.64)};
+    \node[fill=white] (c) at (axis cs:0.2,0.3) {$\varepsilon(x)$};
+    \addplot +[mark=none,color=deepgreen,thick,dashed] coordinates {(0.35, 0) (0.35, 0.91)};
+    \node[fill=white] (b) at (axis cs:0.35,0.3) {$\varepsilon$};
+    \path (a) to node[midway] {$<$} (b);
+    \path (b) to node[midway] {$\le$} (c);
     \end{axis}
     \end{tikzpicture}
-    \caption{Graphe de $x \mapsto 4 x (1-x)$}
+    \caption{Graphe de $z \mapsto 4 z (1-z)$}
   \end{figure}
   % FIXME: Ajoute 1/2 et \varepsilon
 
@@ -176,20 +182,22 @@
   \begin{prv}
     Il suffit de montrer que $\bpp \subseteq \phSigma 2$ car $\co{\bpp} = \bpp$.
     Soit $A \in \bpp$.
-    Il existe donc $p$ un polynôme et $B \in \p$ tel que, pour tout $x \in \Sigma^n$, on a
+    Il existe donc $p$ un polynôme et $B \in \p$ tel que, pour tout $x \in \Sigma^n$,
     \begin{enumerate}
-      \item si $x\in A$ alors 
-        \[
-          \# \underbrace{\{ y \in \{\texttt{0},\texttt{1}\}^{p(|x|)}  \mid \code{x,y} \in B\}}_{\mathrm{Acc}(x)} \ge \left( 1 - \frac{1}{2^n} \right)\cdot 2^{p(n)} \;
-        ;\] 
-      \item si $x\not\in A$ alors $\# \mathrm{Acc}(x) \le 2^{p(n)} / 2^n$.
+      \item si $x\in A$ alors $\# \mathrm{Acc}(x) \ge \left( 1 - \frac{1}{2^n} \right)\cdot 2^{p(n)}$ ;
+      \item si $x\not\in A$ alors $\# \mathrm{Acc}(x) \le 2^{p(n)} / 2^n$,
     \end{enumerate}
+    en notant $\mathrm{Acc}(x) := \{ y \in \{\texttt{0},\texttt{1}\}^{p(|x|)}  \mid \code{x,y} \in B\}$.
+
+    \renewcommand\vali{2}% magic
     Fixons $x \in \{\texttt{0},\texttt{1}\}^n$.
-    On doit donc distinguer (avec une formule~$\phSigma 2$) entre deux possibilités
+    On doit donc distinguer (avec une formule du problème~\pbQBFSigma) entre deux possibilités :
     \begin{enumerate}
-      \item l'ensemble $\mathrm{Acc}(x)$ est "très grand" par rapport à l'espace $\{\texttt{0},\texttt{1}\}^{p(n)}$ ;
-      \item l'ensemble $\mathrm{Acc}(x)$ est "très petit" par rapport à l'espace $\{\texttt{0},\texttt{1}\}^{p(n)}$.
+      \item l'ensemble $\mathrm{Acc}(x)$ est "très grand" par rapport à $\{\texttt{0},\texttt{1}\}^{p(n)}$ ;
+      \item l'ensemble $\mathrm{Acc}(x)$ est "très petit" par rapport à $\{\texttt{0},\texttt{1}\}^{p(n)}$.
     \end{enumerate}
+    
+    \renewcommand\vali{i}% (co)magic
 
     \begin{figure}[H]
       \centering
