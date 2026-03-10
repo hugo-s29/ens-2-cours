@@ -64,6 +64,7 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp hott/partie4.pdf ../web/public/data/ens2/hott-partie4.pdf
 
   cp ip/presentation1.pdf ../web/public/data/ens2/ip-presentation1.pdf
+  cp ip/presentation2.pdf ../web/public/data/ens2/ip-presentation2.pdf
   cp ip/usage_guide.pdf ../web/public/data/ens2/ip-usage-guide.pdf
 
   # ==========
