@@ -181,7 +181,7 @@
   \begin{prv}
     Il suffit de montrer que $\bpp \subseteq \phSigma 2$ car $\co{\bpp} = \bpp$.
     Soit $A \in \bpp$.
-    Il existe donc $p$ un polynôme et $B \in \p$ tel que, pour tout $x \in \Sigma^n$,
+    Il existe donc $p$ un polynôme et $B \in \p$ tel que, pour tout $x \in \Sigma^n$ (on prend une probabilité d'erreur de $1 / 2^n$ par le lemme d'amplification),
     \begin{enumerate}
       \item si $x\in A$ alors $\# \mathrm{Acc}(x) \ge \left( 1 - \frac{1}{2^n} \right)\cdot 2^{p(n)}$ ;
       \item si $x\not\in A$ alors $\# \mathrm{Acc}(x) \le 2^{p(n)} / 2^n$,
@@ -221,13 +221,75 @@
     où les $t_1,\ldots,t_m$ représentent les $m$ vecteurs de translation.
 
     Si cette équivalence est vraie avec $m$ polynomial en $n$, on aura montré $A \in \phSigma 2$.
-    En effet, pour un certain $x$, on a
+    En effet, pour un certain $z$, on a
     \[
       \code{x,  z \oplus t_i} \in B \iff z \oplus t_i \in \mathrm{Acc}(x) \iff  z \in \mathrm{Acc}(x) \oplus t_i
     ,\]
     où $\mathrm{Acc}(x) \oplus t_i$ est le translaté de $\mathrm{Acc}(x)$.
     La formule $(*)$ dit donc que les $m$ translations de $\mathrm{Acc}(x)$ recouvrent $\{\texttt{0},\texttt{1}\}^{p(n)}$.
 
-    La suite sera vue la prochaine fois.
+    \begin{lem}
+      Soit $E \subseteq \{\texttt{0},\texttt{1}\}^k$.
+      S'il existe $t_1, \ldots, t_m \in \{\texttt{0},\texttt{1}\}^k$ tels que
+      \[
+      \bigcup_{i=1}^m (E \oplus t_i) = \{\texttt{0},\texttt{1}\}^k
+      ,\] 
+      alors $\# E \ge 2^k / m$.
+    \end{lem}
+    \begin{prv}
+      On a
+      \[
+        \# \Big(\bigcup_{i= 1}^m (E \oplus t_i)\Big) \le \sum_{i=1}^m \#(E \oplus t_i) = m \: \#E
+      .\]
+    \end{prv}
+
+    \begin{lem}
+      Si $2^k (1 - \# E / 2^k)^m < 1$ alors il existe  $t_1, \ldots, t_m$ tels que
+      $\bigcup_{i=1}^m (E \oplus t_i) = \{\texttt{0},\texttt{1}\}^k$.
+    \end{lem}
+    \begin{rmk}
+      On a
+      \[
+        2^k \left( 1 - \frac{\# E}{2^k} \right)^m < 1 \quad\iff\quad k \ln 2 + m \overbrace{\ln \left( 1 - \frac{\#E}{2^k} \right) }^{< - \frac{\# E}{2^k}} < 0
+      ,\]
+      donc il suffit d'avoir $k \ln 2 - m \# E / 2^k < 0$, autrement dit
+      \[
+      m > \frac{k \ln 2}{\#E / 2^k}
+      .\]
+    \end{rmk}
+
+    \vspace{12pt}
+
+    \begin{prv}
+      On prend $t_1, \ldots, t_m$ tirés au hasard suivant la distribution uniforme sur $\{\texttt{0},\texttt{1}\}^k$ (choix indépendants et identiquement distribués, "iid").
+      Soit \[
+        \rho := \Pr\Big[ \bigcup_{i=1}^m (E \oplus t_i) \neq \{\texttt{0},\texttt{1}\}^k \Big]
+      \]
+      la probabilité d'erreur.
+      Si $\rho < 1$ alors on a le résultat.
+      On remarque que $\rho \le 2^k (1 - \# E / 2^k)^m$. Puis, on a
+      \begin{align*}
+        \rho
+        &= \Pr\Big[\bigcup_{z \in \{\texttt{0},\texttt{1}\}^k}  \Big(z \not\in \bigcup_{i=1}^m (E \oplus t_i)\Big)\Big]\\
+        &\le \sum_{z \in \{\texttt{0}, \texttt{1}\}^k} \Pr\Big[z \not\in \bigcup_{i=1}^m (E \oplus t_i)\Big]\\
+        &= \sum_{z \in \{\texttt{0}, \texttt{1}\}^k} \Pr\Big[\bigcap_{i=1}^m (z \not\in E \oplus t_i)\Big]\\
+        &= \sum_{z \in \{\texttt{0}, \texttt{1}\}^k} \prod_{i=1}^m \underbrace{\Pr[t_i \not\in E \oplus z]}_{1 - \#E / 2^k}
+      ,\end{align*}
+      et on conclut directement.
+    \end{prv}
+
+    On peut donc appliquer les deux lemmes avec $E = \mathrm{Acc}(x)$, $k = p(n)$ et $m = 2 k$.
+    On a que 
+     \begin{itemize}
+      \item si $x \in A$ alors, par hypothèse $\# E / 2^p \ge 1 - 1 / 2^n \ge 1 / 2$ (pour $n \ge 1$),  par le second lemme, on a 
+        \[
+          m = 2 k > 2 k \ln 2 \ge \frac{k \ln 2}{\# E / 2^k}
+        \;;\]
+      \item si $x \not\in A$ alors, par hypothèse $\# E / 2^k  \le 1 / 2^n$, or pour tout couvrir, on devrait avoir
+        \[
+          2 p(n) \ge \frac{2^{p(n)}}{\#E} \ge 2^n
+        ,\] 
+        ce qui est absurde.
+    \end{itemize}
   \end{prv}
 \end{document}

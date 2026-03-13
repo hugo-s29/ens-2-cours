@@ -1,0 +1,137 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Protocoles interactifs.}
+
+  Deux machines discutent : le \textit{prouveur} $\intro*\prov$ et le \textit{vérificateur} $\intro*\verif$.
+  Le prouveur a une puissance de calcul illimitée, et le vérificateur ne fait pas initialement "confiance" au prouveur.
+
+  \begin{exm}
+    On donne un protocole interactif pour \pbSat :
+    étant donnée une formule booléenne $F(x_1, \ldots, x_n)$,
+    \begin{enumerate}
+      \item le prouveur $\prov$\ envoie $(a_1, \ldots, a_n) \in \{\texttt{0},\texttt{1}\}^n$ au vérificateur~$\verif$ ;
+      \item le vérifieur $\verif$ accepte si $(a_1, \ldots, a_n)$ satisfait $F$.
+    \end{enumerate}
+
+    Analysons ce protocole :
+    \begin{itemize}
+      \item si $F \not\in \pbSat$ alors $\verif$ rejette toujours ;
+      \item si $F \in \pbSat$ alors $\prov$ peut convaincre $\verif$ d'accepter.
+    \end{itemize}
+  \end{exm}
+
+  \begin{exm}
+    On donne un protocole interactif pour le \textit{non-isomorphisme de graphes}.
+
+    On définit le problème \pbIsoGraph :
+    \showIsoGraph
+
+    où un \textit{isomorphisme} entre $(W, E)$ et $(W, E') = \pi(W, E)$ est une permutation $\pi : W \to W$ des sommets avec
+    \[
+      E' := \mleft\{\,(i,j) \;\middle|\; \big(\pi(i), \pi(j)\big) \in E\,\mright\} 
+    .\]
+    On notera alors $(W, E) \cong (W, E')$.
+
+    On a que $\pbIsoGraph \in \np$ (avec $\pi$ le certificat).
+    Mais, on ne sait pas si le problème est $\np$-complet, il existe un algorithme en temps $n^{\mathrm{O}(\log n)}$.
+
+    Par définition, le problème de \textit{non}-isomorphisme de graphe est dans $\conp$ (par définition).
+
+    Étant donnée une paire de graphe $(G_0, G_1)$ sur le même ensemble de sommets $W$,
+    \begin{enumerate}
+      \item le vérificateur $\verif$ choisit un bit aléatoire  $b \in \{0, 1\}$, et une permutation aléatoire $\pi$ sur $W$, et $\verif$ envoie à $\prov$ le graphe~$G' = \pi(G_b)$ ;
+      \item quand $\prov$ reçoit  $G'$, alors $\prov$ renvoie à $\verif$ un bit  $b' \in \{0,1\}$ ;
+      \item le vérificateur $\verif$ accepte si  $b = b'$.
+    \end{enumerate}
+
+    Le but de $\prov$ est de convaincre $\verif$ que $G_0 \ncong G_1$.
+    \begin{itemize}
+      \item Si $G_0 \ncong G_1$ alors $G'$ est isomorphe à un unique graphe $G_{b'}$ et renvoie $b'$ au vérificateur.
+      \item Si $G_0 \cong G_1$, alors pour tout prouveur, $\Pr[\text{$\verif$ accepte}] = 1/2$.
+        En effet, pour tout $G'$, 
+        \[
+          \Pr[\text{$\verif$ renvoie $G'$}  \mid b = 0] = \Pr[\text{$\verif$ renvoie $G'$}  \mid b = 1]
+        ,\]
+        notons $p_{i,j} := \Pr[\text{$\prov$ envoie $b' = j$}  \mid  b = i]$ et on observe que $p_{11} = p_{21}$, d'où 
+        \[
+          \Pr[\text{$\verif$ accepte}] = \frac{1}{2} (p_{11} + p_{22}) = \frac{1}{2}(p_{21} + p_{22}) = \frac{1}{2}
+        .\]
+    \end{itemize}
+
+    On peut réduire l'erreur en répétant le protocole $k$ fois, et on accepte si $(G_0, G_1)$ est toujours accepté par $\verif$, et on aura $\Pr[\text{$\verif$ accepte}] \le 1 / 2^k$.
+  \end{exm}
+
+  \section{La classe $\ip$.}
+
+  On a la situation représentée en figure~\ref{fig:protocole-interactif}, où
+  \begin{itemize}
+    \item le $x$ est l'entrée du problème (de taille $n$) ;
+    \item le $r$ est la donnée des choix aléatoires de $v$ (de taille polynomiale en $n$) ;
+    \item les $y_i$ sont les messages de $\verif$ à $\prov$ (de taille polynomiale en $n$) ;
+    \item les $z_i$ sont les messages de $\prov$ à $\verif$ (de taille polynomiale en $n$) ;
+    \item le $s$ est la longueur de l'échange (avec $s$ polynomial en $n$).
+  \end{itemize}
+  La puissance de calcul de $\prov$ est \textit{non-bornée}, et celle de $\verif$ est polynomialement bornée.
+  La \textit{décision finale du vérificateur} est $\verif(x, r, z_1, \ldots, z_s) \in \{\texttt{0},\texttt{1}\}$.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        straight-right/.style={ to path={|- (\tikztotarget)  \tikztonodes}},
+        straight-left/.style={ to path={-| (\tikztotarget)  \tikztonodes}}
+      ]
+      \node (v1) {};
+      \node[right=8cm of v1] (p1) {};
+      \foreach\x [remember=\x as \lastx (initially 1)] in {2,...,8} {
+        \node[below=0.5cm of v\lastx] (v\x) {};
+        \node[below=0.5cm of p\lastx] (p\x) {};
+      }
+      \draw[->] (v1) to node[midway,fill=white,text=black] {$y_1 = \verif(x, r)$} (p1);
+      \draw[->] (p2) to node[midway,fill=white,text=black] {$z_1 = \prov(x, y_1)$} (v2);
+      \draw[->] (v3) to node[midway,fill=white,text=black] {$y_2 = \verif(x, r, z_1)$} (p3);
+      \draw[->] (p4) to node[midway,fill=white,text=black] {$z_2 = \prov(x, y_1, y_2)$} (v4);
+      \path (v5) to node[midway] {$\vdots$} (p5);
+      \draw[->] (v6) to node[midway,fill=white,text=black] {$y_i = \verif(x, r, z_1, \ldots, z_{i-1})$} (p6);
+      \draw[->] (p7) to node[midway,fill=white,text=black] {$z_i = \prov(x, y_1, \ldots, y_i)$} (v7);
+      \path (v8) to node[midway] {$\vdots$} (p8);
+      \node[below right=of v8] (ans) {$\verif(x, r, z_1, \ldots, z_s) \in \{\texttt{0},\texttt{1}\}$};
+      \draw[->,straight-right] (v8) to (ans);
+      \node[fit=(v1) (v8), draw, rectangle, inner sep=1em] (verif-box) {};
+      \node[fit=(p1) (p8), draw, rectangle, inner sep=1em] (prov-box) {};
+      \node[above=0.5cm of verif-box, font=\slshape\bfseries\large, align=center] {Vérificateur\\ $\verif$};
+      \node[above=0.5cm of prov-box,  font=\slshape\bfseries\large, align=center] {Prouveur\\ $\prov$};
+    \end{tikzpicture}
+    \caption{Protocole interactif}
+    \label{fig:protocole-interactif}
+  \end{figure}
+
+  \begin{defn}
+    On définit $\intro*\ip$ la classe des langages que l'on peut reconnaitre à l'aide d'un protocole interactif avec probabilité d'erreur inférieur à $1/3$.
+  \end{defn}
+
+  \begin{exm}
+    On a $\pbSat \in \ip$ et $\Sigma^\star \setminus \pbIsoGraph \in \ip$.
+  \end{exm}
+
+  \begin{thm}
+    On a $\ip = \pspace$.
+  \end{thm}
+
+  \begin{rmk}
+    On a $\ip \subseteq \pspace$, c'est le "sens facile".
+
+    En revanche, le résultat $\pspace \subseteq \ip$ \textit{\textbf{ne se relativise pas}} : il existe $A$ tel que $\oracle{\pspace} A$ n'est pas inclus dans $\oracle{\ip} A$ (et même~$\oracle{\conp} A$ n'est pas inclus dans $\oracle{\ip} A$).
+  \end{rmk}
+
+  Pour montrer $\pspace \subseteq \ip$, on utilise le fait que \pbQBF\ est $\pspace$-complet : il suffira donc de montrer que $\pbQBF \in \ip$, et on pourra utiliser les propriétés spécifiques de \pbQBF, en particulier l'\textit{\textbf{arithmétisation}} (on peut voir des formules booléennes comme des polynômes).
+
+  \begin{defn}
+    On définit le problème \pbSharpSat\ par 
+    \showSharpSat
+  \end{defn}
+
+  \begin{thm}
+    On a $\pbSharpSat \in \ip$.
+  \end{thm}
+\end{document}

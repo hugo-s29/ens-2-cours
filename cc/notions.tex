@@ -38,11 +38,15 @@
 \problem[3-Sat]{ThreeSat}{Une formule booléenne $\phi$ sous 3-CNF}{La formule $\phi$ est-elle satisfiable?}
 \problem[CircuitSat]{CircuitSat}{Une circuit booléen $C$ avec $n$ variables}{Existe-t-il $a$ tel que $C(a) = \texttt{1}$ ?}
 \problem[ValCirc]{ValCirc}{Une circuit booléen $C$ et $a \in \{\texttt{0}, \texttt{1}\}^n$}{Est-ce que $\mathrm{val}(C) = \texttt{1}$ sous l'entrée $a$ ?}
-
+\problem[IsoGraph]{IsoGraph}{Deux graphes $G_0$ et $G_1$}{Est-ce que $G_0$ est isomorphe à $G_1$ ?}
 \problem[QBF]{QBF}{Une formule booléenne quantifiée $F$ (close)}{Est-ce que $F$ est vraie ?}
 \problem[Path]{Path}{Un graphe $G$ orienté, et $s, t \in \mathrm{V}(G)$}{Existe-t-il un chemin de $s$ à $t$ dans $G$ ?}
+\problem[$\sharp$Sat]{SharpSat}{Une formule booléenne $\phi$ sous CNF et $k \in \mathds{N}$}{La formule $\phi$ est-elle satisfaite par exactement~$k$ valuations ?}
 
 \newcommand\vali{i} % Magic variable
 
 \problem[QBF-$\phSigma {\vali}$]{QBFSigma}{Une formule booléenne quantifiée $F$ avec ${\vali}$ quantificateurs et commençant par un bloc existentiel}{Est-ce que $F$ est vraie ?}
 \problem[QBF-$\phPi {\vali}$]{QBFPi}{Une formule booléenne quantifiée $F$ avec ${\vali}$ quantificateurs et commençant par un bloc universel}{Est-ce que $F$ est vraie ?}
+
+\knowledgenewrobustcmd\prov{\ensuremath{\cmdkl{\mathcal{P}}}}
+\knowledgenewrobustcmd\verif{\ensuremath{\cmdkl{\mathcal{V}}}}
