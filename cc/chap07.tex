@@ -7,12 +7,20 @@
   Le prouveur a une puissance de calcul illimitée, et le vérificateur ne fait pas initialement "confiance" au prouveur.
 
   \begin{exm}
-    On donne un protocole interactif pour \pbSat :
-    étant donnée une formule booléenne $F(x_1, \ldots, x_n)$,
-    \begin{enumerate}
-      \item le prouveur $\prov$\ envoie $(a_1, \ldots, a_n) \in \{\texttt{0},\texttt{1}\}^n$ au vérificateur~$\verif$ ;
-      \item le vérifieur $\verif$ accepte si $(a_1, \ldots, a_n)$ satisfait $F$.
-    \end{enumerate}
+    On donne un protocole interactif pour \pbSat.
+
+    \begin{algorithm}[H]
+      \caption{Protocole interactif pour \pbSat}
+      \begin{paralgo}{2}[Vérificateur $\verif$, Prouveur $\prov$]
+        \State[1]{Calculer $(a_1, \ldots, a_n)$ une assignation qui satisfait $F$.}
+        \Message{1}{0}{$a_1,\ldots,a_n$}
+        \If[0]{$F(a_1, \ldots, a_n) = \texttt{1}$}
+        \State[0]{\textbf{Accepter}}
+        \Else[0]
+        \State[0]{\textbf{Rejeter}}
+        \EndIf[0]
+      \end{paralgo}
+    \end{algorithm}
 
     Analysons ce protocole :
     \begin{itemize}
@@ -35,15 +43,10 @@
 
     On a que $\pbIsoGraph \in \np$ (avec $\pi$ le certificat).
     Mais, on ne sait pas si le problème est $\np$-complet, il existe un algorithme en temps $n^{\mathrm{O}(\log n)}$.
+    (Par définition, le problème de \textit{non}-isomorphisme de graphe est dans $\conp$.)
 
-    Par définition, le problème de \textit{non}-isomorphisme de graphe est dans $\conp$ (par définition).
-
-    Étant donnée une paire de graphe $(G_0, G_1)$ sur le même ensemble de sommets $W$,
-    \begin{enumerate}
-      \item le vérificateur $\verif$ choisit un bit aléatoire  $b \in \{0, 1\}$, et une permutation aléatoire $\pi$ sur $W$, et $\verif$ envoie à $\prov$ le graphe~$G' = \pi(G_b)$ ;
-      \item quand $\prov$ reçoit  $G'$, alors $\prov$ renvoie à $\verif$ un bit  $b' \in \{0,1\}$ ;
-      \item le vérificateur $\verif$ accepte si  $b = b'$.
-    \end{enumerate}
+    On donne un protocole interactif pour le problème de non-isomorphisme de graphe.
+    En entrée, $G_0, G_1$ est une paire de graphes sur un même ensemble de sommets $W$.
 
     Le but de $\prov$ est de convaincre $\verif$ que $G_0 \ncong G_1$.
     \begin{itemize}
@@ -58,6 +61,28 @@
           \Pr[\text{$\verif$ accepte}] = \frac{1}{2} (p_{11} + p_{22}) = \frac{1}{2}(p_{21} + p_{22}) = \frac{1}{2}
         .\]
     \end{itemize}
+
+    \begin{algorithm}[H]
+      \caption{Protocole interactif pour $\Sigma^\star \setminus \pbIsoGraph$}
+      \begin{paralgo}{2}[Vérificateur $\verif$, Prouveur $\prov$]
+        \Require{$G_0, G_1$}
+        \State[0]{Choisir un bit $b \in \{0,1\}$ aléatoire}
+        \State[0]{Choisir une permutation $\pi$ de $W$ aléatoire}
+        \State[0]{Calculer $G' := \pi(G_b)$}
+        \Message{0}{1}{$G'$}
+        \If[1]{$G_0 \ncong G_1$}
+        \State[1]{Le graphe $G'$ est isomorphe à un unique $G_{b'}.$}
+        \Else[1]
+        \State[1]{Soit $b' \in \{0,1\} $ choisi aléatoirement.}
+        \EndIf[1]
+        \Message{1}{0}{$b'$}
+        \If[0]{$b = b'$}
+        \State[0]{\textbf{Accepter}}
+        \Else[0]
+        \State[0]{\textbf{Rejeter}}
+        \EndIf[0]
+      \end{paralgo}
+    \end{algorithm}
 
     On peut réduire l'erreur en répétant le protocole $k$ fois, et on accepte si $(G_0, G_1)$ est toujours accepté par $\verif$, et on aura $\Pr[\text{$\verif$ accepte}] \le 1 / 2^k$.
   \end{exm}

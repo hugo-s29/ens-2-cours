@@ -5,6 +5,7 @@
 
 \usepackage{subfiles}
 \usepackage{juliamono}
+\usepackage{paralgo}
 
 \hypersetup{
   colorlinks,
@@ -29,6 +30,8 @@
 
 \input{notions.tex}
 \directlua{dofile("turing.lua")}
+
+\AtBeginEnvironment{exm}{\paralgoset{phantomcolor=NavyBlue!5}}
 
 \begin{document}
   \maketitle

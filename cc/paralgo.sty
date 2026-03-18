@@ -1,0 +1,385 @@
+%% Parallel pseudocode typesetting built on algpseudocodex.
+%% Usage:
+%%   \begin{paralgo}[<colsep>]{<N>}[<lbl0,...,lblN-1>]
+%%     \State{...} / \State[k]{...} / \If...\Else...\EndIf / \While...\EndWhile / \For...\EndFor
+%%     \Require...\Ensure... / \Message{from}{to}{label}
+%%   \end{paralgo}
+%% Global config: \paralgoset{colsep=..., msgspan=..., phantomcolor=..., arrowstyle=..., labelstyle=..., headerfont=..., rulewidth=...}
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{paralgo}[2024-01-01 v0.7 Parallel algorithm typesetting]
+
+\RequirePackage{algpseudocodex}
+\RequirePackage{tikz}
+\usetikzlibrary{tikzmark}
+\RequirePackage{xparse}
+\RequirePackage{etoolbox}
+\RequirePackage{trimspaces}
+
+%% --------------------------------------------------------------------------
+%% Configuration
+%% --------------------------------------------------------------------------
+
+% Arrow and label styles are stored as named tikz styles.
+\tikzset{%
+  pa@msgarrow/.style={->,thick,shorten >=3pt,shorten <=3pt},%
+  pa@msglabel/.style={midway,above,font=\small\itshape},%
+}%
+\newcommand\pa@headerfont{\bfseries}%
+\newcommand\pa@msgspanval{0.3}%
+\newcommand\pa@phantomcolor{white}%
+\newlength\pa@colsepdefault  \setlength\pa@colsepdefault{0.5em}
+\newlength\pa@rulewidth      \setlength\pa@rulewidth{0.4pt}
+
+\pgfkeys{%
+  /paralgo/.is family, /paralgo,%
+  colsep/.code       = {\setlength\pa@colsepdefault{#1}},%
+  msgspan/.store in  = \pa@msgspanval,%
+  phantomcolor/.store in = \pa@phantomcolor,%
+  arrowstyle/.code   = {\tikzset{pa@msgarrow/.style={#1}}},%
+  labelstyle/.code   = {\tikzset{pa@msglabel/.style={#1}}},%
+  headerfont/.store in = \pa@headerfont,%
+  rulewidth/.code    = {\setlength\pa@rulewidth{#1}},%
+}%
+\newcommand\paralgoset[1]{\pgfkeys{/paralgo,#1}}
+
+%% --------------------------------------------------------------------------
+%% Per-environment state
+%% --------------------------------------------------------------------------
+
+\newcounter{pa@N}        % number of PUs
+\newcount\pa@sca         % scratch counter (serial use only)
+\newcount\pa@msgcnt      % global message ID (never reset)
+\newcount\pa@licnt       % label-parsing scratch
+\newlength\pa@colsep     % active column gap
+\newlength\pa@colw       % column width
+\newlength\pa@msghalf    % msgspan * \pa@colw
+\newlength\pa@msgoffset  % (1 - msgspan) * \pa@colw
+
+%% --------------------------------------------------------------------------
+%% Invisible content helper
+%% --------------------------------------------------------------------------
+
+% Use colored text (not \phantom) so wrapping/height matches real content.
+% Leading \vphantom avoids minipage[t] baseline misalignment when the first
+% token is a zero-height color special.
+\newcommand\pa@invis[1]{\vphantom{X}{\color{\pa@phantomcolor}#1}}
+
+%% --------------------------------------------------------------------------
+%% Token-list helpers
+%% --------------------------------------------------------------------------
+
+% Append #2 to PU #1's token list.
+\newcommand\pa@app[2]{%
+  \expandafter\appto\csname pa@tl@#1\endcsname{#2}%
+}
+
+% Append #1 to every PU's token list.
+\newcommand\pa@appall[1]{%
+  \pa@sca=0\relax
+  \loop\ifnum\pa@sca<\value{pa@N}%
+    \pa@app{\the\pa@sca}{#1}%
+    \advance\pa@sca\@ne
+  \repeat
+}
+
+% Append #2 to every PU's token list except PU #1.
+\newcommand\pa@appothers[2]{%
+  \pa@sca=0\relax
+  \loop\ifnum\pa@sca<\value{pa@N}%
+    \ifnum\pa@sca=#1\else
+      \pa@app{\the\pa@sca}{#2}%
+    \fi
+    \advance\pa@sca\@ne
+  \repeat
+}
+
+%% --------------------------------------------------------------------------
+%% Redefined algorithmic commands
+%% --------------------------------------------------------------------------
+
+\newcommand\pa@State{%
+  \@ifnextchar[{\pa@State@k}{\pa@State@all}%
+}
+\def\pa@State@k[#1]#2{%
+  \pa@app{#1}{\pa@origState #2}%
+  \pa@appothers{#1}{\pa@origStatex \pa@invis{#2}}%
+}
+\newcommand\pa@State@all[1]{%
+  \pa@appall{\pa@origState #1}%
+}
+
+\newcommand\pa@If{%
+  \@ifnextchar[{\pa@If@k}{\pa@If@all}%
+}
+\def\pa@If@k[#1]#2{%
+  \pa@app{#1}{\pa@origIf{#2}}%
+  \pa@appothers{#1}{\pa@origStatex \pa@invis{if #2 then}}%
+}
+\newcommand\pa@If@all[1]{%
+  \pa@appall{\pa@origIf{#1}}%
+}
+
+\newcommand\pa@Else{%
+  \@ifnextchar[{\pa@Else@k}{\pa@Else@all}%
+}
+\def\pa@Else@k[#1]{%
+  \pa@app{#1}{\pa@origElse}%
+  \pa@appothers{#1}{\pa@origStatex \pa@invis{else}}%
+}
+\newcommand\pa@Else@all{%
+  \pa@appall{\pa@origElse}%
+}
+
+\newcommand\pa@EndIf{%
+  \@ifnextchar[{\pa@EndIf@k}{\pa@EndIf@all}%
+}
+\def\pa@EndIf@k[#1]{%
+  \pa@app{#1}{\pa@origEndIf}%
+  \ifbool{algpx@noEnd}{}{\pa@appothers{#1}{\pa@origStatex \pa@invis{end if}}}%
+}
+\newcommand\pa@EndIf@all{%
+  \pa@appall{\pa@origEndIf}%
+}
+
+\newcommand\pa@While{%
+  \@ifnextchar[{\pa@While@k}{\pa@While@all}%
+}
+\def\pa@While@k[#1]#2{%
+  \pa@app{#1}{\pa@origWhile{#2}}%
+  \pa@appothers{#1}{\pa@origStatex \pa@invis{while #2 do}}%
+}
+\newcommand\pa@While@all[1]{%
+  \pa@appall{\pa@origWhile{#1}}%
+}
+
+\newcommand\pa@EndWhile{%
+  \@ifnextchar[{\pa@EndWhile@k}{\pa@EndWhile@all}%
+}
+\def\pa@EndWhile@k[#1]{%
+  \pa@app{#1}{\pa@origEndWhile}%
+  \ifbool{algpx@noEnd}{}{\pa@appothers{#1}{\pa@origStatex \pa@invis{end while}}}%
+}
+\newcommand\pa@EndWhile@all{%
+  \pa@appall{\pa@origEndWhile}%
+}
+
+\newcommand\pa@For{%
+  \@ifnextchar[{\pa@For@k}{\pa@For@all}%
+}
+\def\pa@For@k[#1]#2{%
+  \pa@app{#1}{\pa@origFor{#2}}%
+  \pa@appothers{#1}{\pa@origStatex \pa@invis{for #2 do}}%
+}
+\newcommand\pa@For@all[1]{%
+  \pa@appall{\pa@origFor{#1}}%
+}
+
+\newcommand\pa@EndFor{%
+  \@ifnextchar[{\pa@EndFor@k}{\pa@EndFor@all}%
+}
+\def\pa@EndFor@k[#1]{%
+  \pa@app{#1}{\pa@origEndFor}%
+  \ifbool{algpx@noEnd}{}{\pa@appothers{#1}{\pa@origStatex \pa@invis{end for}}}%
+}
+\newcommand\pa@EndFor@all{%
+  \pa@appall{\pa@origEndFor}%
+}
+
+\newcommand\pa@Require{%
+  \@ifnextchar[{\pa@Require@k}{\pa@Require@all}%
+}
+\def\pa@Require@k[#1]#2{%
+  \pa@app{#1}{\pa@origRequire #2}%
+  \pa@appothers{#1}{\pa@origStatex \pa@invis{#2}}%
+}
+\newcommand\pa@Require@all[1]{%
+  \pa@appall{\pa@origRequire #1}%
+}
+
+\newcommand\pa@Ensure{%
+  \@ifnextchar[{\pa@Ensure@k}{\pa@Ensure@all}%
+}
+\def\pa@Ensure@k[#1]#2{%
+  \pa@app{#1}{\pa@origEnsure #2}%
+  \pa@appothers{#1}{\pa@origStatex \pa@invis{#2}}%
+}
+\newcommand\pa@Ensure@all[1]{%
+  \pa@appall{\pa@origEnsure #1}%
+}
+
+%% --------------------------------------------------------------------------
+%% \Message{from}{to}{label}
+%% --------------------------------------------------------------------------
+
+% Two-pass overlay arrows via tikzmark. Participating PUs include \vphantom{X}
+% so the row height matches the invisible placeholder in other columns.
+\gdef\pa@msglist{}
+
+\newcommand\pa@drawmsgs{%
+  \ifx\pa@msglist\@empty\else
+    \begin{tikzpicture}[overlay,remember picture]%
+      \pa@msglist
+    \end{tikzpicture}%
+  \fi
+}
+
+\newcommand\pa@Message[3]{%
+  \global\advance\pa@msgcnt\@ne
+  \edef\pa@mid{\the\pa@msgcnt}%
+  \expandafter\def\csname pa@msglabel@\pa@mid\endcsname{#3}%
+  \edef\pa@mhalf{\the\pa@msghalf}%
+  \edef\pa@moffset{\the\pa@msgoffset}%
+  \ifnum#1<#2\relax
+    \cseappto{pa@tl@#1}{%
+      \noexpand\pa@origStatex
+      \noexpand\vphantom{X}\noexpand\hspace{\pa@moffset}%
+      \noexpand\tikzmarknode{pa@msg\pa@mid f}{\noexpand\hspace{\pa@mhalf}}%
+    }%
+    \cseappto{pa@tl@#2}{%
+      \noexpand\pa@origStatex
+      \noexpand\vphantom{X}%
+      \noexpand\tikzmarknode{pa@msg\pa@mid t}{\noexpand\hspace{\pa@mhalf}}%
+    }%
+    \edef\pa@tmparrow{%
+      \noexpand\draw[pa@msgarrow]%
+        (pa@msg\pa@mid f.east) -- (pa@msg\pa@mid t.west)%
+        node[pa@msglabel]%
+        {\noexpand\csname pa@msglabel@\pa@mid\noexpand\endcsname};%
+    }%
+  \else
+    \cseappto{pa@tl@#1}{%
+      \noexpand\pa@origStatex
+      \noexpand\vphantom{X}%
+      \noexpand\tikzmarknode{pa@msg\pa@mid f}{\noexpand\hspace{\pa@mhalf}}%
+    }%
+    \cseappto{pa@tl@#2}{%
+      \noexpand\pa@origStatex
+      \noexpand\vphantom{X}\noexpand\hspace{\pa@moffset}%
+      \noexpand\tikzmarknode{pa@msg\pa@mid t}{\noexpand\hspace{\pa@mhalf}}%
+    }%
+    \edef\pa@tmparrow{%
+      \noexpand\draw[pa@msgarrow]%
+        (pa@msg\pa@mid f.west) -- (pa@msg\pa@mid t.east)%
+        node[pa@msglabel]%
+        {\noexpand\csname pa@msglabel@\pa@mid\noexpand\endcsname};%
+    }%
+  \fi
+  \pa@sca=0\relax
+  \loop\ifnum\pa@sca<\value{pa@N}%
+    \ifnum\pa@sca=#1\else\ifnum\pa@sca=#2\else
+      \pa@app{\the\pa@sca}{\pa@origStatex \pa@invis{M}}%
+    \fi\fi
+    \advance\pa@sca\@ne
+  \repeat
+  \expandafter\appto\expandafter\pa@msglist\expandafter{\pa@tmparrow}%
+}
+
+%% --------------------------------------------------------------------------
+%% Label parsing
+%% --------------------------------------------------------------------------
+
+% Parse labels from CSV; missing entries default to "PU k".
+\newcommand\pa@parselabels[2]{%
+  \pa@licnt=0\relax
+  \if\relax\detokenize{#1}\relax\else
+    \@for\pa@litem:=#1\do{%
+      \trim@spaces@in\pa@litem
+      \expandafter\let\csname pa@label@\the\pa@licnt\endcsname\pa@litem
+      \advance\pa@licnt\@ne
+    }%
+  \fi
+  \loop\ifnum\pa@licnt<#2\relax
+    \expandafter\edef\csname pa@label@\the\pa@licnt\endcsname{PU \the\pa@licnt}%
+    \advance\pa@licnt\@ne
+  \repeat
+}
+
+%% --------------------------------------------------------------------------
+%% Header and flush
+%% --------------------------------------------------------------------------
+
+% Suppress extra vertical glue between header labels, rule, and content.
+\newcommand\pa@typehdr[1]{%
+  \noindent
+  \pa@sca=0\relax
+  \loop\ifnum\pa@sca<#1\relax
+    \ifnum\pa@sca>0\hspace{\pa@colsep}\fi
+    \makebox[\pa@colw][c]{{\pa@headerfont\csname pa@label@\the\pa@sca\endcsname}}%
+    \advance\pa@sca\@ne
+  \repeat
+  \par\nobreak\nointerlineskip
+  \vspace{0.2\baselineskip}
+  \noindent\rule{\linewidth}{\pa@rulewidth}\par\nobreak\nointerlineskip
+  \vspace{0.2\baselineskip}
+}
+
+% Keep overlay drawing in horizontal mode to avoid creating an extra paragraph.
+\newcommand\pa@flushcols[1]{%
+  \noindent
+  \pa@sca=0\relax
+  \loop\ifnum\pa@sca<#1\relax
+    \ifnum\pa@sca>0\hspace{\pa@colsep}\fi
+    \begin{minipage}[t]{\pa@colw}%
+      \setlength\linewidth{\pa@colw}%
+      \def\@listI{\leftmargin\leftmargini
+        \topsep\z@\partopsep\z@\itemsep\z@\parsep\z@}%
+      \begin{algorithmic}[1]%
+        \csname pa@tl@\the\pa@sca\endcsname
+      \end{algorithmic}%
+    \end{minipage}%
+    \advance\pa@sca\@ne
+  \repeat
+  \pa@drawmsgs
+  \par
+  \vspace{0.6\baselineskip}%
+}
+
+%% --------------------------------------------------------------------------
+%% The paralgo environment
+%% --------------------------------------------------------------------------
+
+\NewDocumentEnvironment{paralgo}{ O{\pa@colsepdefault} m O{} }{%
+  \setlength\pa@colsep{#1}%
+  \setcounter{pa@N}{#2}%
+  \setlength\pa@colw{%
+    \dimexpr(\linewidth - \numexpr#2-1\relax\pa@colsep)/#2\relax%
+  }%
+  \pgfmathsetlength\pa@msghalf{\pa@msgspanval * \pa@colw}%
+  \setlength\pa@msgoffset{\dimexpr\pa@colw - \pa@msghalf\relax}%
+  \setlength\parskip{0pt}%
+  \pa@sca=0\relax
+  \loop\ifnum\pa@sca<#2\relax
+    \expandafter\let\csname pa@tl@\the\pa@sca\endcsname\@empty
+    \advance\pa@sca\@ne
+  \repeat
+  \let\pa@msglist\@empty
+  \pa@parselabels{#3}{#2}%
+  \let\pa@origState\State
+  \let\pa@origStatex\Statex
+  \let\pa@origIf\If
+  \let\pa@origElse\Else
+  \let\pa@origEndIf\EndIf
+  \let\pa@origWhile\While
+  \let\pa@origEndWhile\EndWhile
+  \let\pa@origFor\For
+  \let\pa@origEndFor\EndFor
+  \let\pa@origRequire\Require
+  \let\pa@origEnsure\Ensure
+  \let\State\pa@State
+  \let\If\pa@If
+  \let\Else\pa@Else
+  \let\EndIf\pa@EndIf
+  \let\While\pa@While
+  \let\EndWhile\pa@EndWhile
+  \let\For\pa@For
+  \let\EndFor\pa@EndFor
+  \let\Require\pa@Require
+  \let\Ensure\pa@Ensure
+  \let\Message\pa@Message
+  \pa@typehdr{#2}%
+}{%
+  \pa@flushcols{\value{pa@N}}%
+}
+
+\endinput
