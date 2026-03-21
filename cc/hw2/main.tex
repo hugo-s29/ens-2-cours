@@ -1,0 +1,472 @@
+\documentclass[fontsize=16pt,a4paper,DIV=17,parskip=half]{scrartcl}
+
+\usepackage[utf8]{inputenc}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hyperindex]{hyperref}
+\usepackage{lastpage}
+\usepackage{tikz}
+\usepackage{tikzpagenodes}
+\usepackage{pgfplots}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{scrlayer-scrpage}
+\usepackage{xspace}
+\usepackage{float}
+\usepackage{amsfonts,amsmath,amsthm}
+\usepackage{thmtools}
+\usepackage[english]{babel}
+\usepackage[autostyle, style=english]{csquotes}
+\usepackage{subfigure}
+\usepackage{listings}
+\usepackage{mleftright}
+\usepackage{tikz-cd}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{soulutf8}
+\usepackage{mathtools}
+\usepackage{multicol}
+\usepackage{nameref}
+\usepackage{stmaryrd}
+\usepackage{fvextra}
+\usepackage{adjustbox}
+\usepackage{fontawesome}
+\usepackage{fontspec}
+\usepackage{tikz-3dplot}
+\usepackage{mathpartir}
+\usepackage{etoolbox}
+\usepackage{todonotes}
+\usepackage{verbatim}
+\usepackage{algorithm}
+\usepackage[rightComments=false,beginComment=$\qquad\triangleright$~]{algpseudocodex}
+\usepackage{ebproof}
+\usepackage[makeroom, thicklines]{cancel}
+\renewcommand{\CancelColor}{\color{nicered}}
+\usepackage{setspace}
+\usepackage{fourier-otf}
+\setmathfont{Erewhon-Math.otf}[CharacterVariant={20}]
+%\usepackage{juliamono}
+\usepackage[osf]{Alegreya}
+\usepackage[osf]{AlegreyaSans}
+\let\mathds\mathbb
+
+\usepackage[notion,hyperref]{knowledge}
+
+\knowledgedirective {problem}{notion,style=problem,intro style=intro problem}
+\knowledgestyle{intro problem}{smallcaps, ensuretext, color=deepblue!70}
+\knowledgestyle{problem}{smallcaps, ensuretext, color=deepblue}
+
+\input{notions.tex}
+
+\renewcommand{\mathsf}[1]{\text{\normalfont\sffamily#1}}
+\renewcommand{\texttt}[1]{\text{\normalfont\ttfamily#1}}
+
+\ebproofset{right label template=$\inserttext$, left label template=\tiny$\inserttext$, center=false}
+
+\RedeclareSectionCommand[beforeskip=0.10em, afterskip=0.10em]{section}
+\RedeclareSectionCommand[beforeskip=0.05em, afterskip=0.001em plus 0em]{subsection}
+
+
+\fvset{bgcolor=lightgray!10,backgroundcolorpadding=3pt}
+
+\MakeOuterQuote{"}
+
+\newcommand\redQuestionBox{
+  \tikz[baseline]{
+    \node[rectangle,fill=nicered,anchor=base,rounded corners=2pt] (A) {\color{white}\textsf{\textbf{?}}\ensuremath{\,}};
+  }
+}
+
+\definecolor{blue}{HTML}{5aa9e6}
+\colorlet{deeppurple}{DarkOrchid}
+\colorlet{deepgreen}{ForestGreen!70!black}
+\colorlet{deepblue}{NavyBlue!70!black}
+\colorlet{deepred}{RawSienna!70!black}
+\colorlet{nicered}{BrickRed!70!white}
+
+\makeatletter
+\g@addto@macro\bfseries{\boldmath}
+\makeatother
+
+\lstset{
+  basicstyle=\small\ttfamily,
+  captionpos=b,
+  escapeinside={@}{@},
+  mathescape=true,
+  language=sql,
+  frame=leftline,
+  framesep=1em,
+  backgroundcolor=\color{gray!10},
+  morekeywords={with, over, rank, partition}
+}
+
+\hypersetup{
+  colorlinks,
+  citecolor=deepgreen,
+  filecolor=nicered,
+  linkcolor=deepblue,
+  pdfencoding=auto,
+  psdextra,
+  urlcolor=deepred
+}
+
+\usetikzlibrary{positioning,shadings,arrows.meta,fit}
+
+\clearpairofpagestyles
+
+\newcommand\showpage{\itshape\hfill--~\thepage/\pageref*{LastPage}~--\hfill}
+\cofoot[\showpage]{\showpage} \cefoot[\showpage]{\showpage}
+
+\setlist[enumerate]{font={\bfseries\color{deepblue}}}
+\AtBeginDocument{
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+\newcommand\separatorBlock{
+  \raisebox{-0.2em}{
+    \tikz{ \draw[deepblue,ultra thick, line cap=round] (0,0) -- (0,1em); }
+  }
+}
+
+\newcommand\vertical[1]{
+  \rotatebox[origin=c]{270}{\ensuremath{#1}}
+}
+
+\mdfsetup{skipabove=1em,skipbelow=0em,linewidth=0pt,rightline=false, topline=false, bottomline=false}
+
+
+\theoremstyle{definition}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont,
+]{thmgreenbox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont\sffamily\itshape,
+]{thmbluebox}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
+  mdframed={
+    linecolor=deepblue,
+    linewidth=2pt,
+  },
+  numbered=no,
+]{thmblueline}
+
+\declaretheoremstyle[
+  headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
+]{thmredbox}
+
+\declaretheoremstyle[
+  headfont=\itshape\sffamily\color{deepred}, bodyfont=\normalfont,
+  numbered=no,
+  qed=\qedsymbol,
+]{thmproofbox}
+
+\newcommand\defineMarkerColor[2]{
+  \AtBeginEnvironment{#1}{
+    \setlist[enumerate]{font={\color{#2}}}
+    \renewcommand{\labelitemi}{\color{#2}\small$\triangleright$}
+    \renewcommand{\labelitemii}{\color{#2}–}
+    \renewcommand{\labelitemiii}{\color{#2}•}
+    \renewcommand\emph[1]{{\bfseries\em\color{#2}##1}}
+  }
+}
+
+
+\AtBeginDocument{
+  \setlist[enumerate]{font={\bfseries\color{deepblue}}}
+  \renewcommand{\labelitemi}{\bfseries\color{deepblue}\small$\triangleright$}
+  \renewcommand{\labelitemii}{\bfseries\color{deepblue}–}
+  \renewcommand{\labelitemiii}{\bfseries\color{deepblue}•}
+}
+
+
+\setlist[enumerate]{font={\color{deepblue}}}
+\renewcommand{\labelitemi}{\color{deepblue}\small$\triangleright$}
+\renewcommand{\labelitemii}{\color{deepblue}–}
+\renewcommand{\labelitemiii}{\color{deepblue}•}
+
+\declaretheorem[style=thmgreenbox, name=Axiom, numbered=no]{axi} \defineMarkerColor{axi}{deepgreen}
+\declaretheorem[style=thmgreenbox, name=Definition]{defn} \defineMarkerColor{defn}{deepgreen}
+\declaretheorem[style=thmbluebox, name=Example]{exm}      \defineMarkerColor{exm}{deepblue}
+\declaretheorem[style=thmbluebox, name=Exercise]{exo}     \defineMarkerColor{exo}{deepblue}
+\declaretheorem[style=thmbluebox, name=Question]{que}     \defineMarkerColor{que}{deepblue}
+\declaretheorem[style=thmredbox, name=Proposition]{prop}  \defineMarkerColor{prop}{deepred}
+\declaretheorem[style=thmredbox, name=Theorem]{thm}      \defineMarkerColor{thm}{deepred}
+\declaretheorem[style=thmredbox, name=Lemma]{lem}         \defineMarkerColor{lem}{deepred}
+\declaretheorem[style=thmredbox, name=Corollary]{crlr}   \defineMarkerColor{crlr}{deepred}
+\declaretheorem[style=thmblueline, name=Remark]{rmk}    \defineMarkerColor{rmk}{deepblue}
+\declaretheorem[style=thmblueline, name=Note]{note}       \defineMarkerColor{note}{deepblue}
+\declaretheorem[style=thmproofbox, name=Proof]{replacementproof}
+\newenvironment{prv}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementproof}}{\end{replacementproof}} \defineMarkerColor{prv}{deepred}
+\declaretheorem[style=thmproofbox, name=Proof idea]{replacementideaproof}
+\newenvironment{prvid}[1][\proofname]{\vspace{-12pt}%
+\begin{replacementideaproof}}{\end{replacementideaproof}} \defineMarkerColor{prvid}{deepred}
+
+\RequirePackage{caption}
+\DeclareCaptionLabelFormat{labelformat}{\textbf{#1~#2}\separatorBlock}
+\captionsetup{labelformat=labelformat,labelsep=none,textfont=sl}
+
+\DeclareMathSizes{11}{9}{7}{5}
+
+\title{Computational Complexity -- \textit{Homework 2}}
+\author{Hugo \textsc{Salou}}
+
+\let\emph\relax
+\DeclareTextFontCommand{\emph}{\bfseries\em\color{deepblue}}
+
+\renewcommand{\thefootnote}{\alph{footnote}}
+
+\tikzcdset{arrow style=math font}
+\tikzset{
+  equiv/.style={-,preaction={draw,double equal sign distance}},
+  >=Straight Barb,
+}
+
+\usepackage{colortbl}
+\usepackage{nicematrix}
+
+\NewDocumentCommand{\problem}{ommm}{
+  \csgdef{intro#2}{
+    \begin{figure}[H]
+      \centering
+      \arrayrulecolor{deepblue}
+      \setlength\arrayrulewidth{1pt}
+      \begin{NiceTabular}{r|p{10cm}}
+        \Block{2-1}{\textsc{#1}} & \textbf{Input.} #3\\
+                            & \textbf{Output.} #4
+      \end{NiceTabular}
+      \label{pb:#2}
+    \end{figure}
+  }
+
+  \csgdef{pb#2}{\hyperref[pb:#2]{\textsc{#1}}}
+
+  \csgdef{recall#2}{
+    \begin{figure}[H]
+      \centering
+      \arrayrulecolor{deepblue}
+      \setlength\arrayrulewidth{1pt}
+      \begin{NiceTabular}{r|p{10cm}}
+        \Block{2-1}{\hyperref[pb:#2]{\textsc{#1}}} & \textbf{Input.} #3\\
+                            & \textbf{Output.} #4
+      \end{NiceTabular}
+    \end{figure}
+  }
+
+  \csgdef{show#2}{%
+    \ifcsname introduced@#2\endcsname
+      \csname recall#2\endcsname
+    \else
+      \csname intro#2\endcsname
+      \expandafter\gdef\csname introduced@#2\endcsname{}%
+    \fi
+  }
+}
+
+\directlua{dofile("../turing.lua")}
+
+\newcommand{\poly}{\advice{\p}{\advicepoly}}
+
+\begin{document}
+  \begin{center}
+    \bfseries
+    \sffamily
+
+    {\large\itshape ---\hspace{1em}Homework II\hspace{1em}---}
+
+    {\huge Computational Complexity}
+
+    {\large \itshape Hugo SALOU}
+  \end{center}
+
+  \begin{thm}
+     For all $k \in \mathds{N}$, there is a language $\mathcal{L}_k \in \phSigma 2$ which cannot be computed by circuits of size $\mathrm{O}(n^k)$.
+     \label{thm1}
+  \end{thm}
+
+  \begin{que}
+    Show that $\phSigma 2 \nsubseteq \poly$ implies Theorem~\ref{thm1}.
+    \label{que1}
+  \end{que}
+
+  By contrapositive, we can assume theorem~\ref{thm1} is false, and show that $\phSigma 2 \subseteq \poly$.
+  This means there is some $k \in \mathds{N}$ such that all languages $L \in \phSigma 2$ can be computed by circuits of size $\mathrm{O}(n^k)$.
+  This means that any $L \in \phSigma 2$ can be recognized by circuits of polynomial size.
+  Then, by the characterization of $\poly$ as languages that can be recognized by circuits of polynomial size, we have that $L \in \poly$ for all $\phSigma 2$.
+  We can conclude  $\phSigma 2 \subseteq \poly$.
+  
+  \begin{thm}
+     For all $k \in \mathds{N}$, there is a language $\mathcal{L}_k \in \ph$ which cannot be computed by circuits of size $\mathrm{O}(n^k)$.
+     \label{thm2}
+  \end{thm}
+
+  \begin{que}
+    Using the Karp-Lipton Theorem and Question~\ref{que1}, show that it is enough to prove Theorem~\ref{thm2} to obtain Theorem~\ref{thm1}.
+    \label{que2}
+  \end{que}
+
+  We will proceed by contrapositive.
+  If theorem~\ref{thm1} is false, then so is Theorem~\ref{thm2}.
+  To show that, we will show that if theorem~\ref{thm1} is false, then $\ph = \phSigma 2$, thus showing immediately that Theorem~\ref{thm2} is false (as we get exactly theorem~\ref{thm1}).
+
+  Assuming theorem~\ref{thm1} is false, then by question~\ref{que1}, we get that $\phSigma 2 \subseteq \poly$ and, in particular, $\np \subseteq \poly$.
+  By the Karp-Lipton theorem, we get that $\phSigma 2 = \phPi 2$ and so $\phSigma 2 = \ph$ as the polynomial hierarchy collapses at level $2$.
+
+  \begin{que}
+    Show that there are less than $3^s s^{2s}$ circuits of size $s$ (the size counts all gates (inputs included), internal gates are $\land$, $\lor$, $\lnot$, and they are restricted to take at most two arguments).
+    \label{que3}
+  \end{que}
+
+  A circuit of size $s$ is a (labelled) DAG with $s$ vertices such that, for every non-initial vertex $v$, the inwards degree $d^+(v)$ is at most $2$.
+  This means, for each non-initial vertex $v$ we have to choose (at most) two "parent" nodes, thus each vertex has (at most) $s^2$ parent nodes, and so
+  \[
+    \# \text{DAGs} \le \underbrace{s^2 \cdot s^2 \cdots s^2}_{\text{$k$ terms "$s^2$"}} = s^{2k}
+  ,\]
+  where $k$ is the number of non-initial vertices.
+  Given a DAG, we have to label it to obtain a circuit.
+  We have $3^k$ labellings for the non-initial vertices of the DAG (as there are three operators), and we have $s^{n+2}$ labellings for the initial vertices ($n$ variables and two constants $0$ and $1$).\footnote{We assume only one initial vertex appears for every variable (and similarly for the two constants).}
+
+  We obtain:
+  \[
+  \# \text{Circuits of size $s$} \le \# \text{DAGs} \times \# \text{Labellings}
+  \le s^{2k} \times 3^k \times s^{n+2} \le s^{2s} \times 3^s
+  ,\] as $2 k + n + 2 \le k + s \le 2s$.
+
+  \begin{que}
+    Prove that, for large enough $n$, there are less circuits of size $n^k \left\lceil \log n \right\rceil$ than binary words of size $n^{k+1}$.
+    \label{que4}
+  \end{que}
+
+  The bound from question~\ref{que3} gives us that there are less than
+  \[
+  c(n) := 3^{n^k \left\lceil \log n \right\rceil} n^{2k n^k \left\lceil \log n \right\rceil} \left\lceil \log n \right\rceil ^{2 n^k \left\lceil \log n \right\rceil}
+  \]
+  circuits of size $n^k \left\lceil \log n \right\rceil$.
+  And, we know that there are $2^{n^{k+1}}$ binary words of size $n^{k+1}$.
+  Taking the logarithm, we get that
+  \[
+    \log c(n) = (\log 3) n^k \log n + 2 (\log n)^2 k n^k + 2 (\log n) (\log \log n) n^k = \mathrm{o}(n^{k+1})
+  \]
+  and $\log \left( 2^{n^{k+1}} \right) = (\log 2) n^{k+1}$.
+  We can thus conclude that there are less circuits of size $n^k \left\lceil \log n \right\rceil$ than binary words of length $n^{k+1}$, for some large enough integer $n$.
+
+  \begin{que}
+    Prove that if $a, b \in \{\texttt{0}, \texttt{1}\}^{n^{k+1}}$ are distinct, then $L_a \neq L_b$.
+    \label{que5}
+  \end{que}
+
+  If $a \neq b$ then there is some index $0 \le i \le n^{k+1}$ such that $a_i \neq b_i$.
+  Without loss of generality, assume $a_i = \texttt{1}$ and $b_i = \texttt{0}$.
+  In that case, we know $w^i \in L_a$ but $w^i \not\in L_b$.
+  We conclude that $L_a \neq L_b$.
+
+  \begin{que}
+    Prove that, for sufficiently large $n$, there exists $a$ such that $L_a$ is not recognized by a circuit of size $n^k \left\lceil \log n \right\rceil$ (use question~\ref{que4} and a cardinality argument).
+    \label{que6}
+  \end{que}
+
+  By question~\ref{que5}, we know that all the $L_a$'s are distinct and so the number of $L_a$'s is precisely the number of binary words $a$ of size $n^{k+1}$.
+  But, as the circuits can only recognize at most one $L_a$ (as they are distinct), and there are less circuits of size $n^k \left\lceil \log n \right\rceil $ than $L_a$'s, we conclude there exists some $a$ such that $L_a$ is not recognized by any circuit of size $n^k \left\lceil \log n \right\rceil$.
+
+  \begin{que}
+    Prove that $L_a$ can be recognized by a circuit of size less than $6 n^{k+2}$: consider a circuit of the form
+    \[
+      \bigvee_{\substack{i\le n^{k+1}\\ a_i = \texttt{1}}} \mathds{1}_{x = w^i}
+    .\]
+    \label{que7}
+  \end{que}
+
+  To compute $\mathds{1}_{x_j = z}$ for some fixed $z \in \{\texttt{0}, \texttt{1}\}$ we can use a $\lnot$ when $z = \texttt{0}$ and no gates when $z = \texttt{1}$.
+  Then, we can compute $\mathbb{1}_{x = u} = \bigwedge_{j = 1}^n \mathds{1}_{x_j = u_j}$ using a circuit of size at most $2n$ with
+  \[
+  \mathds{1}_{x_1 = u_1} \wedge \big(\mathds{1}_{x_2 = u_2} \wedge (\cdots( \mathds{1}_{x_{n-1} = u_{n-1}} \wedge \mathds{1}_{x_n = u_n} )\cdots ) \big)
+  .\]
+  Therefore, for some fixed $a$, we can compute
+  \[
+    \bigvee_{\substack{i = 1\\ a_i = \texttt{1}}}^{n^{k+1}} \mathds{1}_{x = w^i}
+  \]
+  with a circuit of size $2n \times n^{k+1} = 2n^{k+2} \le 6n^{k+2}$.
+  And, $L_a$ is \textit{precisely} the language recognized by that boolean circuit.
+
+  \begin{que}
+    Prove that $\mathcal{L}_k$ cannot be recognized by circuits of size $\mathrm{O}(n^k)$.
+    \label{que8}
+  \end{que}
+
+  Assume there exists some circuit $C$ of size $\mathrm{O}(n^k)$ computing $\mathcal{L}_k$ :
+  \[
+    C(x) = \texttt{1} \iff x \in \mathcal{L}_k \iff C_{|x|}(x) = \texttt{1}
+  ,\]
+  thus $C(x) = C_{|x|}(x)$.
+  However $C_{|x|} \in \mathcal{C}_{|x|}$ and so $C_{|x|}(\cdot)$ is not computable by a circuit of size $\mathrm{O}(n^k \log n)$.
+  We reach a contradiction as we can use $C$ to compute $C_{|x|}(\cdot)$ and $C$ has size $\mathrm{O}(n^k)$.
+
+  \begin{que}
+    Prove that $x \in \mathcal{L}_k$ iff there exists a circuit $C$ of size less than $6 n^{k+2}$ (where~$n = |x|$) such that:
+    \begin{enumerate}
+      \item $C(x) = \texttt{1}$;
+      \item and, for every circuit $C'$ of size $n^k \left\lceil \log n \right\rceil$, there exists a word $y \in \{\texttt{0},\texttt{1}\}^n$ such that $C(y) \neq C'(y)$;
+      \item and for every circuit $C''$ of size $6n^{k+2}$, either $C'' \ge_\mathsf{lex} C$~or there exists a circuit~$C'''$ of size $n^k \left\lceil \log n \right\rceil$ such that, for all $z$, we have $C''(z)  = C'''(z)$.
+    \end{enumerate}
+    \label{que9}
+  \end{que}
+
+  Assume $x \in \mathcal{L}_k$.
+  Then $C := C_n$ is a circuit of size $6n^{k+2}$ such that
+  \begin{itemize}
+    \item we have $C(x) = 1$ (by definition of $\mathcal{L}_k$);
+    \item for every $C'$ of size $n^k \left\lceil \log n \right\rceil$, circuits $C'$ and $C$ can recognize the same function (as $C \in \mathcal{C}_{|x|}$), \textit{i.e.}\ there is some $y$ such that $C(y) \neq C'(y)$;
+    \item for every circuit $C''$ of size $6 n^{k+2}$ then
+      \begin{itemize}
+        \item either $C''(\cdot)$ can  be recognized by a circuit of size $n^k \left\lceil \log n \right\rceil$ (and we call $C'''$ that circuit);
+        \item either  $C''(\cdot)$ is in $\mathcal{C}_n$ and so $C'' \ge_{\mathsf{lex}} C_n = C$.
+      \end{itemize}
+  \end{itemize}
+
+  On the other hand, if there is some circuit $C$ of size $6n^{k+2}$ such that all the conditions apply, then
+  \begin{itemize}
+    \item we know $C(\cdot ) \in \mathcal{C}_n$ as $C(\cdot)$ cannot be computed by $n^k \left\lceil \log n \right\rceil$-sized circuits (condition on $C'$) but can be by a $6n^{k+2}$-sized circuit (using $C$);
+    \item furthermore, $C = C_n$ as, if $C'' \in \mathcal{C}_n$ then necessarily $C'' \ge_\mathsf{lex} C$ since the function $C''(\cdot)$ cannot be computed by a circuit of size $n^k \left\lceil \log n \right\rceil$.
+  \end{itemize}
+
+  \begin{que}
+    Prove that $\mathcal{L}_k$ belongs to $\ph$ using the characterization of the previous question (you should get $\mathcal{L}_k$ in $\phSigma 4$).
+    \label{que10}
+  \end{que}
+
+  Using question~\ref{que9}, we have that $x \in \mathcal{L}_k$ iff
+  \[
+    \exists C, \forall \code{C', C''}, \exists \code{y, C'''}, \forall z,
+    \begin{pmatrix} 
+      \text{$C$ is a circuit of size less than $6 n^{k+2}$}\\
+      \text{$C'$ is a circuit of size less than $n^k \left\lceil \log n \right\rceil $}\\
+      \text{$C''$ is a circuit of size less than $6 n^{k+2}$}\\
+      \text{$C''$ is a circuit of size less than $n^k \left\lceil \log n \right\rceil $}\\
+      C(x) = 1\\
+      C(y) \neq C'(y)\\
+      C(z) = C'(z) \vee C'' \ge_\mathsf{lex} C \\
+    \end{pmatrix} 
+  ,\] 
+  where we take the conjunction of all the rows between the parentheses.
+  The part between parentheses, given $C, C', C'', y, C''', z$, is verifiable in polynomial time: checking that a circuit is of a certain size is in $\p$, computing the value of a circuit at a given input is in $\p$, checking if one string is smaller lexicographically is in $\p$.\footnote{
+    We have that $v \le_\mathsf{lex} w$ iff $v <_\mathsf{lex} w$ or $v = w$, and we know that (with $n = |v|$,  $m = |w|$)
+    \[
+    v <_\mathsf{lex} w \iff \exists i \in \llbracket 1, \min(n,m) + 1\rrbracket, \begin{pmatrix} \forall j < i, v_j = w_j\\ i = n + 1 \vee v_i < w_i \end{pmatrix} 
+    .\]
+    So we can simply try every value of $i$ and check the condition.
+  }
+
+  So, we can conclude that $\mathcal{L}_k \in \phSigma 4 \subseteq \ph$.
+
+  \begin{que}
+    Prove Theorem~\ref{thm1}.
+  \end{que}
+
+  Using question~\ref{que2}, we simply have to show theorem~\ref{thm2}.
+  For some $k \in \mathds{N}$, we know $\mathcal{L}_k$ is in $\ph$ using question~\ref{que10}, and we know that $\mathcal{L}_k$ cannot be recognized by a circuit of size $\mathrm{O}(n^k)$ thanks to question~\ref{que8}.
+  This concludes the proof of theorem~\ref{thm2}, and thus proof of theorem~\ref{thm1}.
+\end{document}
