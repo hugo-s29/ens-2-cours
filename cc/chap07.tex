@@ -3,7 +3,7 @@
 \begin{document}
   \chapter{Protocoles interactifs.}
 
-  Deux machines discutent : le \textit{prouveur} $\intro*\prov$ et le \textit{vérificateur} $\intro*\verif$.
+  Deux machines discutent : le \textit{prouveur} $\prov$ et le \textit{vérificateur} $\verif$.
   Le prouveur a une puissance de calcul illimitée, et le vérificateur ne fait pas initialement "confiance" au prouveur.
 
   \begin{exm}
@@ -24,7 +24,7 @@
 
     Analysons ce protocole :
     \begin{itemize}
-      \item si $F \not\in \pbSat$ alors $\verif$ rejette toujours ;
+      \item si $F \not\in \pbSat$ alors $\verif$ rejette toujours, peu importe $\tilde{\prov}$ ;
       \item si $F \in \pbSat$ alors $\prov$ peut convaincre $\verif$ d'accepter.
     \end{itemize}
   \end{exm}
@@ -54,9 +54,9 @@
       \item Si $G_0 \cong G_1$, alors pour tout prouveur, $\Pr[\text{$\verif$ accepte}] = 1/2$.
         En effet, pour tout $G'$, 
         \[
-          \Pr[\text{$\verif$ renvoie $G'$}  \mid b = 0] = \Pr[\text{$\verif$ renvoie $G'$}  \mid b = 1]
+          \Pr[\text{$\tilde{\prov}$ renvoie $G'$}  \mid b = 0] = \Pr[\text{$\tilde{\prov}$ renvoie $G'$}  \mid b = 1]
         ,\]
-        notons $p_{i,j} := \Pr[\text{$\prov$ envoie $b' = j$}  \mid  b = i]$ et on observe que $p_{11} = p_{21}$, d'où 
+        notons $p_{i,j} := \Pr[\text{$\tilde{\prov}$ envoie $b' = j$}  \mid  b = i]$ et on observe que $p_{11} = p_{21}$, d'où 
         \[
           \Pr[\text{$\verif$ accepte}] = \frac{1}{2} (p_{11} + p_{22}) = \frac{1}{2}(p_{21} + p_{22}) = \frac{1}{2}
         .\]
@@ -132,7 +132,20 @@
   \end{figure}
 
   \begin{defn}
-    On définit $\intro*\ip$ la classe des langages que l'on peut reconnaitre à l'aide d'un protocole interactif avec probabilité d'erreur inférieur à $1/3$.
+    On définit $\intro*\ip$ la classe des langages que l'on peut reconnaitre à
+    l'aide d'un protocole interactif avec probabilité d'erreur inférieur à
+    $1/3$. Autrement dit, un langage $L$ est dans $\ip$ ss'il existe un
+    vérificateur $\intro*\verif$ tel que
+     \begin{enumerate}
+      \item si $x \in L$ alors il existe un prouveur $\intro*\prov$ tel que
+        \[
+          \Pr[\text{$\prov$ pousse $\verif$ à accepter}] \ge  \frac{2}{3} \;
+        ;\]
+      \item si $x \not\in L$ alors pour tout prouveur $\tilde{\prov}$, 
+        \[
+          \Pr[\text{$\tilde{\prov}$ pousse $\verif$ à accepter}] \le \frac{1}{3} \;
+        .\]
+    \end{enumerate}
   \end{defn}
 
   \begin{exm}
@@ -146,17 +159,158 @@
   \begin{rmk}
     On a $\ip \subseteq \pspace$, c'est le "sens facile".
 
-    En revanche, le résultat $\pspace \subseteq \ip$ \textit{\textbf{ne se relativise pas}} : il existe $A$ tel que $\oracle{\pspace} A$ n'est pas inclus dans $\oracle{\ip} A$ (et même~$\oracle{\conp} A$ n'est pas inclus dans $\oracle{\ip} A$).
+    En revanche, le résultat $\pspace \subseteq \ip$ \textit{\textbf{ne se
+    relativise pas}} : il existe $A$ tel que $\oracle{\pspace} A$ n'est pas
+    inclus dans $\oracle{\ip} A$ (et même~$\oracle{\conp} A$ n'est pas inclus
+    dans $\oracle{\ip} A$).
   \end{rmk}
 
-  Pour montrer $\pspace \subseteq \ip$, on utilise le fait que \pbQBF\ est $\pspace$-complet : il suffira donc de montrer que $\pbQBF \in \ip$, et on pourra utiliser les propriétés spécifiques de \pbQBF, en particulier l'\textit{\textbf{arithmétisation}} (on peut voir des formules booléennes comme des polynômes).
+  Pour montrer $\pspace \subseteq \ip$, on utilise le fait que \pbQBF\ est
+  $\pspace$-complet : il suffira donc de montrer que $\pbQBF \in \ip$, et on
+  pourra utiliser les propriétés spécifiques de \pbQBF, en particulier
+  l'\textit{\textbf{arithmétisation}} (on peut voir des formules booléennes
+  comme des polynômes).
 
   \begin{defn}
     On définit le problème \pbSharpSat\ par 
+
     \showSharpSat
+
+    ou, de manière équivalente,
+    \[
+      \pbSharpSat := \mleft\{\,\code{\phi, k} \;\middle|\; 
+        \begin{array}{l}
+          \text{$\phi$ est une formule booléenne satisfaite}\\
+          \text{par exactement $k$ assignations}
+        \end{array}
+      \,\mright\} 
+    .\] 
   \end{defn}
 
   \begin{thm}
     On a $\pbSharpSat \in \ip$.
   \end{thm}
+  \begin{prv}
+    La preuve se base sur la technique d'\textit{\textbf{arithmétisation}} : on
+    associe à $\phi(x_1, \ldots, x_n)$ un polynôme $P_\phi(x_1, \ldots, x_n)$
+    que l'on définit par induction :
+    \begin{itemize}
+      \item si $\phi = x$, alors $P_\phi := x$ ;
+      \item si $\phi = \psi \wedge \vartheta$, alors $P_\phi := P_\psi \times P_\vartheta$ ;
+      \item si $\phi = \lnot \psi$ alors  $P_\phi := 1 - P_\psi$ ;
+      \item si $\phi = \psi \vee \vartheta$, alors
+        \[
+          P_\phi := P_\psi + P_\vartheta - P_\psi \times P_\vartheta = 1 - (1 - P_\psi) \times (1 - P_\vartheta)
+        .\]
+    \end{itemize}
+    On définit également, pour $i \in \llbracket 0, m\rrbracket$,
+    \[
+    f_i(x_1, \ldots, x_i) := \sum_{(a_{i+1}, \ldots, a_m) \in \{0, 1\}^{n - i}} P_\phi(x_1, \ldots, x_i, a_{i+1}, \ldots, a_n)
+    .\]
+    En particulier,  $f_m(x_1, \ldots, x_n) = P_\phi(x_1, \ldots, x_n)$.
+    Et, de plus, $f_0$ est une constante qui compte le nombre d'instances qui
+    vont satisfaire la formule $\phi$. On a \[
+    \deg f_i \le \deg P_\phi \le |\phi|
+    ,\] et si $f \neq g$ avec $\deg f \le d$ et $\deg g \le d$ alors
+    \begin{equation}
+      \label{prv:sharpsat-in-ip-neq-poly}
+      \tag{$*$}
+      \Pr[f(x) = g(x)] = \frac{d}{|S|}
+    ,\end{equation}
+    si $x$ est choisi uniformément dans $S$.
+
+    Maintenant, décrivons le protocole.
+
+    \begin{algorithm}[H]
+      \caption{Protocole interactif pour \pbSharpSat}
+      \begin{paralgo}{2}[Vérificateur $\verif$, Prouveur $\prov$]
+        \State[1]{Calculer des polynômes $f_0, \ldots, f_n$}
+        \Message{1}{0}{$f_0$}
+        \If[0]{$f_0 \neq k$}
+        \State[0]{\textbf{Rejeter}}
+        \EndIf[0]
+        \Message{1}{0}{$f_1(z)$}
+        \State[0]{$y_0 := f_1(0) + f_1(1)$}
+        \If[0]{$f_0 \neq y_0$}
+        \State[0]{\textbf{Rejeter}}
+        \EndIf[0]
+        \State[0]{Choisir $r_1 \in S$ aléatoirement}
+        \Message{0}{1}{$r_1$}
+        \State[1]{Calculer $f_2(r_1, z)$, polynôme en $z$}
+        \Message{1}{0}{$f_2(r_1, z)$}
+        \State[0]{$y_1 := f_2(r_1, 0) + f_2(r_1, 1)$}
+        \If[0]{{$f_1(r_1) \neq y_1$}}
+        \State[0]{\textbf{Rejeter}}
+        \EndIf[0]
+        \State[0]{Choisir $r_2 \in S$ aléatoirement}
+        \Message{0}{1}{$r_2$}
+        \State[1]{Calculer $f_3(r_1, r_2, z)$, polynôme en $z$}
+        \Message{1}{0}{$f_3(r_1, r_2, z)$}
+        \State{\textit{etc}}
+        \State[0]{$y_n := f_n(r_1, \ldots, r_n)$}
+        \State[0]{\textbf{Accepter} si \rlap{$P_\phi(r_1,\ldots, r_n) = y_n$}}
+        \State[0]{\textbf{Rejeter} sinon}
+      \end{paralgo}
+    \end{algorithm}
+
+    Dans un premier temps, analysons la complétude du protocole. Si
+    $\code{\phi, k} \in \pbSharpSat$, montrons qu'il existe $\prov$ qui va
+    convaincre  $\verif$ à coup sûr. Pour cela, il suffit de prendre $\prov$
+    qui respecte le protocole avec les $f_i$ définies précédemment.
+
+    Maintenant, regardons la consistance du protocole. Supposons que
+    $\code{\phi, k} \not\in \pbSharpSat$, \textit{i.e.}, $k$ n'est pas le
+    nombre d'assignations qui vont satisfaire $\phi$. Montrons que tout
+    prouveur $\tilde{\prov}$ a probabilité inférieure à $1/3$ de convaincre
+    $\verif$. Lors du protocole,  $\tilde{\prov}$ va envoyer des polynômes
+    $\tilde{f}_i$ qui peuvent être différents des $f_i$. On dira que
+    $\tilde{\prov}$ est \textit{chanceux à la phase $i$} si
+    \[
+    f_i(r_1, \ldots, r_{i-1}, z) \neq  \tilde f_i (r_1, \ldots, r_{i-1}, z)
+    \] mais que $\verif$ choisit $r_i$ tel que \[
+    f_i(r_1, \ldots, r_i) = \tilde f_i (r_1, \ldots, r_i)
+    .\] 
+
+    \begin{lem}
+      Si $\tilde{\prov}$ n'est jamais chanceux alors $\verif$ rejette.
+    \end{lem}
+    \begin{prv}
+      \textit{Je ne suis pas sûr de comprendre la preuve\ldots\ mais je la rajouterai rapidement.}
+    \end{prv}
+
+    \begin{lem}
+      On a
+      \[
+        \Pr[\exists i, \text{$\tilde {\prov}$ est chanceux à l'étape $i$}] \le \frac{n \times |\phi|}{|S|}
+      .\]
+    \end{lem}
+    \begin{prv}
+      Pour $i \in \llbracket 1, n\rrbracket$, on a par (\ref{prv:sharpsat-in-ip-neq-poly}) que
+      \[
+        \Pr[\text{$\tilde {\prov}$ est chanceux à l'étape $i$}] \le \frac{|\phi|}{|S|}
+      ,\]
+      et il suffit juste d'appliquer la borne de l'union.
+    \end{prv}
+
+    Désormais, il ne reste plus qu'à analyser la complexité pour vérifier que
+    le vérificateur est bien en temps polynomial. Par la suite, on supposera
+    que les polynômes sont à coefficients entiers. On peut vérifier que les
+    polynômes échangés ont des coefficients de taille polynomiale. Sinon, on
+    peut se placer sur un corps fini $\mathds{F}$ dans lequel les coefficients
+    sont nécessairement de taille bornée. La seule contrainte sur $\mathds{F}$
+    est $|\mathds{F}| \le |S|$.
+    
+    Le prouveur $\prov$ peut envoyer $p$ tel que $\mathds{F} = \mathds{Z} / p
+    \mathds{Z}$ à $\verif$ qui va vérifier que $p$ est premier, avant toute
+    chose, ce qui se fait en temps polynomial.\footnote{Notamment avec le test
+    Agrawal–Kayal–Saxena.} Pour tout $S$, on a qu'il existe un nombre premier
+    $p$ avec $|S| \le p \le 2 |S|$ qui peut être renvoyé par $\prov$
+    (\textit{postulat de Bertrand}).
+
+    Il ne reste plus qu'à représenter $P_\phi$.
+    Puisque le représenter avec des monômes peut être exponentiel (par exemple
+    avec la formule~$\phi = \bigwedge_{i=1}^n (\lnot x_i)$), on peut le
+    représenter avec un circuit arithmétique on par une formule arithmétique
+    (\textit{i.e.}\ un arbre).
+  \end{prv}
 \end{document}
