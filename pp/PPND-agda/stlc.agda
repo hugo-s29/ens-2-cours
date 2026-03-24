@@ -20,7 +20,6 @@ open import base
 open import NJ-impl renaming (Formula to Type)
 
 infix  5 _⊢_∶_
-infix  5 _→β_
 infixl 15 _·_
 
 data Term (n : ℕ) : Set where
@@ -109,49 +108,3 @@ private
   lem : ∀ n → ． ⨾ A ⇒ A ⨾ A ⊢ ⟦ n ⟧-inside ∶ A
   lem zero = type-var zero
   lem (suc n) = type-app (type-var (suc zero)) (lem n)
-
-
-data Ctx (n : ℕ) : Set where
-  C□ : Ctx n
-  Cλ[_]_ : Type → Ctx (suc n) → Ctx n
-  _C·_ : Ctx n → Term n → Ctx n
-  _·C_ : Term n → Ctx n → Ctx n
-
-
-private
-  fin-inj : ∀ {n} → Fin n → Fin (suc n)
-  fin-inj zero = zero
-  fin-inj (suc i) = suc (fin-inj i)
-
-  fin-pred : ∀ {n} → Fin (2+ n) → Fin (suc n)
-  fin-pred zero = zero
-  fin-pred (suc i) = i
-
-bump : ∀ {n} → Fin n → ℕ → Fin (suc n)
-bump i h with h ≤ᵇ toℕ i
-bump i h | true = suc i
-bump i h | false = fin-inj i
-
-unbump : ∀ {n} → Fin (2+ n) → ℕ → Fin (2+ n)
-unbump i h with h <ᵇ toℕ i
-unbump i h | true = fin-inj (fin-pred i)
-unbump i h | false = i
-
-lift : ∀ {n} → ℕ → Term n → Term (suc n)
-lift k ⦅ i ⦆ = ⦅ (bump i k) ⦆
-lift k (λ[ A ] M) = λ[ A ] lift (suc k) M
-lift k (M · N) = lift k M · lift k N
-
-lift₀ : ∀ {n} → Term n → Term (suc n)
-lift₀ = lift 0
-
-_[_／_] : ∀ {n} → Term (2+ n) → Fin (2+ n) → Term (2+ n) → Term (2+ n)
-⦅ j ⦆ [ i ／ N ] with i Data.Fin.≟ j
-... | yes i≡j = N
-... | no ¬i≡j = ⦅ unbump j {!!} ⦆
-(λ[ A ] M) [ i ／ N ] = {!!}
-(M · M') [ i ／ N ] = {!!}
-
-
-data _→β_ : ∀ {n} → Term n → Term n → Set where
-  step : ∀ {n A n} → {M : Term (suc n)} → {N : Term n} → (λ[ A ] M) · N →β {!!}

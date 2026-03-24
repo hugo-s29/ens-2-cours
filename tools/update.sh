@@ -75,6 +75,7 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
 
   cp cc/td.pdf ../web/public/data/ens2/cc-td.pdf
   cp cc/hw1/main.pdf ../web/public/data/ens2/cc-hw1.pdf
+  cp cc/hw2/main.pdf ../web/public/data/ens2/cc-hw2.pdf
   cp cc/main.pdf ../web/public/data/ens2/cc.pdf
   cp cc/chap01.pdf ../web/public/data/ens2/cc-chap01.pdf
   cp cc/chap02.pdf ../web/public/data/ens2/cc-chap02.pdf
@@ -87,6 +88,6 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp dbdm/td.pdf ../web/public/data/ens2/dbdm-td.pdf
   cp dbdm/homework.pdf ../web/public/data/ens2/dbdm-homework.pdf
 
-  cp toplogie-algebrique/main.pdf ../web/public/data/ens2/topoalg.pdf
-  cp toplogie-algebrique/td.pdf ../web/public/data/ens2/topoalg-td.pdf
+  cp topologie-algebrique/main.pdf ../web/public/data/ens2/topoalg.pdf
+  cp topologie-algebrique/td.pdf ../web/public/data/ens2/topoalg-td.pdf
 fi

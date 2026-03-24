@@ -161,13 +161,20 @@ Definition iflatten : forall X, itree X -> ilist X :=
   fun X u =>
   u (ilist X) (fun x => icons X x (inil X)) (iconcat X).
 
+Example iflatten_ex X (x x' x'' x''' : X) :
+  iflatten X (ibinNode X (ibinNode X (ileaf X x) (ileaf X x')) (ibinNode X (ileaf X x'') (ileaf X x'''))) =
+  icons X x (icons X x' (icons X x'' (icons X x''' (inil X)))).
+Proof.
+  reflexivity.
+Qed.
+
 (***************)
 (* Existential *)
 (***************)
 
 Implicit Types (V : Set -> Set) (U W : Set).
 
-Definition iexists V : Set. Admitted.
+Definition iexists V : Set := forall Y, (forall X, V X -> Y) -> Y.
 Notation "'Σ' X , V" := (iexists (fun X => V))
   (format "'Σ' X ,  V", X name, at level 99).
 
@@ -178,13 +185,25 @@ Notation "'Σ' X , V" := (iexists (fun X => V))
 (******************************)
 
 (* producing Church integers *)
-Definition Church : nat -> N . Admitted.
+Definition Church : nat -> N :=
+  fix Church (n : nat) : N :=
+    match n with
+    | O => zero
+    | S n => succ (Church n)
+    end.
+
 
 (* producing nat from N *)
-Definition N2nat : N -> nat . Admitted.
+Definition N2nat : N -> nat := fun n => n nat S O.
 
 (* The "Church" function is injective *)
-Lemma ChurchK n : N2nat (Church n) = n. Admitted.
+Lemma ChurchK n : N2nat (Church n) = n.
+Proof.
+  induction n.
+  - reflexivity.
+  - assert (N2nat (Church (S n)) = S (N2nat (Church n))) by reflexivity.
+    rewrite H; now rewrite IHn.
+Qed.
 
 (* The converse is not true:
    several elements of N may represent the same Church integer!!! *)
