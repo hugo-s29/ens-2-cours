@@ -3,6 +3,13 @@
 
 \LoadClass[a5paper,12pt,DIV=calc,oneside,parskip=half]{scrreprt}
 
+\let\maybeAP\relax
+\let\importKnowledge\relax
+\DeclareOption{knowledge}{
+  \gdef\maybeAP{\AP}
+  \gdef\importKnowledge{\usepackage[notion,hyperref]{knowledge}}
+}
+\ProcessOptions\relax
 
 \RequirePackage[a5paper,margin=1.2cm,footskip=0cm,headsep=0.4cm]{geometry}
 \RequirePackage[utf8]{inputenc}
@@ -25,7 +32,7 @@
 \RequirePackage{mathtools}
 \RequirePackage{tikz}
 \RequirePackage{tikz-network}
-\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations.pathmorphing, graphdrawing, graphs, chains}
+\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations, decorations.pathmorphing, graphdrawing, graphs, chains}
 \usegdlibrary{force}
 \RequirePackage{svg}
 \RequirePackage{multirow}
@@ -44,6 +51,7 @@
 \RequirePackage{fontspec}
 \RequirePackage{fitbox}
 \RequirePackage{yhmath}
+\importKnowledge
 \RequirePackage{tablefootnote}
 
 \setmainlanguage{english}
@@ -153,7 +161,7 @@
 
 \theoremstyle{definition}
 
-\declaretheoremstyle[
+\declaretheoremstyle[postheadhook=\maybeAP,
     headfont=\bfseries\sffamily\color{deepgreen}, bodyfont=\normalfont,
     mdframed={
         linewidth=2pt,
@@ -163,7 +171,7 @@
     numberwithin=chapter
 ]{thmgreenbox}
 
-\declaretheoremstyle[
+\declaretheoremstyle[postheadhook=\maybeAP,
     headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
     mdframed={
         linewidth=2pt,
@@ -173,7 +181,7 @@
     numberwithin=chapter
 ]{thmbluebox}
 
-\declaretheoremstyle[
+\declaretheoremstyle[postheadhook=\maybeAP,
     headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
     mdframed={
         linewidth=2pt,
@@ -183,7 +191,7 @@
     numberwithin=chapter
 ]{thmblueline}
 
-\declaretheoremstyle[
+\declaretheoremstyle[postheadhook=\maybeAP,
     headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
     mdframed={
         linewidth=2pt,
@@ -193,7 +201,7 @@
     numberwithin=chapter
 ]{thmredbox}
 
-\declaretheoremstyle[
+\declaretheoremstyle[postheadhook=\maybeAP,
     headfont=\bfseries\sffamily\color{deepred}, bodyfont=\normalfont,
     numbered=no,
     mdframed={
@@ -205,7 +213,7 @@
     numberwithin=chapter
 ]{thmproofbox}
 
-\declaretheoremstyle[
+\declaretheoremstyle[postheadhook=\maybeAP,
     headfont=\bfseries\sffamily\color{deepblue}, bodyfont=\normalfont,
     numbered=no,
     mdframed={
@@ -476,19 +484,6 @@
 \let\succeq\succcurlyeq
 
 
-\newcommand\problem[4][\relax]{
-  \begin{figure}[H]
-    \centering
-    \arrayrulecolor{deepblue}
-    \setlength\arrayrulewidth{1pt}
-    \begin{NiceTabular}{r|p{10cm}}
-      \Block{2-1}{\textsc{#1}} & \textbf{Entrée.} #3\\
-                          & \textbf{Sortie.} #4
-    \end{NiceTabular}
-    \label{#2}
-  \end{figure}
-}
-
 \newfontface\unshape[]{Latin Modern Roman Unslanted} 
 \newcommand\textun[1]{{\unshape #1}}
 
@@ -499,6 +494,44 @@
   \gdef\tfn@fnt{0}% 
 }
 \makeatother
+
+\NewDocumentCommand{\problem}{ommm}{
+  \csgdef{intro#2}{
+    \begin{figure}[H]
+      \centering
+      \arrayrulecolor{deepblue}
+      \setlength\arrayrulewidth{1pt}
+      \begin{NiceTabular}{r|p{10cm}}
+        \Block{2-1}{\textsc{#1}} & \textbf{Entrée.} #3\\
+                            & \textbf{Sortie.} #4
+      \end{NiceTabular}
+      \label{pb:#2}
+    \end{figure}
+  }
+
+  \csgdef{pb#2}{\hyperref[pb:#2]{\textsc{#1}}}
+
+  \csgdef{recall#2}{
+    \begin{figure}[H]
+      \centering
+      \arrayrulecolor{deepblue}
+      \setlength\arrayrulewidth{1pt}
+      \begin{NiceTabular}{r|p{10cm}}
+        \Block{2-1}{\hyperref[pb:#2]{\textsc{#1}}} & \textbf{Entrée.} #3\\
+                            & \textbf{Sortie.} #4
+      \end{NiceTabular}
+    \end{figure}
+  }
+
+  \csgdef{show#2}{%
+    \ifcsname introduced@#2\endcsname
+      \csname recall#2\endcsname
+    \else
+      \csname intro#2\endcsname
+      \expandafter\gdef\csname introduced@#2\endcsname{}%
+    \fi
+  }
+}
 
 
 \makeatletter

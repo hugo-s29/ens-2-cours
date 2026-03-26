@@ -24,10 +24,6 @@
   \renewcommand\theequation{\arabic{section}.\arabic{equation}}
 }{}
 
-\knowledgedirective {problem}{notion,style=problem,intro style=intro problem}
-\knowledgestyle{intro problem}{smallcaps, ensuretext, color=deepblue!70}
-\knowledgestyle{problem}{smallcaps, ensuretext, color=deepblue}
-
 \input{notions.tex}
 \directlua{dofile("turing.lua")}
 

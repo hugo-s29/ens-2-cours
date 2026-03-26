@@ -1,6 +1,8 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{notes}[2025 Lecture notes class]
 
+\LoadClass[a5paper,12pt,DIV=calc,oneside,parskip=half]{scrreprt}
+
 \let\maybeAP\relax
 \let\importKnowledge\relax
 \DeclareOption{knowledge}{
@@ -8,8 +10,6 @@
   \gdef\importKnowledge{\usepackage[notion,hyperref]{knowledge}}
 }
 \ProcessOptions\relax
-
-\LoadClass[a5paper,12pt,DIV=calc,oneside,parskip=half]{scrreprt}
 
 \RequirePackage[a5paper,margin=1.2cm,footskip=0cm,headsep=0.4cm]{geometry}
 \RequirePackage[utf8]{inputenc}
@@ -31,8 +31,9 @@
 \RequirePackage{mathtools}
 \RequirePackage{tikz}
 \RequirePackage{tikz-network}
-\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations.pathmorphing, graphdrawing, graphs, chains, calligraphy}
+\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations, decorations.pathmorphing, graphdrawing, graphs, chains}
 \usegdlibrary{force}
+\RequirePackage{tikz-3dplot}
 \RequirePackage{svg}
 \RequirePackage{multirow}
 \RequirePackage{subcaption}
