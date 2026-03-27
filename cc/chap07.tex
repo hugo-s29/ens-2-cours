@@ -205,9 +205,9 @@
     \end{itemize}
     On définit également, pour $i \in \llbracket 0, m\rrbracket$,
     \[
-    f_i(x_1, \ldots, x_i) := \sum_{(a_{i+1}, \ldots, a_m) \in \{0, 1\}^{n - i}} P_\phi(x_1, \ldots, x_i, a_{i+1}, \ldots, a_n)
+    f_i(x_1, \ldots, x_i) := \sum_{(a_{i+1}, \ldots, a_n) \in \{0, 1\}^{n - i}} P_\phi(x_1, \ldots, x_i, a_{i+1}, \ldots, a_n)
     .\]
-    En particulier,  $f_m(x_1, \ldots, x_n) = P_\phi(x_1, \ldots, x_n)$.
+    En particulier,  $f_n(x_1, \ldots, x_n) = P_\phi(x_1, \ldots, x_n)$.
     Et, de plus, $f_0$ est une constante qui compte le nombre d'instances qui
     vont satisfaire la formule $\phi$. On a \[
     \deg f_i \le \deg P_\phi \le |\phi|
@@ -215,7 +215,7 @@
     \begin{equation}
       \label{prv:sharpsat-in-ip-neq-poly}
       \tag{$*$}
-      \Pr[f(x) = g(x)] = \frac{d}{|S|}
+      \Pr[f(x) = g(x)] \le \frac{d}{|S|}
     ,\end{equation}
     si $x$ est choisi uniformément dans $S$.
 
@@ -272,10 +272,24 @@
     .\] 
 
     \begin{lem}
-      Si $\tilde{\prov}$ n'est jamais chanceux alors $\verif$ rejette.
+      Si $\code{\phi, k} \not\in \pbSharpSatD$ et si $\tilde{\prov}$ n'est jamais chanceux alors $\verif$ rejette.
     \end{lem}
     \begin{prv}
-      \textit{Je ne suis pas sûr de comprendre la preuve\ldots\ mais je la rajouterai rapidement.}
+      On a que $k = \tilde f_0 \neq f_0$ sinon $\verif$ rejette immédiatement.
+      De même, $\tilde f_0 = \tilde f_1 (0) + \tilde f_1 (1)$ sinon $\verif$
+      rejette à la phase suivante.
+      On a nécessairement que $\tilde f_1 \neq f_1$ car, sinon, on aurait
+      \[
+      \tilde f_0 = \tilde f_1 (0) + \tilde f_1 (1) \neq f_1(0) + f_1(1) = f_0
+      .\]
+      Puisque $\tilde{\prov}$ n'est pas chanceux, $\verif$ va choisir une
+      valeur de $r_1$ telle que $\tilde f_1 (r_1) \neq f_1(r_1)$. On peut
+      raisonner ainsi jusqu'à la fin du protocole. Lors de la dernière phase, on a donc \[
+      \tilde f_n(r_1, \ldots, r_n) \neq f_n(r_1, \ldots, r_n)
+      ,\]
+      et, en particulier, $\tilde f_n(r_1, \ldots, r_n) \neq P_\phi(r_1,
+      \ldots, r_n)$. Ainsi, $\verif$ va finalement rejeter (s'il n'avait pas
+      rejeté avant).
     \end{prv}
 
     \begin{lem}

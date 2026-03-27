@@ -26,6 +26,7 @@
     \[
       \intro*\perm(A) := \sum_{\sigma \in \mathfrak{S}_n} a_{1, \sigma(1)} a_{2,\sigma(2)} \cdots a_{n,\sigma(n)}
     .\]
+    (Il correspond au déterminant sans le facteur $\epsilon(\sigma)$, signature de la permutation $\sigma$.)
   \end{defn}
 
   \begin{exm}
@@ -98,7 +99,7 @@
     \[
     g(x) = O(f(I(x)))
     .\]
-    Dans ce cas, je noterai $(I, O) : g \le f$.
+    Dans ce cas, je noterai $(I, O) : g \intro*\redS f$.
 
     Si $O$ est la fonction identité alors on dit que la réduction est \textit{\textbf{parcimonieuse}}.
   \end{defn}
@@ -112,11 +113,11 @@
   On peut composer des réductions.
 
   \begin{lem}
-    Si $(I_1, O_1) : f_2 \le f_1$ et $(I_2, O_2) : f_3 \le f_2$ alors on a
+    Si $(I_1, O_1) : f_2 \redS f_1$ et $(I_2, O_2) : f_3 \redS f_2$ alors on a
     \[
     O_2(O_1(f_1(I_1(I_2(x))))) = O_2(f_2(I_2(x))) = f_3(x)
     ,\] 
-    d'où $(I_1 \circ I_2, O_2 \circ O_1) : f_3 \le f_1$.
+    d'où $(I_1 \circ I_2, O_2 \circ O_1) : f_3 \redS f_1$.
   \end{lem}
 
   \begin{thm}
@@ -132,8 +133,8 @@
     \[
       f(x) = \# \{y \in \{\texttt{0},\texttt{1}\}^{p(n)}  \mid C_n(x,y) = \texttt{1}\} 
     ,\] 
-    où $C_n$ est un circuit à $n$ variables, car $A \in \p$.
-    Or, c'est une instance de $\pbSharpCircuitSat$.
+    où $C_n$ est un circuit à $n + p(n)$ variables, car $A \in \p$. Or, c'est
+    une instance de $\pbSharpCircuitSat$.
   \end{prv}
 
   \begin{thm}
@@ -224,32 +225,85 @@
       \node[above=0cm of a2] {$1'$};
       \node[below=0cm of a3] {$2'$};
       \node[below=0cm of a4] {$2$};
-      \draw[red, thick] (m1) to node[midway, fill=white, text=red, inner sep=0pt] {$\oplus$} (m2);
+      \draw[red, thick] (m1) to node[midway, fill=white, text=red, inner sep=0pt] {$\bigoplus$} (m2);
     \end{tikzpicture}
   \end{adjustbox}
 
   On a que \[
-    \sum_{\text{$C$ couverture par cycle de $G'$}} \mathrm{poids}(C) = 4 \times \sum_{\substack{
-      \text{$C$ couverture par cycle de $G$}\\
-      \text{qui contient $11'$  \textit{\textbf{ou exclusif}} $22'$}\\
+    \sum_{\substack{\text{$C$ couverture par}\\ \text{cycles de $G$}}} \mathrm{poids}(C) = 
+    4 \times \sum_{\substack{
+      \text{$C$ couverture par}\\
+    \text{cycles de $G$ qui}\\
+      \text{contient $11'$ \textit{\textbf{ou}}}\\
+      \text{\textit{\textbf{exclusif}} $22'$}
     }} \mathrm{poids}(C)
   .\]
-  On l'admet, cela pourra être vu en TP.
+  On l'admet, cela pourra être vu en TD.
 
-  Le \textit{\textbf{gadget de clause}} est le gadget ci-dessous. (Je ferai la figure plus tard.)
+  Le \textit{\textbf{gadget de clause}} (noté $G_c$) est le gadget en figure~\ref{fig:gadget-clause}, représenté ici pour la clause $x \vee y \vee \bar{z}$.
 
-  La propriété du gadget de claude est la suivante :
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}[node distance=3cm]
+      \node (base) {\phantom{$\bullet$}};
+      \node[above=1.3cm of base] (A) {$\bullet$};
+      \node[below left =of base] (B) {$\bullet$};
+      \node[below right=of base] (C) {$\bullet$};
+      \node[below=0.3cm of base] (D) {$\bullet$};
+      \path (B) to[bend right=30] node[midway] (E) {$\bullet$} (C);
+      \draw[->] (A) to[bend right=50] node[midway, inner sep=0pt] (AB) {} (B);
+      \draw[->] (C) to[bend right=50] node[midway, inner sep=0pt] (CA) {} (A);
+      \draw[->] (B) to[bend right=50] node[midway, inner sep=0pt] (BC) {} (C);
+      \draw[->] (C) to[bend left=5] (B);
+      \draw[->] (B) to[bend right=10] (E);
+      \draw[->] (E) to[bend right=10] (C);
+      \draw[->] (E) to[loop above] (E);
+      \draw[->] (B) to[bend right=20] (D);
+      \draw[->] (D) to[bend right=20] (B);
+      \draw[->] (A) to[bend right=20] (D);
+      \draw[->] (D) to[bend right=20] (A);
+      \draw[->] (C) to[bend right=20] (D);
+      \draw[->] (D) to[bend right=20] (C);
+      \node[above left=1.5cm and 1.5cm of AB] (W0) {};
+      \node[above right=1.5cm and 1.5cm of CA] (V0) {};
+      \node[below=1.5cm and 1.5cm of BC] (U0) {};
+      \node[above right=0.25cm and 0.25cm of W0] (W1) {$\bullet$};
+      \node[below left=0.25cm and 0.25cm of W0] (W2) {$\bullet$};
+      \node[above left=0.25cm and 0.25cm of V0] (V1) {$\bullet$};
+      \node[below right=0.25cm and 0.25cm of V0] (V2) {$\bullet$};
+      \node[right=0.6cm of U0] (U1) {$\bullet$};
+      \node[left=0.6cm of U0] (U2) {$\bullet$};
+      \draw[->] (U1) to[bend left]  node[very near end, below left] {\small $z = \texttt{1}$} (U2);
+      \draw[->] (U1) to[bend right] node[midway, inner sep=0pt] (U) {} node[very near end, above left] {\small $z = \texttt{0}$} (U2);
+      \draw[->] (U2) to (U1);
+      \draw[->] (V1) to[bend left] node[very near end, right=0.2cm] {\small $y = \texttt{0}$} (V2);
+      \draw[->] (V1) to[bend right] node[midway, inner sep=0pt] (V) {} node[very near end, below=0.2cm] {\small $y = \texttt{1}$} (V2);
+      \draw[->] (V2) to (V1);
+      \draw[->] (W1) to[bend left] node[midway, inner sep=0pt] (W) {} node[very near end, below=0.2cm] {\small $x = \texttt{1}$} (W2);
+      \draw[->] (W1) to[bend right] node[very near end, left=0.2cm] {\small $x = \texttt{0}$} (W2);
+      \draw[->] (W2) to (W1);
+      \draw (U) to node[fill=white,text=black,midway,inner sep=0pt, sloped] (UP) {$\bigoplus$} (BC);
+      \draw (V) to node[fill=white,text=black,midway,inner sep=0pt, sloped] (UP) {$\bigoplus$} (CA);
+      \draw (W) to node[fill=white,text=black,midway,inner sep=0pt, sloped] (UP) {$\bigoplus$} (AB);
+    \end{tikzpicture}
+    \caption{Gadget de la clause $x \vee y \vee \bar{z}$}
+    \label{fig:gadget-clause}
+  \end{figure}
+
+  La propriété du gadget de clause est la suivante :
   pour tout sous-ensemble strict de $X$ de l'ensemble $Y$ des trois arcs extérieurs, il existe une couverture par cycles unique qui contient uniquement les arcs de $X$ parmi ceux de $Y$. 
   On n'a aucune couverture par cycle qui utilise tous les arcs de $Y$.
+
+  On a, pour une clause $c$, que 
+  \[
+    \sum_{\substack{\text{$C$ couverture par}\\ \text{cycles de $G_c$}}} \mathrm{poids}(C) = 4^3 \: \# \text{Assignations satisfaisant $c$}
+  .\] 
 
 
   Au final, on obtient un graphe $G$ tel que
   \[
-    \sum_{\text{$C$ couverture par cycle de $G'$}} \mathrm{poids}(C) = 4^m \: \pbSharpSat(\phi)
+    \sum_{\substack{\text{$C$ couverture par}\\ \text{cycles de $G$}}} \mathrm{poids}(C) = 4^m \: \underbrace{\# \text{Assignations satisfaisant $\phi$}}_{\pbSharpSat(\phi)}
   ,\]
-  où $m$ lest le nombre d'occurrences de littéraux dans $\phi$.
+  où $m$ est le nombre d'occurrences de littéraux dans $\phi$.
   C'est ce facteur~$4^m$ qui fait que la réduction n'est pas parcimonieuse.
-
-  \textit{Je finirai plus tard les dessins.}
-
 \end{document}
