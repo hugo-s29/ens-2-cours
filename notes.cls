@@ -31,9 +31,8 @@
 \RequirePackage{mathtools}
 \RequirePackage{tikz}
 \RequirePackage{tikz-network}
-\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations, decorations.pathmorphing, graphdrawing, graphs, chains}
+\usetikzlibrary{automata, positioning, arrows, arrows.meta, tikzmark, shapes.geometric, hobby, patterns, shapes.multipart, decorations.pathmorphing, graphdrawing, graphs, chains, calligraphy}
 \usegdlibrary{force}
-\RequirePackage{tikz-3dplot}
 \RequirePackage{svg}
 \RequirePackage{multirow}
 \RequirePackage{subcaption}
@@ -478,7 +477,7 @@
     \end{figure}
   }
 
-  \csgdef{pb#2}{\hyperref[pb:#2]{\textsc{#1}}}
+  \csgdef{pb#2}{\hyperref[pb:#2]{\textnormal{\textsc{#1}}}}
 
   \csgdef{recall#2}{
     \begin{figure}[H]

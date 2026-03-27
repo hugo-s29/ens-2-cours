@@ -172,13 +172,13 @@
   comme des polynômes).
 
   \begin{defn}
-    On définit le problème \pbSharpSat\ par 
+    On définit le problème \pbSharpSatD\ par 
 
-    \showSharpSat
+    \showSharpSatD
 
     ou, de manière équivalente,
     \[
-      \pbSharpSat := \mleft\{\,\code{\phi, k} \;\middle|\; 
+      \pbSharpSatD := \mleft\{\,\code{\phi, k} \;\middle|\; 
         \begin{array}{l}
           \text{$\phi$ est une formule booléenne satisfaite}\\
           \text{par exactement $k$ assignations}
@@ -188,7 +188,7 @@
   \end{defn}
 
   \begin{thm}
-    On a $\pbSharpSat \in \ip$.
+    On a $\pbSharpSatD \in \ip$.
   \end{thm}
   \begin{prv}
     La preuve se base sur la technique d'\textit{\textbf{arithmétisation}} : on
@@ -222,7 +222,7 @@
     Maintenant, décrivons le protocole.
 
     \begin{algorithm}[H]
-      \caption{Protocole interactif pour \pbSharpSat}
+      \caption{Protocole interactif pour \pbSharpSatD}
       \begin{paralgo}{2}[Vérificateur $\verif$, Prouveur $\prov$]
         \State[1]{Calculer des polynômes $f_0, \ldots, f_n$}
         \Message{1}{0}{$f_0$}
@@ -254,12 +254,12 @@
     \end{algorithm}
 
     Dans un premier temps, analysons la complétude du protocole. Si
-    $\code{\phi, k} \in \pbSharpSat$, montrons qu'il existe $\prov$ qui va
+    $\code{\phi, k} \in \pbSharpSatD$, montrons qu'il existe $\prov$ qui va
     convaincre  $\verif$ à coup sûr. Pour cela, il suffit de prendre $\prov$
     qui respecte le protocole avec les $f_i$ définies précédemment.
 
     Maintenant, regardons la consistance du protocole. Supposons que
-    $\code{\phi, k} \not\in \pbSharpSat$, \textit{i.e.}, $k$ n'est pas le
+    $\code{\phi, k} \not\in \pbSharpSatD$, \textit{i.e.}, $k$ n'est pas le
     nombre d'assignations qui vont satisfaire $\phi$. Montrons que tout
     prouveur $\tilde{\prov}$ a probabilité inférieure à $1/3$ de convaincre
     $\verif$. Lors du protocole,  $\tilde{\prov}$ va envoyer des polynômes
@@ -298,7 +298,7 @@
     polynômes échangés ont des coefficients de taille polynomiale. Sinon, on
     peut se placer sur un corps fini $\mathds{F}$ dans lequel les coefficients
     sont nécessairement de taille bornée. La seule contrainte sur $\mathds{F}$
-    est $|\mathds{F}| \le |S|$.
+    est $|\mathds{F}| \ge |S|$.
     
     Le prouveur $\prov$ peut envoyer $p$ tel que $\mathds{F} = \mathds{Z} / p
     \mathds{Z}$ à $\verif$ qui va vérifier que $p$ est premier, avant toute
@@ -313,4 +313,53 @@
     représenter avec un circuit arithmétique on par une formule arithmétique
     (\textit{i.e.}\ un arbre).
   \end{prv}
+
+  \section{Preuve de $\ip \subseteq \pspace$.}
+
+  Soit $L \in \ip$ et soit $\verif$ le vérificateur associé.
+
+  \begin{lem}
+    On peut calculer, sur une entrée $x$, en espace polynomial
+    \[
+      \max_{\prov} \Pr[\text{\prov\ pousse \verif\ à accepter $x$}]
+    .\]
+  \end{lem}
+  \begin{prv}
+    On suppose que sur une entrée $x \in \{\texttt{0}, \texttt{1}\}^n$,
+    \begin{itemize}
+      \item le nombre de "phases" est exactement $s := s(n)$ ; 
+      \item le vérificateur $\verif$ utilise exactement $r := r(n)$ bits aléatoires à chaque phase ;
+      \item le prouveur $\prov$ envoie des messages de longueurs exactement $\ell := \ell(n)$ à chaque phase.
+    \end{itemize}
+    On peut représenter cette situation comme un arbre.
+
+    \begin{figure}[H]
+      \centering
+      \includegraphics[width=0.85\textwidth,clip, trim=2cm 16cm 2.5cm 1cm]{figures/probability_accepting.pdf}
+      \caption{Arbre permettant de calculer le résultat}
+    \end{figure}
+
+    En chaque nœud on a une histoire partielle $H$ qui correspond à la liste des messages envoyés par $\prov$ et des bits aléatoires tirés par $\verif$.
+    La \textit{valeur} d'un nœud est 
+    \[
+      \max_{\prov} \Pr[\text{\prov\ pousse \verif\ à accepter $x$}]
+    .\]
+    Pour une feuille, sa valeur est $0$ ou $1$. 
+    \begin{enumerate}
+      \item Pour un nœud $\prov$, on a 
+         \[
+           \Pr[\text{\verif\ accepte $x$}  \mid  H] = \max_{m \in \{\texttt{0},\texttt{1}\}^n } \Pr[\text{\verif\ accepte $x$}  \mid  H \texttt{\#} m]
+        .\] 
+      \item Pour un nœud $\verif$, on a
+         \[
+           \Pr[\text{\verif\ accepte $x$}  \mid  H] = \frac{1}{2^r} \sum_{y \in \{\texttt{0},\texttt{1}\}^r} \Pr[\text{\verif\ accepte $x$}  \mid  H \texttt{\#} y]
+        .\]
+    \end{enumerate}
+    On évalue la racine avec un algorithme récursif, avec une alternance de $\max$ et de moyenne.
+  \end{prv}
+
+  \begin{crlr}
+    On peut toujours supposer que $\prov$ fonctionne avec un espace polynomial.
+    \qed
+  \end{crlr}
 \end{document}

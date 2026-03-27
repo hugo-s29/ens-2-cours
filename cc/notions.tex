@@ -4,11 +4,13 @@
 \knowledgenewrobustcmd\ntime[1]{\ensuremath{\cmdkl{\mathrm{NTIME}(}{#1}\cmdkl{)}}}
 \knowledgenewrobustcmd\dspace[1]{\ensuremath{\cmdkl{\mathrm{DSPACE}(}{#1}\cmdkl{)}}}
 \knowledgenewrobustcmd\nspace[1]{\ensuremath{\cmdkl{\mathrm{NSPACE}(}{#1}\cmdkl{)}}}
+\knowledgenewrobustcmd\sharpp{\ensuremath{\cmdkl{\sharp\mathsf{P}}}}
 \knowledgenewrobustcmd\p{\ensuremath{\cmdkl{\mathsf{P}}}}
 \knowledgenewrobustcmd\ip{\ensuremath{\cmdkl{\mathsf{IP}}}}
 \knowledgenewrobustcmd\np{\ensuremath{\cmdkl{\mathsf{NP}}}}
 \knowledgenewrobustcmd\ls{\ensuremath{\cmdkl{\mathsf{L}}}}
 \knowledgenewrobustcmd\nls{\ensuremath{\cmdkl{\mathsf{NL}}}}
+\knowledgenewrobustcmd\fpspace{\ensuremath{\cmdkl{\mathsf{FPSPACE}}}}
 \knowledgenewrobustcmd\pspace{\ensuremath{\cmdkl{\mathsf{PSPACE}}}}
 \knowledgenewrobustcmd\exptime{\ensuremath{\cmdkl{\mathsf{EXPTIME}}}}
 \knowledgenewrobustcmd\code[1]{\ensuremath{\cmdkl{\langle}#1\cmdkl{\rangle}}}
@@ -32,6 +34,8 @@
 
 \knowledgenewrobustcmd\co[1]{\ensuremath{\cmdkl{\mathsf{co}} #1}}
 
+\knowledgenewrobustcmd\perm{\ensuremath{\mathop{\cmdkl{\mathrm{perm}}}}}
+
 \newcommand\conp{\co{\np}}
 
 \problem[Sat]{Sat}{Une formule booléenne $\phi$}{La formule $\phi$ est-elle satisfiable?}
@@ -41,7 +45,13 @@
 \problem[IsoGraph]{IsoGraph}{Deux graphes $G_0$ et $G_1$}{Est-ce que $G_0$ est isomorphe à $G_1$ ?}
 \problem[QBF]{QBF}{Une formule booléenne quantifiée $F$ (close)}{Est-ce que $F$ est vraie ?}
 \problem[Path]{Path}{Un graphe $G$ orienté, et $s, t \in \mathrm{V}(G)$}{Existe-t-il un chemin de $s$ à $t$ dans $G$ ?}
-\problem[$\sharp$Sat]{SharpSat}{Une formule booléenne $\phi$ sous CNF et $k \in \mathds{N}$}{La formule $\phi$ est-elle satisfaite par exactement~$k$ valuations ?}
+\problem[$\sharp$Sat${}_\mathrm{D}$]{SharpSatD}{Une formule booléenne $\phi$ sous CNF et $k \in \mathds{N}$}{La formule $\phi$ est-elle satisfaite par exactement~$k$ valuations ?}
+
+\problem[$\sharp$CircuitSat]{SharpCircuitSat}{Une circuit booléen $C$ avec $n$ variables}{Le nombre de valuations qui satisfont $C$}
+\problem[$\sharp$Sat]{SharpSat}{Une formule booléenne $\phi$}{Le nombre de valuations qui satisfont $\phi$}
+\problem[$\sharp$Cliques]{SharpCliques}{Un graphe $G$}{Le nombre de cliques dans $G$}
+\problem[$\sharp$CouplPar]{SharpCouplagesParfaits}{Un graphe biparti $G$}{Le nombre de couplages parfaits dans $G$}
+\problem[$\sharp$ChemHam]{SharpChemHam}{Un graphe $G$}{Le nombre de chemins hamiltoniens dans $G$}
 
 \newcommand\vali{i} % Magic variable
 

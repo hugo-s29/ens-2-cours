@@ -1,0 +1,255 @@
+\documentclass[./main]{subfiles}
+
+\begin{document}
+  \chapter{Complexité de comptage.}
+
+  \section{Problèmes de comptage.}
+
+  \begin{exm}
+    Les problèmes \pbSharpSat,\footnote{Le problème \pbSharpSatD\ vu au chapitre précédent est la version \textit{décision} du problème \pbSharpSat\ vu ici.} \pbSharpCliques, \pbSharpCouplagesParfaits\ sont des problèmes de comptage.
+    \showSharpSat
+    \showSharpCliques
+    \showSharpCouplagesParfaits
+  \end{exm}
+
+  \begin{defn}
+    On définit $\intro*\sharpp$ comme la classes des fonctions $f : \Sigma^\star \to \mathds{N}$ telles qu'il existe $A \in \p$ et un polynôme $p$ tel que 
+     \[
+       f(x) = \# \{y \in \Sigma^{\le p(n)}  \mid \code{x,y} \in A\} 
+    .\]
+  \end{defn}
+
+  Cette définition est analogue à $\np$ pour les problèmes de comptage.
+
+  \begin{defn}
+    Le \textit{\textbf{permanent}} d'une matrice $A$ de taille $n \times n$ est défini comme
+    \[
+      \intro*\perm(A) := \sum_{\sigma \in \mathfrak{S}_n} a_{1, \sigma(1)} a_{2,\sigma(2)} \cdots a_{n,\sigma(n)}
+    .\]
+  \end{defn}
+
+  \begin{exm}
+    Pour des matrices à entrée dans $\mathds{N}$, on a ${\perm} \in \sharpp$ car 
+    \[
+      \perm(A) = \# \{ (\sigma, y)  \mid \underbrace{1 \le y \le a_{1, \sigma(1)} a_{2,\sigma(2)} \cdots a_{n,\sigma(n)}}_{\text{se vérifie en temps polynomial}} \} 
+    .\]
+
+    On peut interpréter le permanent en combinatoire : pour une matrice~$A \in \{\texttt{0},\texttt{1}\}^{n^2}$, le permanent $\perm(A)$ compte le nombre de couplages parfaits dans le graphe biparti correspondant ($A$ est la matrice d'adjacence de $G$).
+    En effet, à une permutation $\sigma \in \mathfrak{S}_n$ correspond à un couplage parfait comme montré ci-dessous.
+
+
+    \begin{figure}[H]
+      \centering
+      \begin{tikzpicture}[node distance=0.5cm]
+        \node               (a1) {$\bullet$};
+        \node[below= of a1] (a2) {$\bullet$};
+        \node[below= of a2] (a3) {$\bullet$};
+        \node[below= of a3] (a4) {$\bullet$};
+        \node[right=1cm of a1] (b1) {$\bullet$};
+        \node[below= of b1] (b2) {$\bullet$};
+        \node[below= of b2] (b3) {$\bullet$};
+        \node[below= of b3] (b4) {$\bullet$};
+        \draw[thick, red] (a1) to (b1);
+        \draw (a1) to (b3);
+        \draw (a2) to (b1);
+        \draw[thick, red] (a2) to (b3);
+        \draw[thick, red] (a3) to (b2);
+        \draw (a3) to (b4);
+        \draw (a4) to (b2);
+        \draw[thick, red] (a4) to (b4);
+      \end{tikzpicture}
+      \quad\quad
+      \quad\quad
+      \begin{tikzpicture}[node distance=1cm]
+        \node               (a1) {$\bullet$};
+        \node[right=of a1]  (a2) {$\bullet$};
+        \node[below=of a1]  (a4) {$\bullet$};
+        \node[below=of a2]  (a3) {$\bullet$};
+        \draw[->, thick, red] (a1) to[loop left] (a1);
+        \draw[->, thick, red] (a4) to[loop left] (a4);
+        \draw[->, thick, red] (a2) to[bend right=20] (a3);
+        \draw[->, thick, red] (a3) to[bend right=20] (a2);
+        \draw[->] (a2) to (a1);
+        \draw[->] (a1) to (a3);
+        \draw[->] (a3) to (a4);
+        \draw[->] (a4) to (a2);
+      \end{tikzpicture}
+
+      $\sigma : \big( 1 \mapsto 1 \quad 2 \mapsto 3 \quad 3 \mapsto 2 \quad 4 \mapsto 4 \big) $
+      \caption{Interprétation combinatoire du permanent}
+    \end{figure}
+
+    Le permanent compte aussi le nombre de couvertures en cycle dans les graphes orientés.
+    Les cycles de la permutation $\sigma \in \mathfrak{S}_n$ correspondent exactement aux cycles du graphe.
+  \end{exm}
+
+  \begin{rmk}
+    \begin{itemize}
+      \item La classe $\sharpp$ est "plus dure" que $\np$ : on a $\np \subseteq \oracle{\p}{\sharpp}$.
+      \item La classe $\sharpp$ est "plus simple" que $\pspace$ : on a $\sharpp \subseteq \fpspace$ où $\intro*\fpspace$ est l'ensemble des \textit{fonctions} calculables en temps polynomial.
+      \item On a même que la classe $\sharpp$ est plus dure que $\ph$ (théorème de Toda).
+    \end{itemize}
+  \end{rmk}
+
+  \section{La $\sharpp$-complétude.}
+
+  \begin{defn}
+    On dit qu'une fonction $f \in \sharpp$ est \textit{\textbf{$\sharpp$-complète}} si, pour tout $g \in \sharpp$, il existe des fonctions $I$ et  $F$ calculables en temps polynomial telles que
+    \[
+    g(x) = O(f(I(x)))
+    .\]
+    Dans ce cas, je noterai $(I, O) : g \le f$.
+
+    Si $O$ est la fonction identité alors on dit que la réduction est \textit{\textbf{parcimonieuse}}.
+  \end{defn}
+
+  La plupart des réductions entre problèmes (de comptages associés à des problèmes) $\np$-complets sont parcimonieuses.
+  Ainsi, \pbSharpSat, \pbSharpChemHam, \textit{etc} sont $\sharpp$-complets par des réductions parcimonieuses.
+
+  \showSharpChemHam
+
+
+  On peut composer des réductions.
+
+  \begin{lem}
+    Si $(I_1, O_1) : f_2 \le f_1$ et $(I_2, O_2) : f_3 \le f_2$ alors on a
+    \[
+    O_2(O_1(f_1(I_1(I_2(x))))) = O_2(f_2(I_2(x))) = f_3(x)
+    ,\] 
+    d'où $(I_1 \circ I_2, O_2 \circ O_1) : f_3 \le f_1$.
+  \end{lem}
+
+  \begin{thm}
+    Le problème $\pbSharpCircuitSat$ est  $\sharpp$-complet.
+    \showSharpCircuitSat
+  \end{thm}
+  \begin{prv}
+    Soit $f \in \sharpp$.
+    Il existe $A \in \p$ et $p$ tels que \[
+      f(x) = \# \{y \in \{\texttt{0},\texttt{1}\}^{p(n)}  \mid \code{x, y} \in A\} 
+    ,\]
+    que l'on peut réécrire en
+    \[
+      f(x) = \# \{y \in \{\texttt{0},\texttt{1}\}^{p(n)}  \mid C_n(x,y) = \texttt{1}\} 
+    ,\] 
+    où $C_n$ est un circuit à $n$ variables, car $A \in \p$.
+    Or, c'est une instance de $\pbSharpCircuitSat$.
+  \end{prv}
+
+  \begin{thm}
+    Le problème $\pbSharpSat$ est $\sharpp$-complet.
+  \end{thm}
+  \begin{prv}
+    On réalise une réduction parcimonieuse à partir de $\pbSharpCircuitSat$.
+    On introduit une variable booléenne  $z_g$ à chaque porte $g$ du circuit.
+    Ainsi, pour une porte $\wedge$ sur $g_1$ et $g_2$, on peut exprimer " $z_g = z_{g_1} \wedge z_{g_2}$" avec la formule
+    \[
+      (z_g \vee \bar{z}_{g_1} \vee \bar{z}_{g_2}) \wedge (\bar{z}_g \vee \bar{z}_{g_1})
+    .\]
+    (C'est la même réduction que $\pbCircuitSat \redP \pbSat$.)
+    La réduction est parcimonieuse (une unique valeur possible pour chaque~$z_g$).
+  \end{prv}
+
+  \subsubsection{Est-ce que $\pbSharpCouplagesParfaits$ est $\sharpp$-complet ?}
+
+  On sait que $\pbSharpCouplagesParfaits$ ne peut pas être  $\sharpp$-complet pour les réductions parcimonieuses (si $\p \neq \np$) car sinon on aurait
+  \[
+  \pbSharpSat(\phi) = \pbSharpCouplagesParfaits(I(\phi))
+  ,\]
+  or on peut décider si $\pbSharpCouplagesParfaits(I(\phi)) \ge 1$ et donc on pourrait décider $\pbSat$ en temps polynomial.
+
+  \begin{thm}[Valiant]
+    Compter le nombre de couplages parfaits dans un graphe biparti est $\sharpp$-complet.
+  \end{thm}
+
+  Pour montrer ce théorème, on montre d'abord que $\perm$ est $\sharpp$-complet.
+
+  Le permanent, en toute généralité, s'interprète comme
+  \begin{enumerate}
+    \item la somme des poids des couplages parfaits (défini comme le produit des poids des arêtes) dans un graphe biparti ;
+    \item la somme des poids des couvertures par cycles dans un graphe orienté.
+  \end{enumerate}
+
+  Le \textit{\textbf{gadget du XOR}} est le gadget ci-dessous.
+
+  \begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+      \node (a) {$\bullet$} ;
+      \node[above right= of a] (b) {$\bullet$} ;
+      \node[below right= of a] (c) {$\bullet$} ;
+      \node[below right= of b] (d) {$\bullet$} ;
+      \node[above  left= of a] (u1) {$\bullet$} ;
+      \node[above right= of d] (v1) {$\bullet$} ;
+      \node[below  left= of a] (v2) {$\bullet$} ;
+      \node[below right= of d] (u2) {$\bullet$} ;
+      \node[below=0cm of a] {$a$};
+      \node[below=0cm of b] {$b$};
+      \node[below right=0cm and 0cm of c] {$c$};
+      \node[below=0cm of d] {$d$};
+      \node[below=0cm of u1] {$1$};
+      \node[below=0cm of v1] {$1'$};
+      \node[below=0cm of u2] {$2$};
+      \node[below=0cm of v2] {$2'$};
+      \draw[->] (u1) to (a);
+      \draw[->] (v2) to (a);
+      \draw[->] (d) to (v1);
+      \draw[->] (d) to (u2);
+      \draw[->] (a) to[bend left=20] (b);
+      \draw[->] (b) to[bend left=20] (a);
+      \draw[->] (d) to[bend left=20] (b);
+      \draw[->] (b) to[bend left=20] (d);
+      \draw[->] (d) to[bend left=20] node[midway,fill=white,text=red] {$3$} (c);
+      \draw[->] (c) to[bend left=20] node[midway,fill=white,text=red] {$2$} (d);
+      \draw[->] (a) to[bend right=20] node[midway,fill=white,text=red] {$-1$} (c);
+      \draw[->] (b) to[loop above] node[above,red] {$-1$} (b);
+      \draw[->] (a) to node[midway,fill=white,text=red] {$-1$} (d);
+      \draw[->] (c) to[loop below] (c);
+    \end{tikzpicture}
+    \caption{Gadget du XOR}
+  \end{figure}
+
+  On s'autorisera à brancher le gadget du XOR comme ci-dessous, en retirant les arêtes $1 1'$ et  $2 2'$.
+  On note $G'$ le graphe ainsi obtenu.
+
+  \begin{adjustbox}{center}
+    \begin{tikzpicture}
+      \node               (a1) {$\bullet$};
+      \node[right=of a1]  (a2) {$\bullet$};
+      \node[below=of a1]  (a4) {$\bullet$};
+      \node[below=of a2]  (a3) {$\bullet$};
+      \draw (a1) to node[midway, inner sep=0pt] (m1) {} (a2);
+      \draw (a4) to node[midway, inner sep=0pt] (m2) {} (a3);
+      \node[above=0cm of a1] {$1$};
+      \node[above=0cm of a2] {$1'$};
+      \node[below=0cm of a3] {$2'$};
+      \node[below=0cm of a4] {$2$};
+      \draw[red, thick] (m1) to node[midway, fill=white, text=red, inner sep=0pt] {$\oplus$} (m2);
+    \end{tikzpicture}
+  \end{adjustbox}
+
+  On a que \[
+    \sum_{\text{$C$ couverture par cycle de $G'$}} \mathrm{poids}(C) = 4 \times \sum_{\substack{
+      \text{$C$ couverture par cycle de $G$}\\
+      \text{qui contient $11'$  \textit{\textbf{ou exclusif}} $22'$}\\
+    }} \mathrm{poids}(C)
+  .\]
+  On l'admet, cela pourra être vu en TP.
+
+  Le \textit{\textbf{gadget de clause}} est le gadget ci-dessous. (Je ferai la figure plus tard.)
+
+  La propriété du gadget de claude est la suivante :
+  pour tout sous-ensemble strict de $X$ de l'ensemble $Y$ des trois arcs extérieurs, il existe une couverture par cycles unique qui contient uniquement les arcs de $X$ parmi ceux de $Y$. 
+  On n'a aucune couverture par cycle qui utilise tous les arcs de $Y$.
+
+
+  Au final, on obtient un graphe $G$ tel que
+  \[
+    \sum_{\text{$C$ couverture par cycle de $G'$}} \mathrm{poids}(C) = 4^m \: \pbSharpSat(\phi)
+  ,\]
+  où $m$ lest le nombre d'occurrences de littéraux dans $\phi$.
+  C'est ce facteur~$4^m$ qui fait que la réduction n'est pas parcimonieuse.
+
+  \textit{Je finirai plus tard les dessins.}
+
+\end{document}
