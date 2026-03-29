@@ -95,7 +95,7 @@
   \section{La $\sharpp$-complétude.}
 
   \begin{defn}
-    On dit qu'une fonction $f \in \sharpp$ est \textit{\textbf{$\sharpp$-complète}} si, pour tout $g \in \sharpp$, il existe des fonctions $I$ et  $F$ calculables en temps polynomial telles que
+    On dit qu'une fonction $f \in \sharpp$ est \textit{\textbf{$\sharpp$-complète}} si, pour tout $g \in \sharpp$, il existe des fonctions $I$ et $O$ calculables en temps polynomial telles que
     \[
     g(x) = O(f(I(x)))
     .\]
@@ -143,7 +143,7 @@
   \begin{prv}
     On réalise une réduction parcimonieuse à partir de $\pbSharpCircuitSat$.
     On introduit une variable booléenne  $z_g$ à chaque porte $g$ du circuit.
-    Ainsi, pour une porte $\wedge$ sur $g_1$ et $g_2$, on peut exprimer " $z_g = z_{g_1} \wedge z_{g_2}$" avec la formule
+    Ainsi, pour une porte $\wedge$ sur $g_1$ et $g_2$, on peut exprimer "$z_g = z_{g_1} \wedge z_{g_2}$" avec la formule
     \[
       (z_g \vee \bar{z}_{g_1} \vee \bar{z}_{g_2}) \wedge (\bar{z}_g \vee \bar{z}_{g_1})
     .\]
