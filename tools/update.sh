@@ -87,6 +87,7 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp cc/chap08.pdf ../web/public/data/ens2/cc-chap08.pdf
 
   cp cgdi/report.pdf ../web/public/data/ens2/cgdi-report.pdf
+  cp cgdi/slides.pdf ../web/public/data/ens2/cgdi-slides.pdf
 
   cp dbdm/td.pdf ../web/public/data/ens2/dbdm-td.pdf
   cp dbdm/homework.pdf ../web/public/data/ens2/dbdm-homework.pdf
