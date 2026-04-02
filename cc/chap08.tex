@@ -50,14 +50,14 @@
         \node[below= of b1] (b2) {$\bullet$};
         \node[below= of b2] (b3) {$\bullet$};
         \node[below= of b3] (b4) {$\bullet$};
-        \draw[thick, red] (a1) to (b1);
+        \draw[thick, nicered] (a1) to (b1);
         \draw (a1) to (b3);
         \draw (a2) to (b1);
-        \draw[thick, red] (a2) to (b3);
-        \draw[thick, red] (a3) to (b2);
+        \draw[thick, nicered] (a2) to (b3);
+        \draw[thick, nicered] (a3) to (b2);
         \draw (a3) to (b4);
         \draw (a4) to (b2);
-        \draw[thick, red] (a4) to (b4);
+        \draw[thick, nicered] (a4) to (b4);
       \end{tikzpicture}
       \quad\quad
       \quad\quad
@@ -66,10 +66,10 @@
         \node[right=of a1]  (a2) {$\bullet$};
         \node[below=of a1]  (a4) {$\bullet$};
         \node[below=of a2]  (a3) {$\bullet$};
-        \draw[->, thick, red] (a1) to[loop left] (a1);
-        \draw[->, thick, red] (a4) to[loop left] (a4);
-        \draw[->, thick, red] (a2) to[bend right=20] (a3);
-        \draw[->, thick, red] (a3) to[bend right=20] (a2);
+        \draw[->, thick, nicered] (a1) to[loop left] (a1);
+        \draw[->, thick, nicered] (a4) to[loop left] (a4);
+        \draw[->, thick, nicered] (a2) to[bend right=20] (a3);
+        \draw[->, thick, nicered] (a3) to[bend right=20] (a2);
         \draw[->] (a2) to (a1);
         \draw[->] (a1) to (a3);
         \draw[->] (a3) to (a4);
@@ -145,7 +145,7 @@
     On introduit une variable booléenne  $z_g$ à chaque porte $g$ du circuit.
     Ainsi, pour une porte $\wedge$ sur $g_1$ et $g_2$, on peut exprimer "$z_g = z_{g_1} \wedge z_{g_2}$" avec la formule
     \[
-      (z_g \vee \bar{z}_{g_1} \vee \bar{z}_{g_2}) \wedge (\bar{z}_g \vee \bar{z}_{g_1})
+      (z_g \vee \bar{z}_{g_1} \vee \bar{z}_{g_2}) \wedge (\bar{z}_g \vee z_{g_1}) \wedge (\bar{z}_g \vee z_{g_2})
     .\]
     (C'est la même réduction que $\pbCircuitSat \redP \pbSat$.)
     La réduction est parcimonieuse (une unique valeur possible pour chaque~$z_g$).
@@ -175,37 +175,51 @@
 
   \begin{figure}[H]
     \centering
-    \begin{tikzpicture}
+    \begin{tikzpicture}[node distance=2cm]
       \node (a) {$\bullet$} ;
-      \node[above right= of a] (b) {$\bullet$} ;
-      \node[below right= of a] (c) {$\bullet$} ;
-      \node[below right= of b] (d) {$\bullet$} ;
+      \node[above right= of a] (b0) {} ;
+      \node[left=0.1cm of b0, inner sep=0pt] (bl) {} ;
+      \node[right=0.1cm of b0, inner sep=0pt] (br) {} ;
+      \draw[line width=5pt, line cap=round] (bl.center) -- (br.center);
+      \node[inner sep=7pt, fit=(br)(bl)] (b) {};
+      \node[inner sep=7pt, fit=(bl)] (bl) {};
+      \node[inner sep=7pt, fit=(br)] (br) {};
+      \node[below right= of a] (c0) {} ;
+      \node[left=0.1cm of c0, inner sep=0pt] (cl) {} ;
+      \node[right=0.1cm of c0, inner sep=0pt] (cr) {} ;
+      \draw[line width=5pt, line cap=round] (cl.center) -- (cr.center);
+      \node[inner sep=7pt, fit=(cr)(cl)] (c) {};
+      \node[inner sep=7pt, fit=(cl)] (cl) {};
+      \node[inner sep=7pt, fit=(cr)] (cr) {};
+      \node[below right= of b0] (d) {$\bullet$} ;
       \node[above  left= of a] (u1) {$\bullet$} ;
       \node[above right= of d] (v1) {$\bullet$} ;
       \node[below  left= of a] (v2) {$\bullet$} ;
       \node[below right= of d] (u2) {$\bullet$} ;
       \node[below=0cm of a] {$a$};
-      \node[below=0cm of b] {$b$};
-      \node[below right=0cm and 0cm of c] {$c$};
+      \node[above right=-0.25cm and -0.25cm of b] {$b$};
+      \node[below right=-0.25cm and -0.25cm of c] {$c$};
       \node[below=0cm of d] {$d$};
       \node[below=0cm of u1] {$1$};
       \node[below=0cm of v1] {$1'$};
       \node[below=0cm of u2] {$2$};
       \node[below=0cm of v2] {$2'$};
       \draw[->] (u1) to (a);
-      \draw[->] (v2) to (a);
+      \draw[->] (a) to (v2);
       \draw[->] (d) to (v1);
-      \draw[->] (d) to (u2);
-      \draw[->] (a) to[bend left=20] (b);
-      \draw[->] (b) to[bend left=20] (a);
-      \draw[->] (d) to[bend left=20] (b);
-      \draw[->] (b) to[bend left=20] (d);
-      \draw[->] (d) to[bend left=20] node[midway,fill=white,text=red] {$3$} (c);
-      \draw[->] (c) to[bend left=20] node[midway,fill=white,text=red] {$2$} (d);
-      \draw[->] (a) to[bend right=20] node[midway,fill=white,text=red] {$-1$} (c);
-      \draw[->] (b) to[loop above] node[above,red] {$-1$} (b);
-      \draw[->] (a) to node[midway,fill=white,text=red] {$-1$} (d);
+      \draw[->] (u2) to (d);
+      \draw[->] (a) to[bend left=20] (bl);
+      \draw[->] (bl) to[bend left=20] (a);
+      \draw[->] (d) to[bend left=20] (br);
+      \draw[->] (br) to[bend left=20] (d);
+      \draw[->] (d) to[bend left=20] node[midway,fill=white,text=nicered] {$3$} (cr);
+      \draw[->] (cr) to[bend left=20] node[midway,fill=white,text=nicered] {$2$} (d);
+      \draw[->] (a) to[bend right=20] node[midway,fill=white,text=nicered] {$-1$} (cl);
+      \draw[->] (b) to[loop above] node[above,nicered] {$-1$} (b);
       \draw[->] (c) to[loop below] (c);
+      \draw[->] (b) to[bend left=15] node[midway, fill=white, inner sep=3pt] {} (c);
+      \draw[->] (c) to[bend left=15] node[midway, fill=white, inner sep=3pt] {} (b);
+      \draw[->] (a) to node[near start,fill=white,text=nicered] {$-1$} (d);
     \end{tikzpicture}
     \caption{Gadget du XOR}
   \end{figure}
@@ -219,18 +233,18 @@
       \node[right=of a1]  (a2) {$\bullet$};
       \node[below=of a1]  (a4) {$\bullet$};
       \node[below=of a2]  (a3) {$\bullet$};
-      \draw (a1) to node[midway, inner sep=0pt] (m1) {} (a2);
-      \draw (a4) to node[midway, inner sep=0pt] (m2) {} (a3);
+      \draw[->] (a1) to node[midway, inner sep=0pt] (m1) {} (a2);
+      \draw[->] (a4) to node[midway, inner sep=0pt] (m2) {} (a3);
       \node[above=0cm of a1] {$1$};
       \node[above=0cm of a2] {$1'$};
       \node[below=0cm of a3] {$2'$};
       \node[below=0cm of a4] {$2$};
-      \draw[red, thick] (m1) to node[midway, fill=white, text=red, inner sep=0pt] {$\bigoplus$} (m2);
+      \draw[nicered, thick] (m1) to node[midway, fill=white, text=nicered, inner sep=0pt] {$\bigoplus$} (m2);
     \end{tikzpicture}
   \end{adjustbox}
 
   On a que \[
-    \sum_{\substack{\text{$C$ couverture par}\\ \text{cycles de $G$}}} \mathrm{poids}(C) = 
+    \sum_{\substack{\text{$C$ couverture par}\\ \text{cycles de $G'$}}} \mathrm{poids}(C) = 
     4 \times \sum_{\substack{
       \text{$C$ couverture par}\\
     \text{cycles de $G$ qui}\\
