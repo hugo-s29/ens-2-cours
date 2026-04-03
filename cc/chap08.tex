@@ -320,4 +320,230 @@
   ,\]
   où $m$ est le nombre d'occurrences de littéraux dans $\phi$.
   C'est ce facteur~$4^m$ qui fait que la réduction n'est pas parcimonieuse.
+
+
+  \begin{rmk}
+    Étant donnée une formule booléenne $\phi$, on construit une matrice  $A$ telle que $\perm(A) = 4^m  s$ $(*)$ où $s = \pbSharpSat(\phi)$.
+    On a  $\perm(A) \mod 3 = s \mod 3$ ce qui est au moins aussi dur que $\np$ à calculer.
+
+    Attention ! La relation $(*)$ ne dit rien sur la complexité pour calculer le permanent modulo $2$.
+    En effet, on a \[
+    \perm (X) \mod 2 = \det (X) \mod 2
+    ,\] 
+    ce qui est calculable en temps polynomial.
+  \end{rmk}
+
+  \section{Comptage modulaire.}
+
+  \begin{thm}[Toda]
+    On a $\ph \subseteq \oracle{\p}{\sharpp}$.
+  \end{thm}
+
+  \begin{defn}
+    On définit $\intro*\modp$ par : un langage $A$ est dans $\modp$ ss'il existe un problème $B \in \p$ et un polynôme $p$ tels que \[
+    x \in A \iff \# \{y \in \Sigma^{\le p(n)}  \mid \code{x,y} \in A\} \text{ est impair}
+    .\]
+  \end{defn}
+
+  \begin{thm}
+    On a $\np \subseteq \oracle{\rp}{\modp}$.\footnote{La classe $\rp$ a été vue en TD.}
+    \label{thm:mod-thm1}
+  \end{thm}
+
+  \begin{rmk}
+    La même preuve montre que le comptage modulo $3$ est $\np$-dur également.
+  \end{rmk}
+
+  \begin{lem}[d'isolation]
+    On associe à chaque élément $x_i$ d'un ensemble $S = \{x_1, \ldots, x_n\} $ un poids entier $w_i \ge 1$.
+    Soit $\mathcal{F}$ une famille de parties de $S$.
+    Pour $T \in \mathcal{F}$, le poids $w(T)$ est défini par  $\sum_{i \text{ tq } x_i \in T} w_i$.
+    Si les $w_i$ sont choisis indépendamment et suivant la distribution uniforme sur $\{1, \ldots, 2n\}$ alors, avec probabilité au moins $1/2$, il existe dans $\mathcal{F}$ un unique ensemble de poids minimaux.
+  \end{lem}
+
+  \begin{prv}
+    On dit que $x_i \in S$ est "\textit{mauvais}" s'il appartient à un ensemble de $\mathcal{F}$ de poids minimum mais pas à tous.
+    Il existe un unique élément de $\mathcal{F}$ de poids minimum ssi aucun $x_i$ n'est mauvais.
+
+    On va montrer que, pour tout $i$, 
+     \[
+       \Pr[\text{$x_i$ est mauvais}] \le \frac{1}{2n}
+    .\] 
+    En effet, par borne de l'union, on peut conclure :
+    \[
+      \Pr[\exists i, \text{ $x_i$ est mauvais}] \le \frac{n}{2n} = \frac{1}{2}
+    .\]
+    On va montrer que, quels que soient les choix faits parmi les $w_j$ avec $j \neq i$, si on tire $w_i$ suivant une distribution uniforme sur $\{1, \ldots, 2n\}$ alors $\Pr[x_i \text{ est mauvais}] \le  1/2n$.
+
+    Soit $w^\star(\bar{x}_i)$ le poids minimum d'un $T \in \mathcal{F}$ qui ne contient pas $x_i$, et posons
+    \[
+      w^\star(x_i) := \min_{T \text{ tq } x_i \in T} \sum_{\substack{j \neq i\\ x_j \in T}} w_j
+    .\]
+    On distingue deux cas.
+    \begin{itemize}
+      \item \textit{Cas 1} : $w^\star(x_i) \ge w^\star(\bar{x}_i)$.
+        Alors on a $\Pr[x_i \text{ est mauvais}] = 0$ car $x_i$ n'appartient à aucun ensemble de poids minimaux.
+      \item \textit{Cas 2} : $w^\star(\bar{x}_i) - w^\star(x_i) \ge 1$. On a que $x_i$ est mauvais ssi $w_i = w^\star(x_i) - w^\star(x_i)$ 
+        \begin{itemize}
+          \item Si $w_i < w^\star(\bar{x}_i) - w^\star(x_i)$ alors $x_i$ est dans tous les ensembles de poids minimaux ;
+          \item Si $w_i > w^\star(\bar{x}_i) - w^\star(x_i)$ alors $x_i$ n'est dans aucun ensemble de poids minimal.
+        \end{itemize}
+        Ainsi, on a que $w_i = w^\star(\bar{x}_i) - w^\star(x_i)$ est vrai avec probabilité $1/2n$ ou $0$.
+    \end{itemize}
+  \end{prv}
+
+  \hspace{12pt}
+
+  \begin{prv}[du théorème~\ref{thm:mod-thm1}]
+    Il suffit de montrer que $\pbSat \in \oracle{\rp}{\modp}$.
+    On considère l'algorithme suivant.
+
+    \begin{algorithmic}[1]
+      \Require une formule booléenne $F(x_1, \ldots, x_n)$
+      \State On choisit, pour chaque $x_i$, un poids $w_i \in \{1, \ldots, 2n\}$.
+      \State On choisit $u \in \{0, \ldots, 2n\}$.
+      \State On note $w(\tau) = \sum_{i \text{ tq } \tau(x_i) = \texttt{1}} w_i$ pour une assignation $\tau$.
+      \BeginBox[draw=nicered]
+      \If{$\# \{\text{assignation $\tau$}  \mid \tau(F) = \texttt{1} \text{ et } w(\tau) \le u\} $ est impair}
+      \State \textbf{Accepter}
+      \Else
+      \State \textbf{Rejeter}
+      \EndIf
+      \EndBox
+    \end{algorithmic}
+    La partie rouge utilise l'oracle pour $\modp$, car on peut vérifier en temps polynomial que $\tau(F) = \texttt{1}$ et que $w(\tau) \le u$.
+
+    Analysons cet algorithme.
+    \begin{enumerate}
+      \item Si $F \not\in \pbSat$ alors $F$ est toujours refusée.
+      \item Si  $F \in \pbSat$, on applique le lemme d'isolation à l'ensemble~$\mathcal{F}$ des $T \subseteq \{x_1, \ldots, x_n\}$ tels que l'assignation $\tau$ définie par~$\tau(x_i) = 1$ ssi $x_i \in T$ satisfait $F$.
+        Avec probabilité au moins  $1 / 2$, on a une unique assignation $\tau$ satisfaisant $F$ de poids minimum $w^\star$.
+        Si on prend $u = w^\star$, alors 
+         \[
+        \# \{\tau  \mid \tau(F) = \texttt{1} \text{ et } w(\tau) \le u\}  = 1
+        ,\] 
+        cela se produit avec probabilité au moins $1 / (2n^2 + 1)$.
+        On a que $F$ est acceptée avec probabilité au moins $1 / 2 (2n^2 + 1)$.
+        On peut répéter pour que la probabilité de succès soit au moins $1 / 2$.
+    \end{enumerate}
+  \end{prv}
+
+  Le théorème~\ref{thm:mod-thm1} montre que $\np \subseteq \oracle{\rp}{\modp}$ en faisant plusieurs appels à l'oracle. Le théorème~\ref{thm:mod-thm2} améliore ça avec un seul appel à l'oracle.
+
+  \begin{thm}
+    On a $\np \subseteq \bp\modp$.
+    \label{thm:mod-thm2}
+  \end{thm}
+
+  \begin{defn}
+    Soient $A, R \subseteq \Sigma^\star$.
+    On dit que $B$ est dans $\intro*\bp A$ s'il existe un polynôme $p$ tel que 
+    \begin{enumerate}
+      \item si $x \in A$ alors, $\# \{y \in \{\texttt{0},\texttt{1}\}^{p(n)}  \mid \code{x,y} \in \} \ge (3/4)\cdot 2^{p(n)}$ ;
+      \item si $x \not\in A$ alors, $\# \{y \in \{\texttt{0},\texttt{1}\}^{p(n)}  \mid \code{x,y} \not\in \} \ge (3/4)\cdot  2^{p(n)}$ ;
+    \end{enumerate}
+    en notant $n = |x|$.
+    
+    C'est une réduction probabiliste de $B$ à $A$.
+
+    Soit $\mathcal{C}$ une classe de complexité.
+    On dit que $B \in \bp{\mathcal{C}}$ s'il existe $A \in \mathcal{C}$ tel que $B \in \bp A$, autrement dit, 
+    \[
+      \bp{\mathcal{C}} := \bigcup_{A \in \mathcal{C}}  \bp A
+    .\]
+  \end{defn}
+
+  \begin{rmk}
+    Les principales étapes de la preuve du théorème de Toda sont les deux inclusions
+    \[
+      \phSigma k \subseteq \bp\modp \subseteq \oracle \p \sharpp
+    .\]
+    La deuxième inclusion demande de \textit{supprimer l'aléatoire}.
+  \end{rmk}
+
+  \begin{prop}
+    On a $\phSigma k \subseteq \bp\modp$.
+  \end{prop}
+  \begin{prv}[idée de la preuve]
+    Par récurrence sur $k$, on montre que $\phSigma k \subseteq \bp{{\oplus \phPi {k-1}}}$ (pour le cas $k = 2$, c'est le théorème~\ref{thm:mod-thm2}).
+    On a que $\phPi{k-1} \subseteq \bp \modp$, et $\bp\modp$ est clos par complément.
+    En effet, on a donc
+    \[
+      \phSigma k \subseteq \bp {{\oplus \phPi {k-1}}} \subseteq \bp{{\oplus \bp{\modp}}} = \bp\modp
+    .\]
+  \end{prv}
+
+  \begin{lem}
+    On a que $A \in \modp$ ss'il existe un polynôme $p$ et un problème $B \in \p$ tel que, pour tout $x \in \Sigma^\star$,
+    \[
+      x \in A \iff \# \{y \in \{\texttt{0},\texttt{1}\}^{p(|x|)}  \mid \code{x, y} \in B\}  \text{ est pair}
+    .\]
+    Ainsi, $\modp$ est clos par complément.
+  \end{lem}
+  \begin{prv}
+    Il existe $C \in \p$ et un polynôme $q$ tels que, pour toute entrée~$x \in \Sigma^\star$,
+    \[
+      x \in A \iff \# \{y \in \{\texttt{0},\texttt{1}\}^{q(|x|)}  \mid \code{x, y} \in C\}  \text{ est impair}
+    .\]
+    On définit $B$ par :
+    \[
+      B := \mleft\{\, \code{x, y} \;\middle|\;
+      \begin{array}{c}
+        y \neq \texttt{0}^{q(|x|)} \wedge \code{x,y} \in C\\
+        \text{\textit{\textbf{ou}}}\\
+        y = \texttt{0}^{q(|x|)} \wedge \code{x, y} \not\in C
+      \end{array}\,\mright\} 
+    .\]
+    "On inverse la réponse sur $y = \texttt{0}^{q(|x|)}$."
+  \end{prv}
+
+  \begin{lem}
+    Soit $A \in \modp$. L'ensemble
+    \[
+      A' := \Big\{\, \code{x_1, \ldots, x_k} \;\Big|\; \bigvee_{i=1}^k (x_i \in A)\,\Big\} 
+    \] est dans $\modp$.
+  \end{lem}
+  \begin{prv}
+    Par le lemme précédent, il existe $p$ un polynôme et $B \in \p$ tel que,
+    \[
+      x \in A \iff \# \{y \in \{\texttt{0},\texttt{1}\}^{p(|x|)}  \mid \code{x, y} \in B\}  \text{ est pair}
+    .\] 
+    On pose $B'$ l'ensemble
+    \[
+      B' := \Big\{\,\code{x_1, \ldots, x_k, y_1, \ldots, y_k} \;\Big|\; \bigwedge_{i=1}^k (\code{x_i, y_i} \in B \,\Big\} 
+    .\]
+    On a 
+    \begin{align*}
+      &\code{x_1, \ldots, x_k} \in A' \\
+      \iff& \bigvee_{i=1}^k \# \{y_i \in \{\texttt{0},\texttt{1}\}^{p(|x|}  \mid \code{x_i, y_i} \in B \} \text{ pair}\\
+      \iff& \# \{ \code{y_1, \ldots, y_n}  \mid  \code{x_1, \ldots, x_k, y_1, \ldots, y_k} \in B\} \text{ pair} \\
+    .\end{align*}
+  \end{prv}
+
+  \hspace{12pt}
+
+  \begin{prv}[du théorème~\ref{thm:mod-thm2}]
+    On montre que $\pbSat \in \bp\modp$.
+    Soit $F(x_1, \ldots, x_n)$ une formule booléenne et soit $m = 2 (2n^2 + 1)$.
+    On accepte $F$ ssi
+    \[
+    \code{F, w^{(1)}, u_1, w^{(2)}, u_2, \ldots, w^{(2m)}, u_{2m}}
+    \]
+    (où les $w^{(i)}$ et les $u_i$ sont tirés au sort)
+    satisfait la propriété
+    \[
+    \bigvee_{j=1}^{2m} \# \{\tau \in \{\texttt{0},\texttt{1}\}^n  \mid \tau(F) = \texttt{1} \text{ et } w^{(j)}(\tau) \le u_j\} \text{ est impair}
+    ,\] 
+    et ce dernier est dans $\modp$ par le lemme précédent.
+
+    Analysons cet algorithme.
+    \begin{itemize}
+      \item Si $F \not\in \pbSat$, alors on accepte $F$ avec probabilité $0$ car les $2m$ expériences échouent.
+      \item Si $F \in \pbSat$, alors on a
+        \[
+          \Pr[F \text{ rejetée}] \le \left( 1 - \frac{1}{m} \right)^{2m} \le \frac{1}{e^2}
+        ,\] 
+        d'où $\Pr[F \text{ acceptée}] \ge 3 / 4$.
+    \end{itemize}
+  \end{prv}
 \end{document}
