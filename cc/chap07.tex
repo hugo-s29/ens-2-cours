@@ -135,12 +135,9 @@
     On définit $\intro*\ip$ la classe des langages que l'on peut reconnaitre à
     l'aide d'un protocole interactif avec probabilité d'erreur inférieur à
     $1/3$. Autrement dit, un langage $L$ est dans $\ip$ ss'il existe un
-    vérificateur $\intro*\verif$ tel que
+    vérificateur $\intro*\verif$ et un prouveur $\intro*\prov$ tels que
      \begin{enumerate}
-      \item si $x \in L$ alors il existe un prouveur $\intro*\prov$ tel que
-        \[
-          \Pr[\text{$\prov$ pousse $\verif$ à accepter}] \ge  \frac{2}{3} \;
-        ;\]
+      \item si $x \in L$ alors $\Pr[\text{$\prov$ pousse $\verif$ à accepter}] \ge  \frac{2}{3}$ ;
       \item si $x \not\in L$ alors pour tout prouveur $\tilde{\prov}$, 
         \[
           \Pr[\text{$\tilde{\prov}$ pousse $\verif$ à accepter}] \le \frac{1}{3} \;
