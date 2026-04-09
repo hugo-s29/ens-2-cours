@@ -72,6 +72,7 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   # ==========
   
   cp pp/td.pdf ../web/public/data/ens2/pp-td.pdf
+  cp pp/exercices.pdf ../web/public/data/ens2/pp-exercices.pdf
 
   cp cc/td.pdf ../web/public/data/ens2/cc-td.pdf
   cp cc/hw1/main.pdf ../web/public/data/ens2/cc-hw1.pdf
