@@ -181,7 +181,7 @@
     \begin{tikzpicture}
       \directlua{draw_tape({name = 'in', label='', n = 10, content = {'$x_1$', '$x_2$', dots, '$x_n$', spacer, '$y_1$',  '$y_2$', dots, '$y_k$'}, head_pos = 1}, 0, 0.65, {
           {from=0, to=3, text=[[entrée $x$]]},
-          {from=5, to=8, text=[[conseil $f(x) = y$]]},
+          {from=5, to=8, text=[[conseil $f(|x|) = y$]]},
       })}
     \end{tikzpicture}
     \caption{Ruban d'entrée d'une machine avec fonction de conseil\footnote{où on construit $\code{\cdot,\cdot}$ avec un séparateur $\texttt{\#}$.}}
