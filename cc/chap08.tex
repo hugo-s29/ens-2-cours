@@ -341,7 +341,7 @@
 
   \begin{defn}
     On définit $\intro*\modp$ par : un langage $A$ est dans $\modp$ ss'il existe un problème $B \in \p$ et un polynôme $p$ tels que \[
-    x \in A \iff \# \{y \in \Sigma^{\le p(n)}  \mid \code{x,y} \in A\} \text{ est impair}
+    x \in A \iff \# \{y \in \Sigma^{\le p(n)}  \mid \code{x,y} \in B\} \text{ est impair}
     .\]
   \end{defn}
 
@@ -439,8 +439,8 @@
     Soient $A, R \subseteq \Sigma^\star$.
     On dit que $B$ est dans $\intro*\bp A$ s'il existe un polynôme $p$ tel que 
     \begin{enumerate}
-      \item si $x \in A$ alors, $\# \{y \in \{\texttt{0},\texttt{1}\}^{p(n)}  \mid \code{x,y} \in \} \ge (3/4)\cdot 2^{p(n)}$ ;
-      \item si $x \not\in A$ alors, $\# \{y \in \{\texttt{0},\texttt{1}\}^{p(n)}  \mid \code{x,y} \not\in \} \ge (3/4)\cdot  2^{p(n)}$ ;
+      \item si $x \in A$ alors, $\# \{y \in \{\texttt{0},\texttt{1}\}^{p(n)}  \mid \code{x,y} \in B \} \ge (3/4)\cdot 2^{p(n)}$ ;
+      \item si $x \not\in A$ alors, $\# \{y \in \{\texttt{0},\texttt{1}\}^{p(n)}  \mid \code{x,y} \not\in B \} \ge (3/4)\cdot  2^{p(n)}$ ;
     \end{enumerate}
     en notant $n = |x|$.
     
