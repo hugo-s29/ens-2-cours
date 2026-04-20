@@ -87,7 +87,7 @@
   \end{defn}
 
   \begin{defn}
-    Une \textit{machine universelle} $U$ prend en entrée des coules $\code{x,\alpha}$ (où $\alpha$ est le code d'une machine $M_\alpha$ et $x \in \Sigma^\star$) et simule la machine $M_\alpha$ sur l'entrée $x$.
+    Une \textit{machine universelle} $U$ prend en entrée des couples $\code{x,\alpha}$ (où $\alpha$ est le code d'une machine $M_\alpha$ et $x \in \Sigma^\star$) et simule la machine $M_\alpha$ sur l'entrée $x$.
     Autrement dit, pour tout $x$ et tout $\alpha$, on a 
     \[
       U(\code{x, \alpha}) = M_\alpha(x)
@@ -95,7 +95,7 @@
   \end{defn}
 
   \begin{thm}
-    Il existe une machine de Turing universelle $U$ telle que, sur tout entrée $\code{x, \alpha}$, si  $M_\alpha$ s'arrête sur $x$ en $t$ étapes, alors la machine $U$ s'arrête sur $\code{x, \alpha}$ en au plus $c\: t \log t$, où $c$ ne dépend que de $x$.
+    Il existe une machine de Turing universelle $U$ telle que, sur toute entrée $\code{x, \alpha}$, si  $M_\alpha$ s'arrête sur $x$ en $t$ étapes, alors la machine $U$ s'arrête sur $\code{x, \alpha}$ en au plus $c\: t \log t$, où $c$ ne dépend que de $x$.
   \end{thm}
   \begin{prv}
     \begin{itemize}
