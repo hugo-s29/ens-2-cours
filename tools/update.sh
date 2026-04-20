@@ -91,6 +91,7 @@ if [ "$HOSTNAME" = "s-1vcpu-1gb-lon1-01" ]; then
   cp cgdi/slides.pdf ../web/public/data/ens2/cgdi-slides.pdf
 
   cp dbdm/td.pdf ../web/public/data/ens2/dbdm-td.pdf
+  cp dbdm/recap.pdf ../web/public/data/ens2/dbdm-recap.pdf
   cp dbdm/homework.pdf ../web/public/data/ens2/dbdm-homework.pdf
 
   cp topologie-algebrique/main.pdf ../web/public/data/ens2/topoalg.pdf
